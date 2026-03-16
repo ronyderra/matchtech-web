@@ -1,0 +1,73 @@
+.heading {
+  margin: 0;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.headingXl {
+  font-size: var(--font-size-heading-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.1;
+}
+
+.headingLg {
+  font-size: var(--font-size-heading-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+}
+
+.headingMd {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.25;
+}
+
+.text {
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.textBody {
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+}
+
+.textBodySm {
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.textMuted {
+  font-size: var(--font-size-caption);
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignCenter {
+  text-align: center;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.requiredMark {
+  color: var(--color-danger);
+  font-size: var(--font-size-caption);
+  line-height: 1;
+}
+

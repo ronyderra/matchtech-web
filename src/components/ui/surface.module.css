@@ -1,0 +1,170 @@
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.cardPadding {
+  padding: 18px;
+}
+
+@media (max-width: 480px) {
+  .cardPadding {
+    padding: 16px;
+  }
+}
+
+.cardHeader {
+  padding: 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cardBody {
+  padding: 18px;
+}
+
+.cardFooter {
+  padding: 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-chip);
+  font-size: var(--font-size-caption);
+  border: 1px solid var(--color-border);
+  background: rgba(148, 163, 184, 0.08);
+  color: var(--color-text-secondary);
+  line-height: 1;
+}
+
+.chipPrimary {
+  background: rgba(10, 102, 194, 0.10);
+  color: var(--color-primary);
+  border-color: rgba(10, 102, 194, 0.18);
+}
+
+.chipSuccess {
+  background: rgba(34, 197, 94, 0.12);
+  color: rgba(21, 128, 61, 1);
+  border-color: rgba(34, 197, 94, 0.18);
+}
+
+.chipDanger {
+  background: rgba(239, 68, 68, 0.10);
+  color: rgba(185, 28, 28, 1);
+  border-color: rgba(239, 68, 68, 0.18);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  background: rgba(10, 102, 194, 0.10);
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  user-select: none;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarSm {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+}
+
+.avatarMd {
+  width: 40px;
+  height: 40px;
+  font-size: 14px;
+}
+
+.avatarLg {
+  width: 56px;
+  height: 56px;
+  font-size: 18px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  border: 2px solid rgba(10, 102, 194, 0.18);
+  border-top-color: rgba(10, 102, 194, 0.85);
+  animation: spin 900ms linear infinite;
+}
+
+.spinnerSm {
+  width: 16px;
+  height: 16px;
+}
+
+.spinnerMd {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(148, 163, 184, 0.14);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  animation: shimmer 1200ms ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.skeletonCircle {
+  border-radius: 999px;
+}
+

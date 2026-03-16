@@ -1,0 +1,139 @@
+.button {
+  --_btn-bg: var(--color-primary);
+  --_btn-fg: #ffffff;
+  --_btn-border: transparent;
+  --_btn-bg-hover: var(--color-primary-hover);
+
+  appearance: none;
+  border: 1px solid var(--_btn-border);
+  background: var(--_btn-bg);
+  color: var(--_btn-fg);
+  border-radius: var(--radius-button);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 160ms ease, transform 80ms ease, opacity 160ms ease;
+  text-decoration: none;
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:hover {
+  background: var(--_btn-bg-hover);
+}
+
+.button:disabled,
+.button[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button:focus-visible {
+  outline: 3px solid rgba(10, 102, 194, 0.25);
+  outline-offset: 2px;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.sizeSm {
+  height: 40px;
+  padding: 0 12px;
+  font-size: var(--font-size-body-sm);
+}
+
+.sizeMd {
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: var(--font-size-body);
+}
+
+.variantPrimary {
+  --_btn-bg: var(--color-primary);
+  --_btn-bg-hover: var(--color-primary-hover);
+  --_btn-border: transparent;
+  --_btn-fg: #ffffff;
+}
+
+.variantSecondary {
+  --_btn-bg: var(--color-surface);
+  --_btn-bg-hover: rgba(10, 102, 194, 0.06);
+  --_btn-border: var(--color-border);
+  --_btn-fg: var(--color-text-primary);
+}
+
+.variantGhost {
+  --_btn-bg: transparent;
+  --_btn-bg-hover: rgba(10, 102, 194, 0.06);
+  --_btn-border: transparent;
+  --_btn-fg: var(--color-primary);
+}
+
+.variantDanger {
+  --_btn-bg: var(--color-danger);
+  --_btn-bg-hover: rgba(239, 68, 68, 0.85);
+  --_btn-border: transparent;
+  --_btn-fg: #ffffff;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: rgba(255, 255, 255, 0.95);
+  animation: spin 900ms linear infinite;
+}
+
+.spinnerDark {
+  border-color: rgba(0, 0, 0, 0.12);
+  border-top-color: rgba(0, 0, 0, 0.55);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.iconButton {
+  --_btn-bg: var(--color-surface);
+  --_btn-bg-hover: rgba(10, 102, 194, 0.06);
+  --_btn-border: var(--color-border);
+  --_btn-fg: var(--color-text-primary);
+
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+}
+
+.iconButtonSm {
+  width: 40px;
+  height: 40px;
+}
+
+.iconButtonGhost {
+  --_btn-bg: transparent;
+  --_btn-bg-hover: rgba(10, 102, 194, 0.06);
+  --_btn-border: transparent;
+  --_btn-fg: var(--color-primary);
+}
+
+.iconButtonDanger {
+  --_btn-bg: rgba(239, 68, 68, 0.12);
+  --_btn-bg-hover: rgba(239, 68, 68, 0.18);
+  --_btn-border: transparent;
+  --_btn-fg: var(--color-danger);
+}
+
