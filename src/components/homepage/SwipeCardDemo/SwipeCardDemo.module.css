@@ -1,0 +1,233 @@
+.root {
+  position: relative;
+  width: 100%;
+  max-width: var(--layout-swipe-max-width-max);
+  min-width: var(--layout-swipe-max-width-min);
+  margin: 0 auto;
+  aspect-ratio: 4 / 5;
+  max-height: 520px;
+}
+
+.stack {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardSlot {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.2, 0.64, 1),
+    opacity 0.5s cubic-bezier(0.32, 0.72, 0.38, 1),
+    box-shadow 0.4s ease;
+}
+
+.cardSlot.back {
+  transform: scale(0.92) translateY(12px);
+  opacity: 0.55;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cardSlot.mid {
+  transform: scale(0.96) translateY(6px);
+  opacity: 0.8;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.cardSlot.front {
+  z-index: 3;
+  transform: translate(0, 0) scale(1);
+  opacity: 1;
+}
+
+.cardSlot.front.transitioningFromBack {
+  transform: scale(0.96) translateY(6px);
+  opacity: 0.65;
+}
+
+.cardSlot.front.swipingLeft {
+  transition:
+    transform 0.65s cubic-bezier(0.34, 1.2, 0.64, 1),
+    opacity 0.65s cubic-bezier(0.32, 0.72, 0.38, 1),
+    box-shadow 0.4s ease;
+}
+
+.cardSlot.front.swipingRight {
+  transition:
+    transform 0.65s cubic-bezier(0.34, 1.2, 0.64, 1),
+    opacity 0.65s cubic-bezier(0.32, 0.72, 0.38, 1),
+    box-shadow 0.4s ease;
+}
+
+.cardSlot.exiting {
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.32, 0.72, 0.38, 1);
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cardSlot.front .card {
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.cardTitle {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: 1.3;
+}
+
+.cardSubtitle {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.cardBody {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  margin-bottom: 12px;
+  flex: 1;
+  min-height: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: var(--radius-chip);
+  background-color: rgba(10, 102, 194, 0.06);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+}
+
+.indicatorOverlay {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.indicatorOverlay.visible {
+  opacity: 1;
+}
+
+.indicatorMatch {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.15) 0%,
+    rgba(34, 197, 94, 0.05) 100%
+  );
+  color: var(--color-success);
+}
+
+.indicatorPass {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.1) 0%,
+    rgba(239, 68, 68, 0.02) 100%
+  );
+  color: var(--color-danger);
+}
+
+.indicatorIcon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: var(--font-weight-semibold);
+  border: 3px solid currentColor;
+}
+
+.indicatorMatch .indicatorIcon {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.indicatorPass .indicatorIcon {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.matchBadge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px 20px;
+  border-radius: var(--radius-button);
+  background-color: var(--color-success);
+  color: white;
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-semibold);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.matchBadge.visible {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .root {
+    min-width: 0;
+    max-height: 420px;
+  }
+}

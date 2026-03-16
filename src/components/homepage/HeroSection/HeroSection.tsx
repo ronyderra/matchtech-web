@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Container, Section, Stack, Heading, Text, Button, Grid } from "@/components/ui";
-import { SwipeLayout } from "@/components/SwipeLayout";
+import { SwipeCardDemo } from "@/components/homepage/SwipeCardDemo/SwipeCardDemo";
 import styles from "./HeroSection.module.css";
 
 export function HeroSection() {
@@ -126,7 +126,7 @@ export function HeroSection() {
                 maxWidth: 520,
               }}
             >
-              <SwipeLayout />
+              <SwipeCardDemo />
             </div>
           </Stack>
         </Grid>
