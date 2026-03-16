@@ -246,7 +246,7 @@ export default function BatchAPage() {
               </Stack>
 
               <Stack gap={12}>
-                <Modal
+                {/* <Modal
                   open
                   title="Example modal"
                   description="Used for focused tasks like editing profile basics."
@@ -257,7 +257,7 @@ export default function BatchAPage() {
                     This is a static preview of the modal component. In real
                     flows this opens and closes based on state.
                   </Text>
-                </Modal>
+                </Modal> */}
 
                 <Drawer
                   open
