@@ -16,6 +16,7 @@ import {
   Stepper,
   FileUpload,
   FileListPreview,
+  Modal,
 } from "@/components/ui";
 import type {
   JobPosition,
@@ -25,6 +26,7 @@ import type {
   WorkPreference,
 } from "@/types";
 import { useUserStore } from "@/store";
+import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
 import styles from "./page.module.css";
 
 const STEPS = [
@@ -165,6 +167,9 @@ export default function JobSeekerRegisterPage() {
 
   // Step 4: account
   const [username, setUsername] = useState("");
+
+  // PDF error popup (step 2)
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   // Same gradient themes as hero section swipe cards (radial gradient)
   const THEME_GRADIENTS: Record<
@@ -576,9 +581,37 @@ export default function JobSeekerRegisterPage() {
                 </p>
                 <FileUpload
                   label="CV / Resume"
-                  description="Upload your CV or resume (PDF, DOC, or DOCX). Max 5MB."
-                  accept=".pdf,.doc,.docx"
-                  onFilesSelected={(files) => setCvFiles(Array.from(files))}
+                  description="Upload your CV or resume as a PDF only, in English. Max 3MB, 5 pages."
+                  accept=".pdf,application/pdf"
+                  onFilesSelected={(files) => {
+                    const fileList = Array.from(files).filter(
+                      (f) => f.type === "application/pdf"
+                    );
+                    if (fileList.length < Array.from(files).length) {
+                      setPdfError("Only PDF files are accepted. Please upload a PDF.");
+                    }
+                    setCvFiles(fileList);
+                    fileList.forEach((file) => {
+                      extractTextFromPdf(file).catch((err) => {
+                        const message =
+                          err instanceof PdfRejectError
+                            ? err.message
+                            : err instanceof Error
+                              ? err.message
+                              : "This PDF could not be read. Please use a different file.";
+                        setPdfError(message);
+                        setCvFiles((prev) => prev.filter((f) => f !== file));
+                      });
+                    });
+                  }}
+                />
+                <Modal
+                  open={!!pdfError}
+                  title="Problem with PDF"
+                  description={pdfError ?? undefined}
+                  primaryActionLabel="OK"
+                  onPrimaryAction={() => setPdfError(null)}
+                  onClose={() => setPdfError(null)}
                 />
                 {cvFiles.length > 0 && (
                   <FileListPreview
