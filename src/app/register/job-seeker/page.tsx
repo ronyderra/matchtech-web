@@ -22,7 +22,7 @@ import styles from "./page.module.css";
 const STEPS = [
   { id: "whatLookingFor", label: "What you're looking for" },
   { id: "cv", label: "Upload CV" },
-  { id: "completeProfile", label: "Complete your profile" },
+  { id: "completeProfile", label: "Complete missing information" },
   { id: "image", label: "Upload image & background" },
   { id: "account", label: "Create account" },
 ];
@@ -331,7 +331,7 @@ export default function JobSeekerRegisterPage() {
             )}
 
             {currentStep === 2 && (
-              <FormSection title="Complete your profile">
+              <FormSection title="Complete missing information">
                 <p
                   style={{
                     fontSize: "var(--font-size-body-sm)",
