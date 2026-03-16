@@ -14,11 +14,15 @@ import {
   DatePicker,
   Checkbox,
   Button,
+  BackButton,
 } from "@/components/ui";
 
 export default function JobSeekerRegisterPage() {
   return (
     <Container>
+      <div style={{ paddingTop: 12 }}>
+        <BackButton>Go back</BackButton>
+      </div>
       <Section
         title="Join MatchTech as a Job Seeker"
         description="Tell us a bit about yourself to get started."

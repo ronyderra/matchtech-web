@@ -13,11 +13,15 @@ import {
   Select,
   Checkbox,
   Button,
+  BackButton,
 } from "@/components/ui";
 
 export default function EmployerRegisterPage() {
   return (
     <Container>
+      <div style={{ paddingTop: 12 }}>
+        <BackButton>Go back</BackButton>
+      </div>
       <Section
         title="Join MatchTech as an Employer"
         description="Create a hiring account to start discovering talent."
