@@ -26,21 +26,23 @@ export function RegisterRoleDialog({ open, onClose }: RegisterRoleDialogProps) {
       <Stack gap={12} style={{ marginTop: 8 }}>
         <Button
           fullWidth
-          onClick={() => goTo("/register/talent")}
+          onClick={() => goTo("/register/job-seeker")}
           style={{ justifyContent: "space-between" }}
         >
           <span>Register as Talent</span>
           <Text as="span" variant="muted">
+            I&apos;m looking for a job
           </Text>
         </Button>
         <Button
           fullWidth
           variant="secondary"
-          onClick={() => goTo("/register/company")}
+          onClick={() => goTo("/register/employer")}
           style={{ justifyContent: "space-between" }}
         >
           <span>Register to Hire Talent</span>
           <Text as="span" variant="muted">
+            I&apos;m hiring for roles
           </Text>
         </Button>
       </Stack>

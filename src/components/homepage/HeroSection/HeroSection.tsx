@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Container, Section, Stack, Heading, Text, Button, Grid } from "@/components/ui";
 import { SwipeLayout } from "@/components/SwipeLayout";
 
@@ -52,27 +53,31 @@ export function HeroSection() {
               wrap
               style={{ alignItems: "center" }}
             >
-              <Button
-                style={{
-                  height: 48,
-                  paddingInline: 24,
-                  borderRadius: 8,
-                  boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
-                  transition: "all 0.2s ease",
-                }}
-              >
-                Find a Job
-              </Button>
-              <Button
-                variant="secondary"
-                style={{
-                  height: 48,
-                  paddingInline: 24,
-                  borderRadius: 8,
-                }}
-              >
-                Hire Talent
-              </Button>
+              <Link href="/register/job-seeker">
+                <Button
+                  style={{
+                    height: 48,
+                    paddingInline: 24,
+                    borderRadius: 8,
+                    boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  Find a Job
+                </Button>
+              </Link>
+              <Link href="/register/employer">
+                <Button
+                  variant="secondary"
+                  style={{
+                    height: 48,
+                    paddingInline: 24,
+                    borderRadius: 8,
+                  }}
+                >
+                  Hire Talent
+                </Button>
+              </Link>
             </Stack>
           </Stack>
 
