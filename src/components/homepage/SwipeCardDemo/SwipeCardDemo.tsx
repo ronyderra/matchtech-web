@@ -3,46 +3,84 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./SwipeCardDemo.module.css";
 
-type JobCard = {
+type CardType = "company" | "talent";
+
+type SwipeCardData = {
+  type: CardType;
   title: string;
-  company: string;
-  workMode: string;
-  employmentType: string;
-  salaryRange: string;
+  subtitle: string;
+  metaLine: string;
+  topRightPill: string;
+  avatarText: string;
   description: string;
   tags: string[];
+  quickFacts: { label: string; value: string }[];
+  detailItems: string[];
 };
 
-const CARDS: JobCard[] = [
+const CARDS: SwipeCardData[] = [
   {
+    type: "company",
     title: "Senior Frontend Engineer",
-    company: "Acme.dev",
-    workMode: "Remote",
-    employmentType: "Full-time",
-    salaryRange: "€110k–€140k · Equity",
+    subtitle: "Acme.dev · Product team",
+    metaLine: "Remote · Full-time · Europe",
+    topRightPill: "€110k–€140k · Equity",
+    avatarText: "A",
     description:
-      "Work with a modern stack to build a swipe-first hiring experience for thousands of candidates and hiring teams.",
-    tags: ["5+ years", "React", "TypeScript", "Next.js"],
+      "Help build a swipe-first hiring experience used by thousands of candidates and hiring teams every month.",
+    tags: ["React", "TypeScript", "Next.js", "5+ years"],
+    quickFacts: [
+      { label: "Level", value: "Senior" },
+      { label: "Team", value: "12 engineers" },
+      { label: "Process", value: "2 interviews" },
+    ],
+    detailItems: [
+      "Own core UI architecture and performance",
+      "Design system and accessibility standards",
+      "Async-friendly team across EU time zones",
+    ],
   },
   {
-    title: "Product Designer",
-    company: "Flow Studio",
-    workMode: "Hybrid",
-    employmentType: "Full-time",
-    salaryRange: "€75k–€95k",
+    type: "talent",
+    title: "Leah Kim",
+    subtitle: "Product Designer",
+    metaLine: "7+ years · Remote-first · CET",
+    topRightPill: "7 yrs exp",
+    avatarText: "LK",
     description:
-      "Shape the future of how job seekers and companies connect. Own discovery, matching, and onboarding flows.",
-    tags: ["Figma", "Design systems", "User research"],
+      "Designs thoughtful, research-driven experiences for B2B SaaS teams. Previously at Flow Studio and Northline.",
+    tags: ["Product design", "Figma", "Design systems", "User research"],
+    quickFacts: [
+      { label: "Availability", value: "2 weeks" },
+      { label: "Work style", value: "Remote" },
+      { label: "Focus", value: "SaaS UX" },
+    ],
+    detailItems: [
+      "Strong discovery → delivery collaboration",
+      "Runs workshops and rapid prototyping",
+      "Comfortable owning a full product area",
+    ],
   },
   {
+    type: "company",
     title: "Backend Engineer",
-    company: "DataFirst",
-    workMode: "On-site",
-    employmentType: "Full-time",
-    salaryRange: "€90k–€120k",
+    subtitle: "DataFirst · Platform",
+    metaLine: "Hybrid · Berlin · Full-time",
+    topRightPill: "€90k–€120k · Stock options",
+    avatarText: "D",
     description:
-      "Design and run APIs and services that power real-time matching, notifications, and analytics at scale.",
-    tags: ["Go", "PostgreSQL", "Redis", "5+ years"],
+      "Own APIs and data pipelines that power matching, notifications, and analytics at scale across the platform.",
+    tags: ["Go", "PostgreSQL", "Redis", "Distributed systems"],
+    quickFacts: [
+      { label: "Stack", value: "Go + Postgres" },
+      { label: "On-call", value: "1x / month" },
+      { label: "Impact", value: "Core platform" },
+    ],
+    detailItems: [
+      "Build reliable services with SLAs",
+      "Improve observability and tooling",
+      "Work closely with product and data",
+    ],
   },
 ];
 
@@ -171,23 +209,89 @@ export function SwipeCardDemo() {
               }}
             >
               <div className={styles.card}>
-                <div className={styles.cardHeader}>
-                  <div>
-                    <h2 className={styles.cardTitle}>{card.title}</h2>
-                    <p className={styles.cardSubtitle}>
-                      {card.company} · {card.workMode} · {card.employmentType}
-                    </p>
-                  </div>
-                  <span className={styles.pill}>{card.salaryRange}</span>
-                </div>
-                <p className={styles.cardBody}>{card.description}</p>
-                <div className={styles.metaRow}>
-                  {card.tags.map((tag) => (
-                    <span key={tag} className={styles.tag}>
-                      {tag}
+                <div className={styles.cardTop}>
+                  <div
+                    className={[
+                      styles.banner,
+                      styles.bannerUnified,
+                    ].join(" ")}
+                  >
+                    <span className={styles.bannerType}>
+                      {card.type === "company" ? "Company" : "Talent"}
                     </span>
-                  ))}
+                    <div className={styles.bannerAvatar}>{card.avatarText}</div>
+                    <span className={styles.bannerHighlight}>{card.topRightPill}</span>
+                  </div>
                 </div>
+
+                <div
+                  className={[
+                    styles.cardMain,
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                >
+                  <div className={styles.metaRowTop}>
+                    <span className={styles.typePill}>
+                      {card.type === "company" ? "Company" : "Talent"}
+                    </span>
+                    <span className={styles.scorePill}>
+                      Match score <strong>92%</strong>
+                    </span>
+                  </div>
+
+                  <h2 className={styles.cardTitle}>{card.title}</h2>
+                  <p className={styles.cardSubtitle}>{card.subtitle}</p>
+                  <p className={styles.cardMetaLine}>{card.metaLine}</p>
+                  <p className={styles.cardBody}>{card.description}</p>
+
+                  <div className={styles.factsGrid}>
+                    {card.quickFacts.map((f) => (
+                      <div key={f.label} className={styles.factItem}>
+                        <span className={styles.factLabel}>{f.label}</span>
+                        <span className={styles.factValue}>{f.value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className={styles.divider} />
+
+                  <div className={styles.skillsRow}>
+                    {card.tags.map((tag) => (
+                      <span key={tag} className={styles.skillTag}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <ul className={styles.detailsList}>
+                    {card.detailItems.map((t) => (
+                      <li key={t} className={styles.detailsItem}>
+                        <span className={styles.bulletDot} aria-hidden="true" />
+                        <span>{t}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className={styles.cardBottom}>
+                  <button type="button" className={`${styles.actionButton} ${styles.actionPass}`}>
+                    <span className={styles.actionIcon}>✕</span>
+                    <span className={styles.actionLabel}>Pass</span>
+                  </button>
+                  <button type="button" className={`${styles.actionButton} ${styles.actionInfo}`}>
+                    <span className={styles.actionIcon}>i</span>
+                    <span className={styles.actionLabel}>Info</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.actionButton} ${styles.actionMatch}`}
+                  >
+                    <span className={styles.actionIcon}>✓</span>
+                    <span className={styles.actionLabel}>Match</span>
+                  </button>
+                </div>
+
                 {isFront && phase === "swiping" && (
                   <div
                     className={[
