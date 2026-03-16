@@ -106,6 +106,9 @@ export type { RangeSliderProps } from "./range-slider";
 export { FileUpload } from "./file-upload";
 export type { FileUploadProps } from "./file-upload";
 
+export { FileListPreview } from "./file-list-preview";
+export type { FileListPreviewProps } from "./file-list-preview";
+
 export { DatePicker } from "./date-picker";
 export type { DatePickerProps } from "./date-picker";
 

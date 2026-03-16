@@ -15,6 +15,7 @@ import {
   Button,
   Stepper,
   FileUpload,
+  FileListPreview,
 } from "@/components/ui";
 import styles from "./page.module.css";
 
@@ -89,8 +90,8 @@ const INDUSTRIES = [
 
 export default function JobSeekerRegisterPage() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [cvFiles, setCvFiles] = useState<FileList | null>(null);
-  const [imageFiles, setImageFiles] = useState<FileList | null>(null);
+  const [cvFiles, setCvFiles] = useState<File[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToCvExtraction, setAgreedToCvExtraction] = useState(false);
   const steps = STEPS;
@@ -147,7 +148,7 @@ export default function JobSeekerRegisterPage() {
 
   // Create preview URL when user selects a photo; revoke on change or unmount
   useEffect(() => {
-    if (!imageFiles || imageFiles.length === 0) {
+    if (imageFiles.length === 0) {
       setPhotoPreviewUrl(null);
       return;
     }
@@ -280,12 +281,14 @@ export default function JobSeekerRegisterPage() {
                   label="CV / Resume"
                   description="Upload your CV or resume (PDF, DOC, or DOCX). Max 5MB."
                   accept=".pdf,.doc,.docx"
-                  onFilesSelected={(files) => setCvFiles(files)}
+                  onFilesSelected={(files) => setCvFiles(Array.from(files))}
                 />
-                {cvFiles && cvFiles.length > 0 && (
-                  <p style={{ fontSize: 13, color: "var(--color-text-muted)" }}>
-                    Selected: {cvFiles.length} file{cvFiles.length !== 1 ? "s" : ""}
-                  </p>
+                {cvFiles.length > 0 && (
+                  <FileListPreview
+                    files={cvFiles}
+                    variant="document"
+                    onRemove={(_, index) => setCvFiles((prev) => prev.filter((_, i) => i !== index))}
+                  />
                 )}
                 <Stack gap={8} style={{ marginTop: 12 }}>
                   <Checkbox
@@ -301,7 +304,7 @@ export default function JobSeekerRegisterPage() {
                   </Button>
                   <Button
                     onClick={handleNext}
-                    disabled={!cvFiles?.length || !agreedToCvExtraction}
+                    disabled={!cvFiles.length || !agreedToCvExtraction}
                   >
                     Continue
                   </Button>
@@ -337,7 +340,7 @@ export default function JobSeekerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  {cvFiles && cvFiles.length > 0
+                  {cvFiles.length > 0
                     ? "Review and fix the information below. We extracted this from your CV — correct anything that’s wrong or add what’s missing."
                     : "Fill in your profile so we can create your card. You can add or change this later."}
                 </p>
@@ -378,12 +381,14 @@ export default function JobSeekerRegisterPage() {
                       label="Your photo"
                       description="A clear headshot or professional photo. JPG or PNG. Max 5MB."
                       accept=".jpg,.jpeg,.png,.webp"
-                      onFilesSelected={(files) => setImageFiles(files)}
+                      onFilesSelected={(files) => setImageFiles(Array.from(files))}
                     />
-                    {imageFiles && imageFiles.length > 0 && (
-                      <p style={{ fontSize: 13, color: "var(--color-text-muted)" }}>
-                        Selected: {imageFiles.length} file{imageFiles.length !== 1 ? "s" : ""}
-                      </p>
+                    {imageFiles.length > 0 && (
+                      <FileListPreview
+                        files={imageFiles}
+                        variant="image"
+                        onRemove={(_, index) => setImageFiles((prev) => prev.filter((_, i) => i !== index))}
+                      />
                     )}
 
                     <div style={{ marginTop: 20 }}>

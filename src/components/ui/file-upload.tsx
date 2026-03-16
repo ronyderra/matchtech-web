@@ -20,8 +20,9 @@ export function FileUpload({
   onFilesSelected,
 }: FileUploadProps) {
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    if (event.target.files) {
+    if (event.target.files?.length) {
       onFilesSelected(event.target.files);
+      event.target.value = "";
     }
   }
 
