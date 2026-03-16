@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import styles from "./SwipeCardDemo.module.css";
 
 type CardType = "company" | "talent";
@@ -12,6 +13,10 @@ type SwipeCardData = {
   metaLine: string;
   topRightPill: string;
   avatarText: string;
+  /** Optional: path or URL for profile/logo image (e.g. /images/people/leah.jpg). Shows in the circle. */
+  avatarImageUrl?: string;
+  /** Optional: path or URL for banner/header image (e.g. /images/office.jpg). Fills the top section. */
+  bannerImageUrl?: string;
   description: string;
   tags: string[];
   quickFacts: { label: string; value: string }[];
@@ -26,6 +31,7 @@ const CARDS: SwipeCardData[] = [
     metaLine: "Remote · Full-time · Europe",
     topRightPill: "€110k–€140k · Equity",
     avatarText: "A",
+    avatarImageUrl: "/assets/profileImages/1.jpg",
     description:
       "Help build a swipe-first hiring experience used by thousands of candidates and hiring teams every month.",
     tags: ["React", "TypeScript", "Next.js", "5+ years"],
@@ -47,6 +53,7 @@ const CARDS: SwipeCardData[] = [
     metaLine: "7+ years · Remote-first · CET",
     topRightPill: "7 yrs exp",
     avatarText: "LK",
+    avatarImageUrl: "/assets/profileImages/2.jpg",
     description:
       "Designs thoughtful, research-driven experiences for B2B SaaS teams. Previously at Flow Studio and Northline.",
     tags: ["Product design", "Figma", "Design systems", "User research"],
@@ -68,6 +75,7 @@ const CARDS: SwipeCardData[] = [
     metaLine: "Hybrid · Berlin · Full-time",
     topRightPill: "€90k–€120k · Stock options",
     avatarText: "D",
+    avatarImageUrl: "/assets/profileImages/3.jpg",
     description:
       "Own APIs and data pipelines that power matching, notifications, and analytics at scale across the platform.",
     tags: ["Go", "PostgreSQL", "Redis", "Distributed systems"],
@@ -213,13 +221,31 @@ export function SwipeCardDemo() {
                   <div
                     className={[
                       styles.banner,
-                      styles.bannerUnified,
-                    ].join(" ")}
+                      !card.bannerImageUrl && styles.bannerUnified,
+                    ].filter(Boolean).join(" ")}
+                    style={
+                      card.bannerImageUrl
+                        ? { backgroundImage: `url(${card.bannerImageUrl})` }
+                        : undefined
+                    }
                   >
                     <span className={styles.bannerType}>
                       {card.type === "company" ? "Company" : "Talent"}
                     </span>
-                    <div className={styles.bannerAvatar}>{card.avatarText}</div>
+                    <div className={styles.bannerAvatar}>
+                      {card.avatarImageUrl ? (
+                        <Image
+                          src={card.avatarImageUrl}
+                          alt=""
+                          className={styles.bannerAvatarImg}
+                          width={96}
+                          height={96}
+                          unoptimized
+                        />
+                      ) : (
+                        card.avatarText
+                      )}
+                    </div>
                     <span className={styles.bannerHighlight}>{card.topRightPill}</span>
                   </div>
                 </div>
