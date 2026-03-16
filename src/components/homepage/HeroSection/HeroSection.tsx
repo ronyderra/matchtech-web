@@ -79,6 +79,39 @@ export function HeroSection() {
                 </Button>
               </Link>
             </Stack>
+
+            <Text
+              as="p"
+              variant="muted"
+              style={{
+                fontSize: 12,
+                maxWidth: 520,
+              }}
+            >
+              By joining or signing in, you agree to MatchTech&apos;s User
+              <br />
+              <Link
+                href="/terms"
+                style={{ color: "var(--color-primary)", textDecoration: "none" }}
+              >
+                User Agreement
+              </Link>
+              ,{" "}
+              <Link
+                href="/privacy"
+                style={{ color: "var(--color-primary)", textDecoration: "none" }}
+              >
+                Privacy Policy
+              </Link>
+              , and{" "}
+              <Link
+                href="/cookies"
+                style={{ color: "var(--color-primary)", textDecoration: "none" }}
+              >
+                Cookie Policy
+              </Link>
+              .
+            </Text>
           </Stack>
 
           {/* Right column: hero illustration using SwipeLayout */}
