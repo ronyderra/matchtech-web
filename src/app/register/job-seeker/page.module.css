@@ -1,0 +1,21 @@
+.step3Layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .step3Layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .step3Form {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .step3Preview {
+    flex: 0 0 320px;
+  }
+}
