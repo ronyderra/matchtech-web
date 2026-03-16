@@ -6,8 +6,85 @@ import styles from "./SwipeCardDemo.module.css";
 
 type CardType = "company" | "talent";
 
+type CardTheme =
+  | "blue"
+  | "violet"
+  | "teal"
+  | "amber"
+  | "rose"
+  | "emerald";
+
+const THEME_COLORS: Record<
+  CardTheme,
+  {
+    bannerStart: string;
+    bannerMid: string;
+    bannerEnd: string;
+    typePillBg: string;
+    typePillColor: string;
+    typePillBorder: string;
+    bulletBg: string;
+  }
+> = {
+  blue: {
+    bannerStart: "rgba(10, 102, 194, 1)",
+    bannerMid: "rgba(23, 65, 102, 1)",
+    bannerEnd: "rgba(2, 6, 23, 1)",
+    typePillBg: "rgba(10, 102, 194, 0.08)",
+    typePillColor: "rgb(30, 64, 175)",
+    typePillBorder: "rgba(10, 102, 194, 0.14)",
+    bulletBg: "rgba(10, 102, 194, 0.35)",
+  },
+  violet: {
+    bannerStart: "rgba(124, 58, 237, 1)",
+    bannerMid: "rgba(76, 29, 149, 1)",
+    bannerEnd: "rgba(30, 27, 75, 1)",
+    typePillBg: "rgba(124, 58, 237, 0.08)",
+    typePillColor: "rgb(91, 33, 182)",
+    typePillBorder: "rgba(124, 58, 237, 0.14)",
+    bulletBg: "rgba(124, 58, 237, 0.35)",
+  },
+  teal: {
+    bannerStart: "rgba(20, 184, 166, 1)",
+    bannerMid: "rgba(15, 118, 110, 1)",
+    bannerEnd: "rgba(4, 47, 46, 1)",
+    typePillBg: "rgba(20, 184, 166, 0.08)",
+    typePillColor: "rgb(13, 148, 136)",
+    typePillBorder: "rgba(20, 184, 166, 0.14)",
+    bulletBg: "rgba(20, 184, 166, 0.35)",
+  },
+  amber: {
+    bannerStart: "rgba(245, 158, 11, 1)",
+    bannerMid: "rgba(180, 83, 9, 1)",
+    bannerEnd: "rgba(69, 26, 3, 1)",
+    typePillBg: "rgba(245, 158, 11, 0.08)",
+    typePillColor: "rgb(161, 98, 7)",
+    typePillBorder: "rgba(245, 158, 11, 0.14)",
+    bulletBg: "rgba(245, 158, 11, 0.35)",
+  },
+  rose: {
+    bannerStart: "rgba(244, 63, 94, 1)",
+    bannerMid: "rgba(190, 18, 60, 1)",
+    bannerEnd: "rgba(76, 5, 25, 1)",
+    typePillBg: "rgba(244, 63, 94, 0.08)",
+    typePillColor: "rgb(190, 18, 60)",
+    typePillBorder: "rgba(244, 63, 94, 0.14)",
+    bulletBg: "rgba(244, 63, 94, 0.35)",
+  },
+  emerald: {
+    bannerStart: "rgba(16, 185, 129, 1)",
+    bannerMid: "rgba(5, 150, 105, 1)",
+    bannerEnd: "rgba(6, 78, 59, 1)",
+    typePillBg: "rgba(16, 185, 129, 0.08)",
+    typePillColor: "rgb(4, 120, 87)",
+    typePillBorder: "rgba(16, 185, 129, 0.14)",
+    bulletBg: "rgba(16, 185, 129, 0.35)",
+  },
+};
+
 type SwipeCardData = {
   type: CardType;
+  theme?: CardTheme;
   title: string;
   subtitle: string;
   metaLine: string;
@@ -21,19 +98,32 @@ type SwipeCardData = {
   tags: string[];
   quickFacts: { label: string; value: string }[];
   detailItems: string[];
+  /** Company cards only: company name and about. */
+  companyName?: string;
+  companyAbout?: string;
+  companyFacts?: { label: string; value: string }[];
 };
 
 const CARDS: SwipeCardData[] = [
   {
     type: "company",
+    theme: "blue",
     title: "Senior Frontend Engineer",
     subtitle: "Acme.dev · Product team",
     metaLine: "Remote · Full-time · Europe",
     topRightPill: "€110k–€140k · Equity",
     avatarText: "A",
     avatarImageUrl: "/assets/profileImages/1.jpg",
+    companyName: "Acme.dev",
+    companyAbout:
+      "We build a swipe-first hiring platform used by thousands of candidates and hiring teams every month. Product-led, remote-first, and growing across Europe.",
+    companyFacts: [
+      { label: "Industry", value: "HR Tech" },
+      { label: "Size", value: "~80 people" },
+      { label: "HQ", value: "Amsterdam" },
+    ],
     description:
-      "Help build a swipe-first hiring experience used by thousands of candidates and hiring teams every month.",
+      "Help shape our core product experience: own UI architecture, design system, and accessibility. You’ll work with product and backend in a small, async-friendly team.",
     tags: ["React", "TypeScript", "Next.js", "5+ years"],
     quickFacts: [
       { label: "Level", value: "Senior" },
@@ -48,6 +138,7 @@ const CARDS: SwipeCardData[] = [
   },
   {
     type: "talent",
+    theme: "violet",
     title: "Leah Kim",
     subtitle: "Product Designer",
     metaLine: "7+ years · Remote-first · CET",
@@ -70,12 +161,21 @@ const CARDS: SwipeCardData[] = [
   },
   {
     type: "company",
+    theme: "teal",
     title: "Backend Engineer",
     subtitle: "DataFirst · Platform",
     metaLine: "Hybrid · Berlin · Full-time",
     topRightPill: "€90k–€120k · Stock options",
     avatarText: "D",
     avatarImageUrl: "/assets/profileImages/3.jpg",
+    companyName: "DataFirst",
+    companyAbout:
+      "Data infrastructure and analytics for enterprise. We help companies unify data pipelines, real-time events, and BI. Series B, 200+ employees.",
+    companyFacts: [
+      { label: "Industry", value: "Data / Analytics" },
+      { label: "Size", value: "200+" },
+      { label: "HQ", value: "Berlin" },
+    ],
     description:
       "Own APIs and data pipelines that power matching, notifications, and analytics at scale across the platform.",
     tags: ["Go", "PostgreSQL", "Redis", "Distributed systems"],
@@ -92,6 +192,7 @@ const CARDS: SwipeCardData[] = [
   },
   {
     type: "talent",
+    theme: "amber",
     title: "Jordan Lee",
     subtitle: "UX Researcher",
     metaLine: "5+ years · Hybrid · PST",
@@ -114,14 +215,23 @@ const CARDS: SwipeCardData[] = [
   },
   {
     type: "company",
+    theme: "rose",
     title: "Product Manager",
     subtitle: "ScaleUp · Growth",
     metaLine: "Remote · Full-time · Americas",
     topRightPill: "€100k–€130k · Bonus",
     avatarText: "S",
     avatarImageUrl: "/assets/profileImages/5.jpg",
+    companyName: "ScaleUp",
+    companyAbout:
+      "B2B growth and engagement platform for mid-market and enterprise. We help sales and marketing teams align and convert. Remote-first, 150+ people.",
+    companyFacts: [
+      { label: "Industry", value: "SaaS / Growth" },
+      { label: "Size", value: "150+" },
+      { label: "HQ", value: "Austin" },
+    ],
     description:
-      "Drive roadmap and go-to-market for a growing B2B product used by mid-market and enterprise teams.",
+      "Drive roadmap and go-to-market for our core product. Own discovery, prioritization, and launch with design and engineering.",
     tags: ["Product", "Roadmap", "B2B", "4+ years"],
     quickFacts: [
       { label: "Level", value: "Senior" },
@@ -136,6 +246,7 @@ const CARDS: SwipeCardData[] = [
   },
   {
     type: "talent",
+    theme: "emerald",
     title: "Sam Rivera",
     subtitle: "Full-Stack Engineer",
     metaLine: "6+ years · Remote · EST",
@@ -253,6 +364,18 @@ export function SwipeCardDemo() {
                 : styles.swipingLeft
               : "";
 
+          const theme = card.theme ?? "blue";
+          const themeColors = THEME_COLORS[theme];
+          const cardThemeStyle: React.CSSProperties = {
+            ["--card-banner-start" as string]: themeColors.bannerStart,
+            ["--card-banner-mid" as string]: themeColors.bannerMid,
+            ["--card-banner-end" as string]: themeColors.bannerEnd,
+            ["--card-type-pill-bg" as string]: themeColors.typePillBg,
+            ["--card-type-pill-color" as string]: themeColors.typePillColor,
+            ["--card-type-pill-border" as string]: themeColors.typePillBorder,
+            ["--card-bullet-bg" as string]: themeColors.bulletBg,
+          };
+
           return (
             <div
               key={index}
@@ -276,7 +399,7 @@ export function SwipeCardDemo() {
                     : undefined,
               }}
             >
-              <div className={styles.card}>
+              <div className={styles.card} style={cardThemeStyle}>
                 <div className={styles.cardTop}>
                   <div
                     className={[
@@ -325,6 +448,29 @@ export function SwipeCardDemo() {
                       Match score <strong>92%</strong>
                     </span>
                   </div>
+
+                  {card.type === "company" && (card.companyName || card.companyAbout) && (
+                    <>
+                      <p className={styles.sectionLabel}>About the company</p>
+                      {card.companyName && (
+                        <h3 className={styles.companyName}>{card.companyName}</h3>
+                      )}
+                      {card.companyAbout && (
+                        <p className={styles.companyAbout}>{card.companyAbout}</p>
+                      )}
+                      {card.companyFacts && card.companyFacts.length > 0 && (
+                        <div className={styles.factsGrid}>
+                          {card.companyFacts.map((f) => (
+                            <div key={f.label} className={styles.factItem}>
+                              <span className={styles.factLabel}>{f.label}</span>
+                              <span className={styles.factValue}>{f.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <p className={styles.sectionLabel}>Role we&apos;re hiring for</p>
+                    </>
+                  )}
 
                   <h2 className={styles.cardTitle}>{card.title}</h2>
                   <p className={styles.cardSubtitle}>{card.subtitle}</p>
