@@ -6,9 +6,11 @@ import { Modal, Stack, Button, Text } from "@/components/ui";
 export type RegisterRoleDialogProps = {
   open: boolean;
   onClose: () => void;
+  /** Called when user wants to switch to login; parent should close register and open login popup. */
+  onOpenLogin?: () => void;
 };
 
-export function RegisterRoleDialog({ open, onClose }: RegisterRoleDialogProps) {
+export function RegisterRoleDialog({ open, onClose, onOpenLogin }: RegisterRoleDialogProps) {
   const router = useRouter();
 
   function goTo(path: string) {
@@ -39,6 +41,30 @@ export function RegisterRoleDialog({ open, onClose }: RegisterRoleDialogProps) {
         >
           <span>Register to Hire Talent</span>
         </Button>
+        {onOpenLogin && (
+          <p style={{ fontSize: 13, color: "var(--color-text-muted)", margin: 0, textAlign: "center" }}>
+            If you already have an account, please{" "}
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOpenLogin();
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                font: "inherit",
+                color: "var(--color-primary)",
+                cursor: "pointer",
+                textDecoration: "underline",
+              }}
+            >
+              log in
+            </button>
+            .
+          </p>
+        )}
       </Stack>
     </Modal>
   );

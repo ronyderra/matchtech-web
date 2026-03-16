@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useState } from "react";
 import { Container, Stack, Button } from "@/components/ui";
 import { RegisterRoleDialog } from "@/components/homepage/RegisterRoleDialog/RegisterRoleDialog";
+import { LoginDialog } from "@/components/homepage/LoginDialog/LoginDialog";
 import styles from "./Header.module.css";
 
 export function Header() {
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   return (
     <>
@@ -38,19 +40,18 @@ export function Header() {
             </Link>
 
             <Stack direction="row" gap={12} align="center">
-              <Link href="/login">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  style={{
-                    color: "var(--color-primary)",
-                    backgroundColor: "transparent",
-                  }}
-                >
-                  Log in
-                </Button>
-              </Link>
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                style={{
+                  color: "var(--color-primary)",
+                  backgroundColor: "transparent",
+                }}
+                onClick={() => setLoginOpen(true)}
+              >
+                Log in
+              </Button>
               <Button
                 type="button"
                 size="sm"
@@ -70,6 +71,18 @@ export function Header() {
       <RegisterRoleDialog
         open={registerOpen}
         onClose={() => setRegisterOpen(false)}
+        onOpenLogin={() => {
+          setRegisterOpen(false);
+          setLoginOpen(true);
+        }}
+      />
+      <LoginDialog
+        open={loginOpen}
+        onClose={() => setLoginOpen(false)}
+        onOpenRegister={() => {
+          setLoginOpen(false);
+          setRegisterOpen(true);
+        }}
       />
     </>
   );
