@@ -7,7 +7,7 @@ export interface JobPosition {
   id: string
 
   // Job information
-  jobTitle: string
+  industry: string
   department?: string
   seniority: Seniority
   employmentType: EmploymentType
@@ -18,10 +18,10 @@ export interface JobPosition {
   workPreference: WorkPreference
 
   // Job content
-  shortDescription: string
+  shortDescription?: string
   responsibilities?: string[]
   requirements?: string[]
-  skillsRequired: string[]
+  skillsRequired?: string[]
 
   // Compensation
   salaryMin?: number

@@ -17,6 +17,7 @@ import {
   FileUpload,
   FileListPreview,
 } from "@/components/ui";
+import type { JobPosition, Seniority, EmploymentType, WorkPreference } from "@/types";
 import styles from "./page.module.css";
 
 const STEPS = [
@@ -88,8 +89,48 @@ const INDUSTRIES = [
   "Other",
 ];
 
+const SENIORITY_OPTIONS: { value: Seniority; label: string }[] = [
+  { value: "any", label: "Any" },
+  { value: "junior", label: "Junior" },
+  { value: "mid", label: "Mid-level" },
+  { value: "senior", label: "Senior" },
+  { value: "lead", label: "Lead" },
+  { value: "principal", label: "Principal" },
+];
+
+const EMPLOYMENT_TYPE_OPTIONS: { value: EmploymentType; label: string }[] = [
+  { value: "any", label: "Any" },
+  { value: "full-time", label: "Full-time" },
+  { value: "part-time", label: "Part-time" },
+  { value: "contract", label: "Contract" },
+  { value: "freelance", label: "Freelance" },
+];
+
+const WORK_PREFERENCE_OPTIONS: { value: WorkPreference; label: string }[] = [
+  { value: "any", label: "Any" },
+  { value: "remote", label: "Remote" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "onsite", label: "On-site" },
+];
+
+const CURRENCIES = [
+  { value: "ILS", label: "₪ ILS" },
+  { value: "USD", label: "$ USD" },
+  { value: "EUR", label: "€ EUR" },
+  { value: "GBP", label: "£ GBP" },
+];
+
+const defaultJobPosition: Omit<JobPosition, "id"> = {
+  industry: "",
+  seniority: "any",
+  employmentType: "any",
+  workPreference: "any",
+};
+
 export default function JobSeekerRegisterPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [jobPosition, setJobPosition] = useState<Omit<JobPosition, "id">>(defaultJobPosition);
+  const [skillsRequiredRaw, setSkillsRequiredRaw] = useState("");
   const [cvFiles, setCvFiles] = useState<File[]>([]);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -149,12 +190,12 @@ export default function JobSeekerRegisterPage() {
   // Create preview URL when user selects a photo; revoke on change or unmount
   useEffect(() => {
     if (imageFiles.length === 0) {
-      setPhotoPreviewUrl(null);
+      queueMicrotask(() => setPhotoPreviewUrl(null));
       return;
     }
     const file = imageFiles[0];
     const url = URL.createObjectURL(file);
-    setPhotoPreviewUrl(url);
+    queueMicrotask(() => setPhotoPreviewUrl(url));
     return () => URL.revokeObjectURL(url);
   }, [imageFiles]);
 
@@ -162,8 +203,15 @@ export default function JobSeekerRegisterPage() {
   const isLastStep = currentStep === steps.length - 1;
 
   function handleNext() {
+    if (currentStep === 0) {
+      const skills = skillsRequiredRaw
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      setJobPosition((prev) => ({ ...prev, skillsRequired: skills.length ? skills : undefined }));
+    }
     if (isLastStep) {
-      // Submit registration (placeholder)
+      // Submit registration (placeholder): build JobPosition with id + jobPosition state
       return;
     }
     setCurrentStep((s) => s + 1);
@@ -206,51 +254,18 @@ export default function JobSeekerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  Tell us what kind of role and setup you want so we can match you with the right opportunities.
+                  Tell us what kind of role and setup you want so we can match you with the right opportunities. This maps to your desired job position.
                 </p>
-                <FormField id="role-type" label="Type of role" required>
+                <FormField id="industry" label="Industry" required>
                   {(field) => (
-                    <Select {...field} defaultValue="">
-                      <option value="" disabled>Select</option>
-                      <option value="full-time">Full-time</option>
-                      <option value="part-time">Part-time</option>
-                      <option value="contract">Contract / Freelance</option>
-                      <option value="any">Any</option>
-                    </Select>
-                  )}
-                </FormField>
-                <FormField id="work-style" label="Work style">
-                  {(field) => (
-                    <Select {...field} defaultValue="">
-                      <option value="" disabled>Select</option>
-                      <option value="remote">Remote</option>
-                      <option value="hybrid">Hybrid</option>
-                      <option value="onsite">On-site</option>
-                      <option value="any">Any</option>
-                    </Select>
-                  )}
-                </FormField>
-                <FormField id="preferred-location" label="Preferred location / region">
-                  {(field) => (
-                    <Select {...field} defaultValue="">
-                      <option value="" disabled>Select city</option>
-                      {ISRAEL_CITIES.map((city) => (
-                        <option key={city} value={city}>
-                          {city}
-                        </option>
-                      ))}
-                    </Select>
-                  )}
-                </FormField>
-                <FormField id="salary-expectation" label="Salary expectation (optional)">
-                  {(field) => (
-                    <Input {...field} placeholder="e.g. 15,000–20,000 ₪ (ILS) or range" />
-                  )}
-                </FormField>
-                <FormField id="industries" label="Industry (optional)">
-                  {(field) => (
-                    <Select {...field} defaultValue="">
-                      <option value="">Select industry</option>
+                    <Select
+                      {...field}
+                      value={jobPosition.industry}
+                      onChange={(e) =>
+                        setJobPosition((prev) => ({ ...prev, industry: e.target.value }))
+                      }
+                    >
+                      <option value="" disabled>Select industry</option>
                       {INDUSTRIES.map((industry) => (
                         <option key={industry} value={industry}>
                           {industry}
@@ -259,6 +274,219 @@ export default function JobSeekerRegisterPage() {
                     </Select>
                   )}
                 </FormField>
+                <FormField id="department" label="Department (optional)">
+                  {(field) => (
+                    <Input
+                      {...field}
+                      placeholder="e.g. Engineering, Product, Design"
+                      value={jobPosition.department ?? ""}
+                      onChange={(e) =>
+                        setJobPosition((prev) => ({ ...prev, department: e.target.value || undefined }))
+                      }
+                    />
+                  )}
+                </FormField>
+                <FormRow>
+                  <FormField id="seniority" label="Seniority" required>
+                    {(field) => (
+                      <Select
+                        {...field}
+                        value={jobPosition.seniority}
+                        onChange={(e) =>
+                          setJobPosition((prev) => ({
+                            ...prev,
+                            seniority: e.target.value as Seniority,
+                          }))
+                        }
+                      >
+                        {SENIORITY_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                  </FormField>
+                  <FormField id="employment-type" label="Employment type" required>
+                    {(field) => (
+                      <Select
+                        {...field}
+                        value={jobPosition.employmentType}
+                        onChange={(e) =>
+                          setJobPosition((prev) => ({
+                            ...prev,
+                            employmentType: e.target.value as EmploymentType,
+                          }))
+                        }
+                      >
+                        {EMPLOYMENT_TYPE_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                  </FormField>
+                </FormRow>
+                <FormField id="work-preference" label="Work preference" required>
+                  {(field) => (
+                    <Select
+                      {...field}
+                      value={jobPosition.workPreference}
+                      onChange={(e) =>
+                        setJobPosition((prev) => ({
+                          ...prev,
+                          workPreference: e.target.value as WorkPreference,
+                        }))
+                      }
+                    >
+                      {WORK_PREFERENCE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </Select>
+                  )}
+                </FormField>
+                <FormRow>
+                  <FormField id="country" label="Country (optional)">
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="e.g. Israel"
+                        value={jobPosition.country ?? ""}
+                        onChange={(e) =>
+                          setJobPosition((prev) => ({ ...prev, country: e.target.value || undefined }))
+                        }
+                      />
+                    )}
+                  </FormField>
+                  <FormField id="city" label="City (optional)">
+                    {(field) => (
+                      <Select
+                        {...field}
+                        value={jobPosition.city ?? ""}
+                        onChange={(e) =>
+                          setJobPosition((prev) => ({
+                            ...prev,
+                            city: e.target.value || undefined,
+                          }))
+                        }
+                      >
+                        <option value="">Any</option>
+                        {ISRAEL_CITIES.map((city) => (
+                          <option key={city} value={city}>
+                            {city}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                  </FormField>
+                </FormRow>
+                <FormField id="short-description" label="Short description (optional)">
+                  {(field) => (
+                    <textarea
+                      {...field}
+                      placeholder="Brief description of the role you're looking for"
+                      rows={3}
+                      value={jobPosition.shortDescription ?? ""}
+                      onChange={(e) =>
+                        setJobPosition((prev) => ({
+                          ...prev,
+                          shortDescription: e.target.value || undefined,
+                        }))
+                      }
+                      style={{
+                        width: "100%",
+                        padding: "10px 12px",
+                        fontSize: "var(--font-size-body)",
+                        border: "1px solid var(--color-border)",
+                        borderRadius: 8,
+                        resize: "vertical",
+                        fontFamily: "inherit",
+                      }}
+                    />
+                  )}
+                </FormField>
+                <FormField id="skills-required" label="Key skills you're looking for (optional)">
+                  {(field) => (
+                    <Input
+                      {...field}
+                      placeholder="e.g. React, TypeScript, Node.js (comma-separated)"
+                      value={skillsRequiredRaw}
+                      onChange={(e) => setSkillsRequiredRaw(e.target.value)}
+                    />
+                  )}
+                </FormField>
+                <FormRow>
+                  <FormField id="salary-min" label="Salary min (optional)">
+                    {(field) => (
+                      <Input
+                        {...field}
+                        type="number"
+                        placeholder="Min"
+                        min={0}
+                        value={jobPosition.salaryMin ?? ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setJobPosition((prev) => ({
+                            ...prev,
+                            salaryMin: v === "" ? undefined : Number(v),
+                          }));
+                        }}
+                      />
+                    )}
+                  </FormField>
+                  <FormField id="salary-max" label="Salary max (optional)">
+                    {(field) => (
+                      <Input
+                        {...field}
+                        type="number"
+                        placeholder="Max"
+                        min={0}
+                        value={jobPosition.salaryMax ?? ""}
+                        onChange={(e) => {
+                          const v = e.target.value;
+                          setJobPosition((prev) => ({
+                            ...prev,
+                            salaryMax: v === "" ? undefined : Number(v),
+                          }));
+                        }}
+                      />
+                    )}
+                  </FormField>
+                  <FormField id="currency" label="Currency (optional)">
+                    {(field) => (
+                      <Select
+                        {...field}
+                        value={jobPosition.currency ?? ""}
+                        onChange={(e) =>
+                          setJobPosition((prev) => ({
+                            ...prev,
+                            currency: e.target.value || undefined,
+                          }))
+                        }
+                      >
+                        <option value="">Select</option>
+                        {CURRENCIES.map((c) => (
+                          <option key={c.value} value={c.value}>
+                            {c.label}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                  </FormField>
+                </FormRow>
+                <Stack gap={8} style={{ marginTop: 8 }}>
+                  <Checkbox
+                    checked={jobPosition.equity ?? false}
+                    onChange={(e) =>
+                      setJobPosition((prev) => ({ ...prev, equity: e.target.checked }))
+                    }
+                  >
+                    Open to equity (optional)
+                  </Checkbox>
+                </Stack>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
                   <Button onClick={handleNext}>Continue</Button>
                 </Stack>
