@@ -1,57 +1,61 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { Container, Stack, Button } from "@/components/ui";
+import { RegisterRoleDialog } from "@/components/homepage/RegisterRoleDialog/RegisterRoleDialog";
 
 export function Header() {
-  return (
-    <header
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 50,
-        backgroundColor: "#FFFFFF",
-        borderBottom: "1px solid #E0DFDC",
-        boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
-      }}
-    >
-      <Container>
-        <Stack
-          direction="row"
-          align="center"
-          justify="space-between"
-          gap={12}
-          style={{ height: 64 }}
-        >
-          <Link href="/" aria-label="Go to MatchTech home">
-            <span
-              style={{
-                fontWeight: 700,
-                fontSize: "var(--font-size-title)",
-                letterSpacing: "-0.02em",
-              }}
-            >
-              MatchTech.com
-            </span>
-          </Link>
+  const [registerOpen, setRegisterOpen] = useState(false);
 
-          <Stack direction="row" gap={12} align="center">
-            <Link href="/login">
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
+  return (
+    <>
+      <header
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 50,
+          backgroundColor: "#FFFFFF",
+          borderBottom: "1px solid #E0DFDC",
+          boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
+        }}
+      >
+        <Container>
+          <Stack
+            direction="row"
+            align="center"
+            justify="space-between"
+            gap={12}
+            style={{ height: 64 }}
+          >
+            <Link href="/" aria-label="Go to MatchTech home">
+              <span
                 style={{
-                  color: "var(--color-primary)",
-                  backgroundColor: "transparent",
+                  fontWeight: 700,
+                  fontSize: "var(--font-size-title)",
+                  letterSpacing: "-0.02em",
                 }}
               >
-                Log in
-              </Button>
+                MatchTech.com
+              </span>
             </Link>
-            <Link href="/register">
+
+            <Stack direction="row" gap={12} align="center">
+              <Link href="/login">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  style={{
+                    color: "var(--color-primary)",
+                    backgroundColor: "transparent",
+                  }}
+                >
+                  Log in
+                </Button>
+              </Link>
               <Button
                 type="button"
                 size="sm"
@@ -59,14 +63,20 @@ export function Header() {
                   boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
                   transition: "all 0.2s ease",
                 }}
+                onClick={() => setRegisterOpen(true)}
               >
                 Register
               </Button>
-            </Link>
+            </Stack>
           </Stack>
-        </Stack>
-      </Container>
-    </header>
+        </Container>
+      </header>
+
+      <RegisterRoleDialog
+        open={registerOpen}
+        onClose={() => setRegisterOpen(false)}
+      />
+    </>
   );
 }
 
