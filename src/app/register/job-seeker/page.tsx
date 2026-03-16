@@ -17,7 +17,14 @@ import {
   FileUpload,
   FileListPreview,
 } from "@/components/ui";
-import type { JobPosition, Seniority, EmploymentType, WorkPreference } from "@/types";
+import type {
+  JobPosition,
+  TalentDetails,
+  Seniority,
+  EmploymentType,
+  WorkPreference,
+} from "@/types";
+import { useUserStore } from "@/store";
 import styles from "./page.module.css";
 
 const STEPS = [
@@ -127,7 +134,17 @@ const defaultJobPosition: Omit<JobPosition, "id"> = {
   workPreference: "any",
 };
 
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function JobSeekerRegisterPage() {
+  const setUser = useUserStore((s) => s.setUser);
   const [currentStep, setCurrentStep] = useState(0);
   const [jobPosition, setJobPosition] = useState<Omit<JobPosition, "id">>(defaultJobPosition);
   const [skillsRequiredRaw, setSkillsRequiredRaw] = useState("");
@@ -139,6 +156,15 @@ export default function JobSeekerRegisterPage() {
   type BackgroundTheme = "blue" | "violet" | "teal" | "amber" | "rose" | "emerald";
   const [backgroundTheme, setBackgroundTheme] = useState<BackgroundTheme>("blue");
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
+
+  // Step 2: complete profile
+  const [role, setRole] = useState("");
+  const [yearsOfExperienceStr, setYearsOfExperienceStr] = useState("");
+  const [skillsProfileRaw, setSkillsProfileRaw] = useState("");
+  const [locationProfile, setLocationProfile] = useState("");
+
+  // Step 4: account
+  const [username, setUsername] = useState("");
 
   // Same gradient themes as hero section swipe cards (radial gradient)
   const THEME_GRADIENTS: Record<
@@ -202,6 +228,49 @@ export default function JobSeekerRegisterPage() {
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === steps.length - 1;
 
+  async function handleCompleteRegistration() {
+    const skillsProfile = skillsProfileRaw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const jobPositionWithId: JobPosition = {
+      ...jobPosition,
+      id: crypto.randomUUID(),
+    };
+    const yearsOfExperience = parseInt(yearsOfExperienceStr, 10) || 0;
+    let avatarUrl = "";
+    let imageUrl = "";
+    if (imageFiles.length > 0) {
+      const dataUrl = await fileToDataUrl(imageFiles[0]);
+      avatarUrl = dataUrl;
+      imageUrl = dataUrl;
+    }
+    const backgroundColor = THEME_GRADIENTS[backgroundTheme].start;
+
+    const talent: TalentDetails = {
+      id: username.trim() || crypto.randomUUID(),
+      type: "talent",
+      firstName: "",
+      lastName: "",
+      fullName: username.trim() || "User",
+      avatarUrl,
+      imageUrl,
+      backgroundColor,
+      role: role.trim() || "Professional",
+      yearsOfExperience,
+      employmentPreference: jobPosition.employmentType,
+      country: jobPosition.country,
+      city: jobPosition.city,
+      workPreference: jobPosition.workPreference,
+      bio: "",
+      skills: skillsProfile.length > 0 ? skillsProfile : [],
+      availableForWork: true,
+      jobPosition: jobPositionWithId,
+    };
+
+    setUser(talent);
+  }
+
   function handleNext() {
     if (currentStep === 0) {
       const skills = skillsRequiredRaw
@@ -211,7 +280,7 @@ export default function JobSeekerRegisterPage() {
       setJobPosition((prev) => ({ ...prev, skillsRequired: skills.length ? skills : undefined }));
     }
     if (isLastStep) {
-      // Submit registration (placeholder): build JobPosition with id + jobPosition state
+      void handleCompleteRegistration();
       return;
     }
     setCurrentStep((s) => s + 1);
@@ -574,22 +643,43 @@ export default function JobSeekerRegisterPage() {
                 </p>
                 <FormField id="job-title" label="Job title / Role" required>
                   {(field) => (
-                    <Input {...field} placeholder="e.g. Senior Frontend Engineer" />
+                    <Input
+                      {...field}
+                      placeholder="e.g. Senior Frontend Engineer"
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                    />
                   )}
                 </FormField>
                 <FormField id="years-exp" label="Years of experience">
                   {(field) => (
-                    <Input {...field} type="text" placeholder="e.g. 5+" />
+                    <Input
+                      {...field}
+                      type="text"
+                      placeholder="e.g. 5+"
+                      value={yearsOfExperienceStr}
+                      onChange={(e) => setYearsOfExperienceStr(e.target.value)}
+                    />
                   )}
                 </FormField>
                 <FormField id="skills" label="Key skills (comma-separated)">
                   {(field) => (
-                    <Input {...field} placeholder="e.g. React, TypeScript, Node.js" />
+                    <Input
+                      {...field}
+                      placeholder="e.g. React, TypeScript, Node.js"
+                      value={skillsProfileRaw}
+                      onChange={(e) => setSkillsProfileRaw(e.target.value)}
+                    />
                   )}
                 </FormField>
                 <FormField id="location" label="Location / Region">
                   {(field) => (
-                    <Input {...field} placeholder="e.g. Remote, Europe" />
+                    <Input
+                      {...field}
+                      placeholder="e.g. Remote, Europe"
+                      value={locationProfile}
+                      onChange={(e) => setLocationProfile(e.target.value)}
+                    />
                   )}
                 </FormField>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
@@ -772,7 +862,13 @@ export default function JobSeekerRegisterPage() {
                 </p>
                 <FormField id="username" label="Username" required>
                   {(field) => (
-                    <Input {...field} placeholder="Choose a username" autoComplete="username" />
+                    <Input
+                      {...field}
+                      placeholder="Choose a username"
+                      autoComplete="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
                   )}
                 </FormField>
                 <FormRow>
