@@ -46,9 +46,10 @@ const CARDS: JobCard[] = [
   },
 ];
 
-const IDLE_MS = 2800;
-const SWIPE_MS = 650;
-const TRANSITION_MS = 450;
+const IDLE_MS = 3800;
+const SWIPE_MS = 1000;
+const TRANSITION_MS = 700;
+const PAUSE_AFTER_SWIPES = 4;
 
 export function SwipeCardDemo() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,6 +60,7 @@ export function SwipeCardDemo() {
   const [transitioningFromBack, setTransitioningFromBack] = useState(false);
   const [showMatch, setShowMatch] = useState(false);
   const [indicatorVisible, setIndicatorVisible] = useState(false);
+  const [swipeCount, setSwipeCount] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const clearTimers = useCallback(() => {
@@ -85,10 +87,10 @@ export function SwipeCardDemo() {
   }, [currentIndex, swipeDir]);
 
   useEffect(() => {
-    if (phase !== "idle") return;
+    if (phase !== "idle" || swipeCount >= PAUSE_AFTER_SWIPES) return;
     const t = setTimeout(startSwipe, IDLE_MS);
     return () => clearTimeout(t);
-  }, [phase, startSwipe]);
+  }, [phase, swipeCount, startSwipe]);
 
   useEffect(() => {
     return () => clearTimers();
@@ -103,6 +105,7 @@ export function SwipeCardDemo() {
     });
     const t = setTimeout(() => {
       setExitingIndex(null);
+      setSwipeCount((c) => c + 1);
       setPhase("idle");
       setShowMatch(false);
     }, TRANSITION_MS + 50);
@@ -119,7 +122,7 @@ export function SwipeCardDemo() {
     return "back";
   };
 
-  const SWIPE_OFFSET_PCT = 42;
+  const SWIPE_OFFSET_PCT = 35;
   const getCardTransform = (index: number) => {
     const isFront = index === currentIndex;
     const isExiting = index === exitingIndex;
