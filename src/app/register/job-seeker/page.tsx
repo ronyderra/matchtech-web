@@ -26,6 +26,67 @@ const STEPS = [
   { id: "account", label: "Create account" },
 ];
 
+const ISRAEL_CITIES = [
+  "Tel Aviv",
+  "Jerusalem",
+  "Haifa",
+  "Be'er Sheva",
+  "Rishon LeZion",
+  "Petah Tikva",
+  "Netanya",
+  "Holon",
+  "Bnei Brak",
+  "Ramat Gan",
+  "Ashdod",
+  "Ashkelon",
+  "Rehovot",
+  "Bat Yam",
+  "Herzliya",
+  "Kfar Saba",
+  "Hadera",
+  "Modi'in",
+  "Raanana",
+  "Ramla",
+  "Lod",
+  "Nahariya",
+  "Givatayim",
+  "Kiryat Ata",
+  "Eilat",
+  "Ramat HaSharon",
+  "Kiryat Gat",
+  "Dimona",
+  "Tamra",
+  "Sakhnin",
+  "Yavne",
+  "Tiberias",
+  "Ma'alot-Tarshiha",
+  "Afula",
+  "Kiryat Motzkin",
+  "Ofakim",
+  "Netivot",
+  "Remote (Israel)",
+  "Any",
+];
+
+const INDUSTRIES = [
+  "Technology / Software",
+  "FinTech",
+  "Healthcare",
+  "Marketing / Advertising",
+  "Design",
+  "Education",
+  "E-commerce",
+  "Cybersecurity",
+  "Gaming",
+  "Real Estate",
+  "Legal",
+  "Manufacturing",
+  "Retail",
+  "Media / Entertainment",
+  "Non-profit",
+  "Other",
+];
+
 export default function JobSeekerRegisterPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [cvFiles, setCvFiles] = useState<FileList | null>(null);
@@ -170,17 +231,31 @@ export default function JobSeekerRegisterPage() {
                 </FormField>
                 <FormField id="preferred-location" label="Preferred location / region">
                   {(field) => (
-                    <Input {...field} placeholder="e.g. Europe, US, Remote worldwide" />
+                    <Select {...field} defaultValue="">
+                      <option value="" disabled>Select city</option>
+                      {ISRAEL_CITIES.map((city) => (
+                        <option key={city} value={city}>
+                          {city}
+                        </option>
+                      ))}
+                    </Select>
                   )}
                 </FormField>
                 <FormField id="salary-expectation" label="Salary expectation (optional)">
                   {(field) => (
-                    <Input {...field} placeholder="e.g. €80k–€100k or range" />
+                    <Input {...field} placeholder="e.g. 15,000–20,000 ₪ (ILS) or range" />
                   )}
                 </FormField>
-                <FormField id="industries" label="Industries of interest (optional)">
+                <FormField id="industries" label="Industry (optional)">
                   {(field) => (
-                    <Input {...field} placeholder="e.g. SaaS, FinTech, Health" />
+                    <Select {...field} defaultValue="">
+                      <option value="">Select industry</option>
+                      {INDUSTRIES.map((industry) => (
+                        <option key={industry} value={industry}>
+                          {industry}
+                        </option>
+                      ))}
+                    </Select>
                   )}
                 </FormField>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
