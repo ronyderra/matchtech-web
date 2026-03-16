@@ -1,26 +1,96 @@
 "use client";
 
-import { Container, Section, Stack, Heading, Text, Button } from "@/components/ui";
+import { Container, Section, Stack, Heading, Text, Button, Grid } from "@/components/ui";
+import { SwipeLayout } from "@/components/SwipeLayout";
 
 export function HeroSection() {
   return (
-    <Section>
+    <Section
+      style={{
+        paddingTop: 80,
+        paddingBottom: 80,
+        marginTop: 40,
+      }}
+    >
       <Container>
-        <Stack gap={24}>
-          <Stack gap={8}>
-            <Heading size="xl" as="h1">
-              Swipe to your next role.
+        <Grid cols={2} stackOnMobile gap={64}>
+          {/* Left column: text + CTAs */}
+          <Stack
+            gap={20}
+            style={{
+              maxWidth: 560,
+              justifyContent: "center",
+            }}
+          >
+            <Heading
+              as="h1"
+              size="xl"
+              style={{
+                fontSize: 48,
+                lineHeight: "56px",
+              }}
+            >
+              Where Talent and Opportunity Meet With a Swipe.
             </Heading>
-            <Text variant="bodySm">
-              MatchTech lets candidates and teams swipe on each other. When both sides say
-              yes, it is an instant match.
+            <Text
+              as="p"
+              style={{
+                fontSize: 18,
+                lineHeight: "28px",
+                color: "var(--color-text-secondary)",
+                maxWidth: 520,
+              }}
+            >
+              MatchTech is a modern hiring platform where job seekers and companies
+              connect through a simple swipe-based experience.
             </Text>
-            <Stack direction="row" gap={8} wrap>
-              <Button>Browse roles</Button>
-              <Button variant="secondary">I&apos;m hiring</Button>
+
+            {/* Desktop CTAs: horizontal */}
+            <Stack
+              direction="row"
+              gap={16}
+              wrap
+              style={{ alignItems: "center" }}
+            >
+              <Button
+                style={{
+                  height: 48,
+                  paddingInline: 24,
+                  borderRadius: 8,
+                  boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                Find a Job
+              </Button>
+              <Button
+                variant="secondary"
+                style={{
+                  height: 48,
+                  paddingInline: 24,
+                  borderRadius: 8,
+                }}
+              >
+                Hire Talent
+              </Button>
             </Stack>
           </Stack>
-        </Stack>
+
+          {/* Right column: hero illustration using SwipeLayout */}
+          <Stack
+            justify="center"
+            style={{ alignItems: "center" }}
+          >
+            <div
+              style={{
+                width: "100%",
+                maxWidth: 520,
+              }}
+            >
+              <SwipeLayout />
+            </div>
+          </Stack>
+        </Grid>
       </Container>
     </Section>
   );
