@@ -90,12 +90,77 @@ const CARDS: SwipeCardData[] = [
       "Work closely with product and data",
     ],
   },
+  {
+    type: "talent",
+    title: "Jordan Lee",
+    subtitle: "UX Researcher",
+    metaLine: "5+ years · Hybrid · PST",
+    topRightPill: "5 yrs exp",
+    avatarText: "JL",
+    avatarImageUrl: "/assets/profileImages/4.jpg",
+    description:
+      "Uncovers user needs and shapes product strategy through mixed-method research. Led research at Horizon and Stellar.",
+    tags: ["User research", "Interviews", "Usability", "Analytics"],
+    quickFacts: [
+      { label: "Availability", value: "1 month" },
+      { label: "Work style", value: "Hybrid" },
+      { label: "Focus", value: "B2B discovery" },
+    ],
+    detailItems: [
+      "End-to-end research from planning to insights",
+      "Strong stakeholder and workshop facilitation",
+      "Quant and qual with clear deliverables",
+    ],
+  },
+  {
+    type: "company",
+    title: "Product Manager",
+    subtitle: "ScaleUp · Growth",
+    metaLine: "Remote · Full-time · Americas",
+    topRightPill: "€100k–€130k · Bonus",
+    avatarText: "S",
+    avatarImageUrl: "/assets/profileImages/5.jpg",
+    description:
+      "Drive roadmap and go-to-market for a growing B2B product used by mid-market and enterprise teams.",
+    tags: ["Product", "Roadmap", "B2B", "4+ years"],
+    quickFacts: [
+      { label: "Level", value: "Senior" },
+      { label: "Team", value: "Product + Eng" },
+      { label: "Process", value: "Case + fit" },
+    ],
+    detailItems: [
+      "Own discovery, prioritization, and launch",
+      "Work with design and engineering leads",
+      "Metrics-driven and customer-close",
+    ],
+  },
+  {
+    type: "talent",
+    title: "Sam Rivera",
+    subtitle: "Full-Stack Engineer",
+    metaLine: "6+ years · Remote · EST",
+    topRightPill: "6 yrs exp",
+    avatarText: "SR",
+    avatarImageUrl: "/assets/profileImages/michael-dam-mEZ3PoFGs_k-unsplash.jpg",
+    description:
+      "Builds scalable web apps and APIs with React and Node. Shipped products at FinTech and health-tech startups.",
+    tags: ["React", "Node.js", "TypeScript", "PostgreSQL"],
+    quickFacts: [
+      { label: "Availability", value: "3 weeks" },
+      { label: "Work style", value: "Remote" },
+      { label: "Focus", value: "Full-stack" },
+    ],
+    detailItems: [
+      "Strong in both frontend and backend",
+      "Experience with regulated industries",
+      "Comfortable leading technical decisions",
+    ],
+  },
 ];
 
 const IDLE_MS = 3800;
 const SWIPE_MS = 1000;
 const TRANSITION_MS = 700;
-const PAUSE_AFTER_SWIPES = 4;
 
 export function SwipeCardDemo() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -104,9 +169,7 @@ export function SwipeCardDemo() {
   const [exitingIndex, setExitingIndex] = useState<number | null>(null);
   const [exitingSwipeDir, setExitingSwipeDir] = useState<1 | -1>(1);
   const [transitioningFromBack, setTransitioningFromBack] = useState(false);
-  const [showMatch, setShowMatch] = useState(false);
   const [indicatorVisible, setIndicatorVisible] = useState(false);
-  const [swipeCount, setSwipeCount] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const clearTimers = useCallback(() => {
@@ -126,17 +189,16 @@ export function SwipeCardDemo() {
         setCurrentIndex((i) => (i + 1) % CARDS.length);
         setTransitioningFromBack(true);
         setPhase("done");
-        setShowMatch(dir === 1);
         setIndicatorVisible(false);
       }, SWIPE_MS)
     );
   }, [currentIndex, swipeDir]);
 
   useEffect(() => {
-    if (phase !== "idle" || swipeCount >= PAUSE_AFTER_SWIPES) return;
+    if (phase !== "idle") return;
     const t = setTimeout(startSwipe, IDLE_MS);
     return () => clearTimeout(t);
-  }, [phase, swipeCount, startSwipe]);
+  }, [phase, startSwipe]);
 
   useEffect(() => {
     return () => clearTimers();
@@ -151,9 +213,7 @@ export function SwipeCardDemo() {
     });
     const t = setTimeout(() => {
       setExitingIndex(null);
-      setSwipeCount((c) => c + 1);
       setPhase("idle");
-      setShowMatch(false);
     }, TRANSITION_MS + 50);
     return () => {
       cancelAnimationFrame(raf);
@@ -336,9 +396,6 @@ export function SwipeCardDemo() {
           );
         })}
       </div>
-      {showMatch && (
-        <div className={`${styles.matchBadge} ${styles.visible}`}>Match</div>
-      )}
     </div>
   );
 }
