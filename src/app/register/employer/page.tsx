@@ -17,7 +17,9 @@ import {
   Stepper,
   FileUpload,
   FileListPreview,
+  Modal,
 } from "@/components/ui";
+import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
 import styles from "./page.module.css";
 
 const STEPS = [
@@ -145,14 +147,35 @@ export default function EmployerRegisterPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [backgroundTheme, setBackgroundTheme] = useState<BackgroundTheme>("blue");
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<string | null>(null);
 
   function handleJobDescriptionFilesSelected(files: FileList) {
-    const next = [...jobDescriptionFilesRef.current, ...Array.from(files)].slice(
+    const newFiles = Array.from(files).filter((f) => f.type === "application/pdf");
+    if (newFiles.length < Array.from(files).length) {
+      setPdfError("Only PDF files are accepted. Please upload PDFs only.");
+    }
+    const next = [...jobDescriptionFilesRef.current, ...newFiles].slice(
       0,
       MAX_JOB_DESCRIPTION_FILES
     );
     jobDescriptionFilesRef.current = next;
     setJobDescriptionFiles(next);
+    next.forEach((file) => {
+      extractTextFromPdf(file).catch((err) => {
+        const message =
+          err instanceof PdfRejectError
+            ? err.message
+            : err instanceof Error
+              ? err.message
+              : "This PDF could not be read. Please use a different file.";
+        setPdfError(message);
+        setJobDescriptionFiles((prev) => {
+          const updated = prev.filter((f) => f !== file);
+          jobDescriptionFilesRef.current = updated;
+          return updated;
+        });
+      });
+    });
   }
 
   function handleRemoveJobDescriptionFile(_file: File, index: number) {
@@ -219,14 +242,22 @@ export default function EmployerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  Upload up to 3 job descriptions (PDF or DOC). We will extract everything we can from each file and create a card for each position. Whatever we can’t extract will be filled in manually in a later step.
+                  Upload up to 3 job descriptions as PDFs only, in English. We will extract everything we can from each file and create a card for each position. Max 3MB, 5 pages per PDF. Whatever we can’t extract will be filled in manually in a later step.
                 </p>
                 <FileUpload
                   label="Job descriptions"
-                  description="Upload up to 3 job descriptions. PDF or DOC. Max 5MB each."
-                  accept=".pdf,.doc,.docx"
+                  description="Upload up to 3 job descriptions. PDF only, in English. Max 3MB, 5 pages each."
+                  accept=".pdf,application/pdf"
                   multiple
                   onFilesSelected={handleJobDescriptionFilesSelected}
+                />
+                <Modal
+                  open={!!pdfError}
+                  title="Problem with PDF"
+                  description={pdfError ?? undefined}
+                  primaryActionLabel="OK"
+                  onPrimaryAction={() => setPdfError(null)}
+                  onClose={() => setPdfError(null)}
                 />
                 {jobDescriptionFiles.length > 0 && (
                   <>
