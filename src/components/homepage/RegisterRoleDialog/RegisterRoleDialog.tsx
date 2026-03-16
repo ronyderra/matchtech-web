@@ -30,9 +30,6 @@ export function RegisterRoleDialog({ open, onClose }: RegisterRoleDialogProps) {
           style={{ justifyContent: "space-between" }}
         >
           <span>Register as Talent</span>
-          <Text as="span" variant="muted">
-            I&apos;m looking for a job
-          </Text>
         </Button>
         <Button
           fullWidth
@@ -41,9 +38,6 @@ export function RegisterRoleDialog({ open, onClose }: RegisterRoleDialogProps) {
           style={{ justifyContent: "space-between" }}
         >
           <span>Register to Hire Talent</span>
-          <Text as="span" variant="muted">
-            I&apos;m hiring for roles
-          </Text>
         </Button>
       </Stack>
     </Modal>
