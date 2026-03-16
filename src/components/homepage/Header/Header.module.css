@@ -1,19 +1,8 @@
 .inner {
-  max-width: var(--layout-max-width);
-  margin: 0 auto;
-  padding-left: var(--layout-padding-mobile);
-  padding-right: var(--layout-padding-mobile);
   height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-}
-
-@media (min-width: 768px) {
-  .inner {
-    padding-left: var(--layout-padding-desktop);
-    padding-right: var(--layout-padding-desktop);
-  }
 }
 

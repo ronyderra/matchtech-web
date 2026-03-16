@@ -34,7 +34,7 @@ export function Modal({
 
     function handleKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        onClose();
+        onClose?.();
       }
     }
 
