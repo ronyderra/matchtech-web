@@ -141,7 +141,6 @@ export default function EmployerRegisterPage() {
   const jobDescriptionFilesRef = useRef<File[]>([]);
   const [careerPageUrl, setCareerPageUrl] = useState("");
   const [aboutPageUrl, setAboutPageUrl] = useState("");
-  const [jobDescriptions, setJobDescriptions] = useState("");
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [backgroundTheme, setBackgroundTheme] = useState<BackgroundTheme>("blue");
@@ -167,8 +166,7 @@ export default function EmployerRegisterPage() {
   });
 
   const hasWebsiteUrls = careerPageUrl.trim() !== "" || aboutPageUrl.trim() !== "";
-  const hasJobDescriptions = jobDescriptions.trim() !== "";
-  const canContinueStep2 = hasWebsiteUrls || hasJobDescriptions;
+  const canContinueStep2 = hasWebsiteUrls;
 
   useEffect(() => {
     if (imageFiles.length === 0) {
@@ -278,7 +276,7 @@ export default function EmployerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  Share your career page and about page so we can learn about your company and open roles. Or paste job description(s) below.
+                  Share your career page and about page so we can learn about your company and open roles.
                 </p>
                 <FormField id="career-page-url" label="Career page URL">
                   {(field) => (
@@ -302,27 +300,6 @@ export default function EmployerRegisterPage() {
                     />
                   )}
                 </FormField>
-                <p
-                  style={{
-                    fontSize: "var(--font-size-caption)",
-                    color: "var(--color-text-muted)",
-                    marginTop: 8,
-                    marginBottom: 4,
-                  }}
-                >
-                  Or paste job description(s) below (one or more):
-                </p>
-                <FormField id="job-descriptions" label="Job description(s) (optional)">
-                  {(field) => (
-                    <TextArea
-                      {...field}
-                      placeholder="Paste one or more job descriptions here…"
-                      value={jobDescriptions}
-                      onChange={(e) => setJobDescriptions(e.target.value)}
-                      rows={6}
-                    />
-                  )}
-                </FormField>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
                   <Button type="button" variant="secondary" onClick={handleBack}>
                     Back
@@ -331,6 +308,24 @@ export default function EmployerRegisterPage() {
                     Continue
                   </Button>
                 </Stack>
+                <p style={{ marginTop: 16, marginBottom: 0 }}>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      font: "inherit",
+                      color: "var(--color-primary)",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      fontSize: "var(--font-size-body-sm)",
+                    }}
+                  >
+                    I don’t have a website
+                  </button>
+                </p>
               </FormSection>
             )}
 
@@ -344,7 +339,7 @@ export default function EmployerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  {hasWebsiteUrls || hasJobDescriptions
+                  {hasWebsiteUrls
                     ? "Review and fix the information below. We extracted what we could — correct or add anything missing."
                     : "Fill in your company profile so we can create your card. You can change this later."}
                 </p>
