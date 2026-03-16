@@ -1,7 +1,7 @@
 // Shared literals for job/role level and employment type
-export type Seniority = "junior" | "mid" | "senior" | "lead" | "principal"
-export type EmploymentType = "full-time" | "part-time" | "contract" | "freelance"
-export type WorkPreference = "remote" | "hybrid" | "onsite"
+export type Seniority = "any" | "junior" | "mid" | "senior" | "lead" | "principal"
+export type EmploymentType = "any" | "full-time" | "part-time" | "contract" | "freelance"
+export type WorkPreference = "any" | "remote" | "hybrid" | "onsite"
 
 export interface JobPosition {
   id: string
@@ -13,8 +13,8 @@ export interface JobPosition {
   employmentType: EmploymentType
 
   // Location
-  location: string
   country?: string
+  city?: string
   workPreference: WorkPreference
 
   // Job content
@@ -31,6 +31,31 @@ export interface JobPosition {
 
   // Hiring
   applicationUrl?: string
+}
+
+export interface Experience {
+  id: string
+
+  // Job
+  companyName: string
+  jobTitle: string
+  department?: string
+  employmentType: EmploymentType
+
+  // When
+  startDate: string
+  endDate?: string
+  isCurrent?: boolean
+
+  // Where
+  country?: string
+  city?: string
+  workPreference?: WorkPreference
+
+  // What
+  description?: string
+  responsibilities?: string[]
+  skillsUsed?: string[]
 }
 
 export interface TalentDetails {
@@ -52,8 +77,8 @@ export interface TalentDetails {
   employmentPreference: EmploymentType
 
   // Location (talent's preference)
-  location: string
   country?: string
+  city?: string
   workPreference: WorkPreference
 
   // Profile
@@ -80,6 +105,9 @@ export interface TalentDetails {
 
   // Current / desired position (single)
   jobPosition: JobPosition
+
+  // Past jobs
+  experiences?: Experience[]
 
   // Meta
   isVerified?: boolean
