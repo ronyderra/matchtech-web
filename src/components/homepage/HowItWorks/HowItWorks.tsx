@@ -4,8 +4,17 @@ import { Container, Section, Grid, Card, CardBody, Heading, Text, Stack, Chip } 
 
 export function HowItWorks() {
   return (
-    <Section title="How It Works" description="Create a profile → Discover matches → Connect.">
+    <Section>
       <Container>
+        <Stack gap={12} style={{ marginBottom: 12 }}>
+          <Heading size="md" as="h2">
+            How It Works
+          </Heading>
+          <Text variant="bodySm">
+            Create a profile → Discover matches → Connect.
+          </Text>
+        </Stack>
+
         <Grid cols={3} stackOnMobile gap={18}>
           <Card>
             <CardBody>

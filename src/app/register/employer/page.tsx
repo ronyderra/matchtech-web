@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Breadcrumbs,
   Container,
   Section,
   Stack,
@@ -13,14 +14,19 @@ import {
   Select,
   Checkbox,
   Button,
-  BackButton,
 } from "@/components/ui";
 
 export default function EmployerRegisterPage() {
   return (
     <Container>
-      <div style={{ paddingTop: 12 }}>
-        <BackButton>Go back</BackButton>
+      <div style={{ paddingTop: 8, paddingBottom: 8 }}>
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Register", href: "/register/employer" },
+            { label: "Employer", active: true },
+          ]}
+        />
       </div>
       <Section
         title="Join MatchTech as an Employer"

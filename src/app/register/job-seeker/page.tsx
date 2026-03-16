@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import {
+  Breadcrumbs,
   Container,
   Section,
   Stack,
@@ -14,14 +16,21 @@ import {
   DatePicker,
   Checkbox,
   Button,
-  BackButton,
 } from "@/components/ui";
 
 export default function JobSeekerRegisterPage() {
+  const [dob, setDob] = useState<Date | null>(null);
+
   return (
     <Container>
-      <div style={{ paddingTop: 12 }}>
-        <BackButton>Go back</BackButton>
+      <div style={{ paddingTop: 8, paddingBottom: 8 }}>
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Register", href: "/register/job-seeker" },
+            { label: "Job Seeker", active: true },
+          ]}
+        />
       </div>
       <Section
         title="Join MatchTech as a Job Seeker"
@@ -57,10 +66,10 @@ export default function JobSeekerRegisterPage() {
             </FormRow>
 
             <FormField id="dob" label="Date of Birth">
-              {(field) => (
+              {() => (
                 <DatePicker
-                  value={null}
-                  onChange={() => {}}
+                  value={dob}
+                  onChange={setDob}
                   placeholder="Select your date of birth"
                 />
               )}

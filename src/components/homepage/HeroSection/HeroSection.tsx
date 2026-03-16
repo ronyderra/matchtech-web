@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { Container, Section, Stack, Heading, Text, Button, Grid } from "@/components/ui";
 import { SwipeLayout } from "@/components/SwipeLayout";
+import styles from "./HeroSection.module.css";
 
 export function HeroSection() {
   return (
     <Section
+      className={styles.section}
       style={{
         paddingTop: 80,
         paddingBottom: 80,
-        marginTop: 40,
       }}
     >
       <Container>

@@ -21,25 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={sourceSans.variable}>
-        <div className="app-shell">
-          <header className="app-header">
-            <div className="app-header-inner">
-              <div className="app-logo">MatchTech</div>
-            </div>
-          </header>
-
-          <main className="app-main">
-            <div className="app-container">{children}</div>
-          </main>
-
-          <footer className="app-footer">
-            <div className="app-footer-inner">
-              <span className="app-footer-text">
-                © {new Date().getFullYear()} MatchTech. All rights reserved.
-              </span>
-            </div>
-          </footer>
-        </div>
+        {children}
       </body>
     </html>
   );

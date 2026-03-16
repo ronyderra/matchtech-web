@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Container, Stack, Button } from "@/components/ui";
+import { Stack, Button } from "@/components/ui";
 import { RegisterRoleDialog } from "@/components/homepage/RegisterRoleDialog/RegisterRoleDialog";
+import styles from "./Header.module.css";
 
 export function Header() {
   const [registerOpen, setRegisterOpen] = useState(false);
@@ -22,14 +23,7 @@ export function Header() {
           boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
         }}
       >
-        <Container>
-          <Stack
-            direction="row"
-            align="center"
-            justify="space-between"
-            gap={12}
-            style={{ height: 64 }}
-          >
+        <div className={styles.inner}>
             <Link href="/" aria-label="Go to MatchTech home">
               <span
                 style={{
@@ -68,8 +62,7 @@ export function Header() {
                 Register
               </Button>
             </Stack>
-          </Stack>
-        </Container>
+        </div>
       </header>
 
       <RegisterRoleDialog
