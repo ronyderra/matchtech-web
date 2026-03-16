@@ -1,0 +1,110 @@
+.avatarGroup {
+  display: flex;
+  align-items: center;
+}
+
+.avatarOverlap {
+  border-radius: 999px;
+  border: 2px solid var(--color-surface);
+  margin-left: -10px;
+}
+
+.avatarOverflow {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 2px solid var(--color-surface);
+  background: rgba(148, 163, 184, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.logoBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-chip);
+  border: 1px solid var(--color-border);
+  padding: 4px 8px;
+  font-size: var(--font-size-caption);
+  background: var(--color-surface);
+}
+
+.imagePreview {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.imagePreviewInner {
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  position: relative;
+}
+
+.imagePreviewInner img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageOverlay {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  font-size: var(--font-size-caption);
+}
+
+.filePreview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  padding: 8px 10px;
+  background: var(--color-surface);
+}
+
+.fileIcon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(148, 163, 184, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.fileMeta {
+  flex: 1;
+  min-width: 0;
+}
+
+.fileName {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.fileSize {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.fileStatus {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+}
+

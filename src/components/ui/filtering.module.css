@@ -1,0 +1,53 @@
+.filterPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filterGroup {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  padding: 10px 12px;
+  background: var(--color-surface);
+}
+
+.filterGroupTitle {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 6px;
+}
+
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-chip);
+  font-size: var(--font-size-caption);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.filterChipActive {
+  border-color: var(--color-primary);
+  background: rgba(10, 102, 194, 0.10);
+  color: var(--color-primary);
+}
+
+.activeFiltersBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+.activeFiltersLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.sortDropdown {
+  display: inline-block;
+}
+

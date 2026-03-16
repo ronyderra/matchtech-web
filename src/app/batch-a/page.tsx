@@ -20,7 +20,7 @@ import {
   Heading,
   IconButton,
   Input,
-  Modal,
+  Label,
   Section,
   Select,
   Skeleton,
@@ -151,6 +151,31 @@ export default function BatchAPage() {
             </Stack>
           </Section>
 
+          <Divider label="Form support" />
+
+          <Section>
+            <Stack gap={12}>
+              <div>
+                <Label htmlFor="sample-label" required>
+                  Label component
+                </Label>
+                <Input id="sample-label" placeholder="Used outside FormField too" />
+              </div>
+              <div>
+                <Text variant="muted">
+                  `FormField` already wires labels, hints, and errors together. This
+                  snippet shows `Label` and error copy used standalone.
+                </Text>
+                <Text
+                  as="p"
+                  style={{ color: "var(--color-danger)", fontSize: "var(--font-size-caption)" }}
+                >
+                  ErrorMessage – Invalid value for this field.
+                </Text>
+              </div>
+            </Stack>
+          </Section>
+
           <Divider label="Surfaces & status" />
 
           <Section>
@@ -258,7 +283,6 @@ export default function BatchAPage() {
                     flows this opens and closes based on state.
                   </Text>
                 </Modal> */}
-
                 <Drawer
                   open
                   title="Filters drawer"

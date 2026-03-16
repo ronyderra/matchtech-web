@@ -1,0 +1,48 @@
+.loadingScreen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: rgba(243, 242, 239, 0.9);
+  z-index: 60;
+}
+
+.loadingText {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.stateBlock {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stateTitle {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+.stateDescription {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.retryBlock {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--font-size-body-sm);
+}
+

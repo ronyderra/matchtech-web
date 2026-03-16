@@ -1,0 +1,130 @@
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.crumbLink {
+  color: var(--color-primary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.crumbCurrent {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-caption);
+}
+
+.pageButton {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.pageButtonActive {
+  border-color: var(--color-primary);
+  background: rgba(10, 102, 194, 0.08);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+.pageButton[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sidebar {
+  width: 100%;
+  max-width: 260px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 10px 8px;
+}
+
+.sidebarList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebarItem {
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: var(--font-size-body-sm);
+  cursor: pointer;
+}
+
+.sidebarItemActive {
+  background: rgba(10, 102, 194, 0.08);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    max-width: none;
+    overflow-x: auto;
+  }
+
+  .sidebarList {
+    flex-direction: row;
+    gap: 6px;
+  }
+}
+
+.bottomTabBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 4px 8px;
+}
+
+.bottomTabList {
+  display: flex;
+  justify-content: space-around;
+}
+
+.bottomTabButton {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.bottomTabButtonActive {
+  color: var(--color-primary);
+  background: rgba(10, 102, 194, 0.06);
+  font-weight: var(--font-weight-medium);
+}
+

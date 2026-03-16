@@ -1,0 +1,182 @@
+.statCard {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.statValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.statValue {
+  font-size: var(--font-size-heading-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.statHelper {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+}
+
+.statTrendUp {
+  color: var(--color-success);
+}
+
+.statTrendDown {
+  color: var(--color-danger);
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: var(--font-size-body-sm);
+}
+
+.infoLabel {
+  color: var(--color-text-secondary);
+}
+
+.infoValue {
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 640px) {
+  .infoRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.keyValueList {
+  display: grid;
+  gap: 8px;
+}
+
+.timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+}
+
+.timelineMarker {
+  position: relative;
+  width: 16px;
+}
+
+.timelineDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  position: absolute;
+  top: 4px;
+  left: 3px;
+}
+
+.timelineLine {
+  position: absolute;
+  top: 12px;
+  bottom: -12px;
+  left: 7px;
+  width: 2px;
+  background: rgba(148, 163, 184, 0.4);
+}
+
+.timelineContent {
+  font-size: var(--font-size-body-sm);
+}
+
+.timelineTitle {
+  font-weight: var(--font-weight-medium);
+}
+
+.timelineMeta {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.listRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.listItem {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 10px 12px;
+}
+
+.emptyState {
+  border-radius: var(--radius-card);
+  border: 1px dashed var(--color-border);
+  background: rgba(148, 163, 184, 0.04);
+  padding: 18px 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.emptyIcon {
+  font-size: 24px;
+}
+
+.emptyTitle {
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+.emptyDescription {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.progressRoot {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-primary);
+}
+
+.progressLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+

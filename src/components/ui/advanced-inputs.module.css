@@ -1,0 +1,285 @@
+.searchRoot {
+  width: 100%;
+  position: relative;
+}
+
+.searchInput {
+  padding-left: 34px;
+  padding-right: 34px;
+}
+
+.searchIcon,
+.searchClear {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+}
+
+.searchIcon {
+  left: 10px;
+}
+
+.searchClear {
+  right: 6px;
+}
+
+.searchClearButton {
+  border: none;
+  background: transparent;
+  padding: 4px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.searchClearButton:hover {
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.tagRoot,
+.multiRoot {
+  width: 100%;
+}
+
+.tagField,
+.multiField {
+  width: 100%;
+  min-height: 44px;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  cursor: text;
+}
+
+.tagInputInner {
+  border: none;
+  outline: none;
+  flex: 1;
+  min-width: 80px;
+  font-size: var(--font-size-body-sm);
+}
+
+.tagInputInner::placeholder {
+  color: var(--color-text-muted);
+}
+
+.tagChipRemove {
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.multiDropdown {
+  position: relative;
+}
+
+.multiMenu {
+  position: absolute;
+  z-index: 30;
+  margin-top: 4px;
+  width: 100%;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  padding: 4px 0;
+}
+
+.multiOption {
+  width: 100%;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-size-body-sm);
+}
+
+.multiOption:hover {
+  background: rgba(148, 163, 184, 0.10);
+}
+
+.rangeRoot {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rangeValue {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.fileRoot {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fileDrop {
+  border-radius: var(--radius-card);
+  border: 1px dashed var(--color-border);
+  background: rgba(148, 163, 184, 0.06);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fileDropTitle {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.fileDropHint {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fileItem {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+}
+
+.dateRoot {
+  width: 100%;
+  position: relative;
+}
+
+.datePopover {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 35;
+  width: 260px;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  padding: 10px;
+}
+
+.dateGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  font-size: var(--font-size-caption);
+}
+
+.dateHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.dateDayButton {
+  border: none;
+  border-radius: 999px;
+  height: 28px;
+  width: 28px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.dateDayButton:hover {
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.dateDaySelected {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.addressList {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
+  padding: 4px 0;
+}
+
+.addressItem {
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-size: var(--font-size-body-sm);
+  cursor: pointer;
+}
+
+.addressItem:hover {
+  background: rgba(148, 163, 184, 0.10);
+}
+
+.rteRoot {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+}
+
+.rteToolbar {
+  display: flex;
+  gap: 4px;
+  padding: 6px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rteButton {
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: var(--font-size-caption);
+  cursor: pointer;
+}
+
+.rteButton:hover {
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.rteContent {
+  min-height: 120px;
+  padding: 8px 10px;
+  font-size: var(--font-size-body-sm);
+  outline: none;
+}
+
+.rteContent:empty:before {
+  content: attr(data-placeholder);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .fileDrop {
+    padding: 10px;
+  }
+}
+

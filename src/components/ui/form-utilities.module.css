@@ -1,0 +1,116 @@
+.formSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+}
+
+.formSectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(var(--form-row-cols, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+@media (max-width: 640px) {
+  .formActions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+.fieldGroup {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldGroupLabel {
+  font-size: var(--font-size-body-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.fieldGroupHint {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.inlineFieldRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inlineFieldLabel {
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.inlineFieldRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inlineFieldValue {
+  font-size: var(--font-size-body);
+}
+
+.stepperRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepperTrack {
+  display: flex;
+  gap: 8px;
+}
+
+.stepDot {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.25);
+}
+
+.stepDotActive {
+  background: var(--color-primary);
+}
+
+.stepperLabels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+}
+
+.multiStepRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
