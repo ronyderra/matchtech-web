@@ -892,7 +892,7 @@ export default function JobSeekerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  Choose a username and password to sign in to your account.
+                  Choose a username and password to sign in to your account. Password must be at least 6 characters and include 1 capital letter and 1 number.
                 </p>
                 <FormField id="username" label="Username" required>
                   {(field) => (
