@@ -6,9 +6,9 @@ import styles from "./HowItWorks.module.css";
 const STEPS = [
   {
     number: 1,
-    title: "Explore",
+    title: "Swipe",
     description:
-      "Get access to accurate and relevant insights tailored to your needs. Stay informed with real-time updates.",
+      "Browse roles or candidates with a simple swipe. Pass or match in seconds and focus on what fits you best.",
     icon: (
       <svg
         width="120"
@@ -34,9 +34,9 @@ const STEPS = [
   },
   {
     number: 2,
-    title: "Compare",
+    title: "Get matched",
     description:
-      "Easily evaluate different roles and candidates side by side. Focus on what matters most to make the best decision.",
+      "When both sides match, you're connected. Get introduced to roles or talent that fit without the back-and-forth.",
     icon: (
       <svg
         width="120"
@@ -63,9 +63,9 @@ const STEPS = [
   },
   {
     number: 3,
-    title: "Choose",
+    title: "Start working",
     description:
-      "Select from trusted matches and move forward knowing you've made a well-informed choice.",
+      "Take the next step with confidence. Move from match to offer or hire and start working together.",
     icon: (
       <svg
         width="120"

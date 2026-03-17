@@ -5,11 +5,12 @@ import { Footer } from "@/components/homepage/Footer/Footer";
 
 export default function Home() {
   return (
-    <>
+    <div className="home-bg">
+      <div className="home-bg-spacer" aria-hidden="true" />
       <Header />
       <HeroSection />
       <HowItWorks />
       <Footer />
-    </>
+    </div>
   );
 }

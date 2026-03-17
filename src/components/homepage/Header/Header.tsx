@@ -20,8 +20,10 @@ export function Header() {
           left: 0,
           right: 0,
           zIndex: 50,
-          backgroundColor: "#FFFFFF",
-          borderBottom: "1px solid #E0DFDC",
+          backgroundColor: "rgba(255, 255, 255, 0.72)",
+          backdropFilter: "saturate(180%) blur(10px)",
+          WebkitBackdropFilter: "saturate(180%) blur(10px)",
+          borderBottom: "1px solid rgba(224, 223, 220, 0.8)",
           boxShadow: "0px 1px 2px rgba(0,0,0,0.05)",
         }}
       >

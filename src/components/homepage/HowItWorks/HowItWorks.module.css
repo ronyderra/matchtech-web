@@ -2,7 +2,7 @@
 .section {
   padding-top: 64px;
   padding-bottom: 80px;
-  background-color: var(--color-surface);
+  background-color: transparent;
 }
 
 /* Header */
@@ -28,6 +28,7 @@
 
   .header {
     margin-bottom: 48px;
+    text-align: left;
   }
 }
 
