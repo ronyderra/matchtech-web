@@ -193,12 +193,12 @@ export default function EmployerRegisterPage() {
 
   useEffect(() => {
     if (imageFiles.length === 0) {
-      setPhotoPreviewUrl(null);
+      queueMicrotask(() => setPhotoPreviewUrl(null));
       return;
     }
     const file = imageFiles[0];
     const url = URL.createObjectURL(file);
-    setPhotoPreviewUrl(url);
+    queueMicrotask(() => setPhotoPreviewUrl(url));
     return () => URL.revokeObjectURL(url);
   }, [imageFiles]);
 
