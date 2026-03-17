@@ -19,6 +19,9 @@ import {
   Modal,
   MultiSelectChips,
   MultiSelectDropdown,
+  TextArea,
+  TagInput,
+  Divider,
 } from "@/components/ui";
 import type {
   JobPosition,
@@ -148,8 +151,30 @@ export default function JobSeekerRegisterPage() {
   // Step 2: complete profile
   const [role, setRole] = useState("");
   const [yearsOfExperienceStr, setYearsOfExperienceStr] = useState("");
-  const [skillsProfileRaw, setSkillsProfileRaw] = useState("");
-  const [locationProfile, setLocationProfile] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [bio, setBio] = useState("");
+  const [skillsProfile, setSkillsProfile] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
+  const [resumeUrl, setResumeUrl] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [addressCity, setAddressCity] = useState("");
+  const [addressCountry, setAddressCountry] = useState("");
+
+  // Experience (step 3)
+  type ExperienceDraft = {
+    companyName: string;
+    industry: string;
+    yearsInCompany: string;
+    roleInCompany: string;
+  };
+  const [experienceDrafts, setExperienceDrafts] = useState<ExperienceDraft[]>([
+    { companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" },
+  ]);
 
   // Step 4: account
   const [username, setUsername] = useState("");
@@ -225,10 +250,6 @@ export default function JobSeekerRegisterPage() {
   const isLastStep = currentStep === steps.length - 1;
 
   async function handleCompleteRegistration() {
-    const skillsProfile = skillsProfileRaw
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
     const jobPositionWithId: JobPosition = {
       ...jobPosition,
       id: crypto.randomUUID(),
@@ -245,13 +266,24 @@ export default function JobSeekerRegisterPage() {
       imageUrl = dataUrl;
     }
     const backgroundColor = THEME_GRADIENTS[backgroundTheme].start;
+    const fullName =
+      `${firstName} ${lastName}`.trim() || username.trim() || "User";
+
+    const experiences = experienceDrafts
+      .map((exp) => ({
+        companyName: exp.companyName.trim(),
+        roleInCompany: exp.roleInCompany.trim(),
+        industry: exp.industry.trim() || undefined,
+        yearsInCompany: exp.yearsInCompany ? Number(exp.yearsInCompany) : undefined,
+      }))
+      .filter((exp) => exp.companyName || exp.roleInCompany);
 
     const talent: TalentDetails = {
       id: username.trim() || crypto.randomUUID(),
       type: "talent",
-      firstName: "",
-      lastName: "",
-      fullName: username.trim() || "User",
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      fullName,
       avatarUrl,
       imageUrl,
       backgroundColor,
@@ -261,20 +293,41 @@ export default function JobSeekerRegisterPage() {
       country: jobPosition.country,
       city: jobPosition.city,
       workPreference: jobPosition.workPreference,
-      bio: "",
-      skills: skillsProfile.length > 0 ? skillsProfile : [],
+      bio: bio.trim(),
+      skills: skillsProfile,
+      languages: languages.length ? languages : undefined,
+      linkedinUrl: linkedinUrl.trim() || undefined,
+      portfolioUrl: portfolioUrl.trim() || undefined,
+      githubUrl: githubUrl.trim() || undefined,
+      resumeUrl: resumeUrl.trim() || undefined,
+      email: email.trim(),
+      phoneNumber: phoneNumber.trim(),
+      address:
+        addressCity.trim() ||
+        addressCountry
+          ? {
+              city: addressCity.trim() || undefined,
+              country: addressCountry || undefined,
+            }
+          : undefined,
       availableForWork: true,
       availableFrom: availability || undefined,
-      jobPosition: jobPositionWithId,
-      tags: [
-        ...(priorities.length ? priorities.slice(0, 3) : []),
-        ...(compensationPreferences.length ? compensationPreferences.slice(0, 3) : []),
-      ].length
-        ? [
-            ...(priorities.length ? priorities.slice(0, 3) : []),
-            ...(compensationPreferences.length ? compensationPreferences.slice(0, 3) : []),
-          ]
+      priorities: priorities.length ? (priorities.slice(0, 3) as any) : undefined,
+      compensationPreferences: compensationPreferences.length
+        ? (compensationPreferences.slice(0, 3) as any)
         : undefined,
+      jobPosition: jobPositionWithId,
+      experiences: experiences.length
+        ? experiences.map((exp) => ({
+            id: crypto.randomUUID(),
+            companyName: exp.companyName,
+            jobTitle: exp.roleInCompany,
+            industry: exp.industry,
+            employmentType: jobPosition.employmentType,
+            yearsInCompany: exp.yearsInCompany,
+          }))
+        : undefined,
+      tags: undefined,
     };
 
     setUser(talent);
@@ -675,52 +728,300 @@ export default function JobSeekerRegisterPage() {
                     ? "Review and fix the information below. We extracted this from your CV — correct anything that’s wrong or add what’s missing."
                     : "Fill in your profile so we can create your card. You can add or change this later."}
                 </p>
-                <FormField id="job-title" label="Job title / Role" required>
+
+                <FormSection
+                  title="Personal information"
+                  description="Basic details to build your profile card."
+                >
+                <FormRow>
+                  <FormField id="first-name" label="First name" required>
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="e.g. Alex"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                  <FormField id="last-name" label="Last name" required>
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="e.g. Johnson"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                </FormRow>
+
+                <FormRow>
+                  <FormField id="email" label="Email" required>
+                    {(field) => (
+                      <Input
+                        {...field}
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                  <FormField id="phone" label="Phone number" required>
+                    {(field) => (
+                      <Input
+                        {...field}
+                        type="tel"
+                        placeholder="+1 555 123 4567"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                </FormRow>
+
+                <FormRow>
+                  <FormField id="address-country" label="Address country" required>
+                    {(field) => (
+                      <Select
+                        {...field}
+                        value={addressCountry}
+                        onChange={(e) => setAddressCountry(e.target.value)}
+                      >
+                        <option value="" disabled>
+                          Select country
+                        </option>
+                        {COUNTRIES.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
+                      </Select>
+                    )}
+                  </FormField>
+                  <FormField id="address-city" label="Address city" required>
+                    {(field) => (
+                      <Input
+                        {...field}
+                        placeholder="City"
+                        value={addressCity}
+                        onChange={(e) => setAddressCity(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                </FormRow>
+                <FormField id="bio" label="Bio" required>
                   {(field) => (
-                    <Input
+                    <TextArea
                       {...field}
-                      placeholder="e.g. Senior Frontend Engineer"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
+                      placeholder="A short summary about you, what you’ve done, and what you’re looking for."
+                      rows={4}
+                      value={bio}
+                      onChange={(e) => setBio(e.target.value)}
                     />
                   )}
                 </FormField>
-                <FormField id="years-exp" label="Years of experience">
-                  {(field) => (
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="e.g. 5+"
-                      value={yearsOfExperienceStr}
-                      onChange={(e) => setYearsOfExperienceStr(e.target.value)}
-                    />
-                  )}
-                </FormField>
-                <FormField id="skills" label="Key skills (comma-separated)">
-                  {(field) => (
-                    <Input
-                      {...field}
-                      placeholder="e.g. React, TypeScript, Node.js"
-                      value={skillsProfileRaw}
-                      onChange={(e) => setSkillsProfileRaw(e.target.value)}
-                    />
-                  )}
-                </FormField>
-                <FormField id="location" label="Location / Region">
-                  {(field) => (
-                    <Input
-                      {...field}
-                      placeholder="e.g. Remote, Europe"
-                      value={locationProfile}
-                      onChange={(e) => setLocationProfile(e.target.value)}
-                    />
-                  )}
-                </FormField>
+                </FormSection>
+
+                <Divider />
+
+                <FormSection title="Links" description="Optional links to your work and profiles.">
+                  <FormField id="linkedin" label="LinkedIn URL (optional)">
+                    {(field) => (
+                      <Input
+                        {...field}
+                        type="url"
+                        placeholder="https://www.linkedin.com/in/username"
+                        value={linkedinUrl}
+                        onChange={(e) => setLinkedinUrl(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                  <FormField id="portfolio" label="Portfolio URL (optional)">
+                    {(field) => (
+                      <Input
+                        {...field}
+                        type="url"
+                        placeholder="https://your-portfolio.com"
+                        value={portfolioUrl}
+                        onChange={(e) => setPortfolioUrl(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                  <FormRow>
+                    <FormField id="github" label="GitHub URL (optional)">
+                      {(field) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          placeholder="https://github.com/username"
+                          value={githubUrl}
+                          onChange={(e) => setGithubUrl(e.target.value)}
+                        />
+                      )}
+                    </FormField>
+                    <FormField id="resume" label="Resume URL (optional)">
+                      {(field) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          placeholder="Link to your resume (optional)"
+                          value={resumeUrl}
+                          onChange={(e) => setResumeUrl(e.target.value)}
+                        />
+                      )}
+                    </FormField>
+                  </FormRow>
+                </FormSection>
+
+                <Divider />
+
+                <FormSection
+                  title="Experience"
+                  description="Your past roles (optional for now)."
+                >
+                  {experienceDrafts.map((exp, index) => (
+                    <div key={index} style={{ marginBottom: 16 }}>
+                      <FormRow>
+                        <FormField id={`exp-company-${index}`} label="Company name">
+                          {(field) => (
+                            <Input
+                              {...field}
+                              value={exp.companyName}
+                              onChange={(e) =>
+                                setExperienceDrafts((prev) =>
+                                  prev.map((p, i) =>
+                                    i === index ? { ...p, companyName: e.target.value } : p
+                                  )
+                                )
+                              }
+                            />
+                          )}
+                        </FormField>
+                        <FormField id={`exp-industry-${index}`} label="Industry">
+                          {(field) => (
+                            <Input
+                              {...field}
+                              value={exp.industry}
+                              onChange={(e) =>
+                                setExperienceDrafts((prev) =>
+                                  prev.map((p, i) =>
+                                    i === index ? { ...p, industry: e.target.value } : p
+                                  )
+                                )
+                              }
+                            />
+                          )}
+                        </FormField>
+                      </FormRow>
+                      <FormRow>
+                        <FormField id={`exp-years-${index}`} label="Years in company">
+                          {(field) => (
+                            <Input
+                              {...field}
+                              type="number"
+                              min={0}
+                              value={exp.yearsInCompany}
+                              onChange={(e) =>
+                                setExperienceDrafts((prev) =>
+                                  prev.map((p, i) =>
+                                    i === index ? { ...p, yearsInCompany: e.target.value } : p
+                                  )
+                                )
+                              }
+                            />
+                          )}
+                        </FormField>
+                        <FormField id={`exp-role-${index}`} label="Role in company">
+                          {(field) => (
+                            <Input
+                              {...field}
+                              value={exp.roleInCompany}
+                              onChange={(e) =>
+                                setExperienceDrafts((prev) =>
+                                  prev.map((p, i) =>
+                                    i === index ? { ...p, roleInCompany: e.target.value } : p
+                                  )
+                                )
+                              }
+                            />
+                          )}
+                        </FormField>
+                      </FormRow>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() =>
+                      setExperienceDrafts((prev) => [
+                        ...prev,
+                        { companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" },
+                      ])
+                    }
+                  >
+                    + Add experience
+                  </Button>
+                </FormSection>
+
+                <Divider />
+
+                <FormSection
+                  title="Skills"
+                  description="Your core skills and strengths."
+                >
+                  <FormField id="skills" label="Skills" required>
+                    {() => (
+                      <TagInput
+                        tags={skillsProfile}
+                        onChange={setSkillsProfile}
+                        placeholder="Type a skill and press Enter"
+                        maxTags={50}
+                      />
+                    )}
+                  </FormField>
+                  <FormField id="languages" label="Languages (optional)">
+                    {() => (
+                      <MultiSelectDropdown
+                        value={languages}
+                        options={[
+                          { value: "English", label: "English" },
+                          { value: "Hebrew", label: "Hebrew" },
+                          { value: "Spanish", label: "Spanish" },
+                          { value: "French", label: "French" },
+                          { value: "German", label: "German" },
+                          { value: "Russian", label: "Russian" },
+                          { value: "Arabic", label: "Arabic" },
+                        ]}
+                        placeholder="Select languages"
+                        maxSelected={5}
+                        onChange={setLanguages}
+                      />
+                    )}
+                  </FormField>
+                </FormSection>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
                   <Button type="button" variant="secondary" onClick={handleBack}>
                     Back
                   </Button>
-                  <Button onClick={handleNext}>Continue</Button>
+                  <Button
+                    onClick={handleNext}
+                    disabled={
+                      !IS_DEV &&
+                      (!firstName.trim() ||
+                        !lastName.trim() ||
+                        !email.trim() ||
+                        !phoneNumber.trim() ||
+                        !addressCountry ||
+                        !addressCity.trim() ||
+                        !bio.trim() ||
+                        !role.trim() ||
+                        skillsProfile.length === 0)
+                    }
+                  >
+                    Continue
+                  </Button>
                 </Stack>
               </FormSection>
             )}

@@ -30,6 +30,15 @@ export type CompensationPreference =
   | "Flexible compensation (choose your mix)"
   | "Not important"
 
+export interface Address {
+  addressLine1?: string
+  addressLine2?: string
+  city?: string
+  stateRegion?: string
+  postalCode?: string
+  country?: string
+}
+
 export interface JobPosition {
   id: string
 
@@ -66,13 +75,11 @@ export interface Experience {
   // Job
   companyName: string
   jobTitle: string
-  department?: string
+  industry?: string
   employmentType: EmploymentType
 
   // When
-  startDate: string
-  endDate?: string
-  isCurrent?: boolean
+  yearsInCompany?: number
 
   // Where
   country?: string
@@ -112,7 +119,6 @@ export interface TalentDetails {
   bio: string
   skills: string[]
   languages?: string[]
-  industries?: string[]
 
   // Compensation
   expectedSalaryMin?: number
@@ -124,6 +130,11 @@ export interface TalentDetails {
   portfolioUrl?: string
   resumeUrl?: string
   githubUrl?: string
+
+  // Contact
+  email: string
+  phoneNumber: string
+  address?: Address
 
   // Availability
   availableForWork: boolean
@@ -156,6 +167,11 @@ export interface CompanyDetails {
   imageUrl: string
   backgroundColor: string
   websiteUrl?: string
+
+  // Contact
+  email?: string
+  phoneNumber?: string
+  address?: Address
 
   // Company info
   industry?: string
