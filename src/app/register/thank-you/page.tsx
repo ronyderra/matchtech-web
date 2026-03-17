@@ -62,7 +62,7 @@ export default function RegisterThankYouPage() {
 
   return (
     <Container>
-      <div style={{ maxWidth: 1040, margin: "0 auto", paddingTop: 32, paddingBottom: 56 }}>
+      <div className={styles.pageShell}>
         <Section>
           <Grid
             cols={2}
@@ -73,9 +73,7 @@ export default function RegisterThankYouPage() {
             {/* Left: copy + next steps */}
             <Stack
               gap={22}
-              style={{
-                alignItems: "flex-start",
-              }}
+              className={styles.leftCol}
             >
               <Stack
                 gap={10}
@@ -102,7 +100,11 @@ export default function RegisterThankYouPage() {
                   Your MatchTech profile is now set up. We’re still getting everything ready, and
                   we’ll notify you by email as soon as the platform goes live.
                 </Text>
-                <Text as="p" style={{ margin: 0, color: "var(--color-text-muted)", fontSize: 13 }}>
+                <Text
+                  as="p"
+                  className={styles.mobileHide}
+                  style={{ margin: 0, color: "var(--color-text-muted)", fontSize: 13 }}
+                >
                   In the meantime, here’s a preview of your profile as it currently looks.
                 </Text>
               </Stack>
@@ -118,7 +120,11 @@ export default function RegisterThankYouPage() {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
                     <div style={{ textAlign: "left" }}>
-                      <Text as="p" style={{ margin: 0, fontSize: 14, color: "var(--color-text-secondary)" }}>
+                      <Text
+                        as="p"
+                        className={styles.notifyTextAlign}
+                        style={{ margin: 0, fontSize: 14, color: "var(--color-text-secondary)" }}
+                      >
                         We’ll notify you at:
                       </Text>
                       <Text
@@ -175,7 +181,7 @@ export default function RegisterThankYouPage() {
                 </Text>
               </Card>
 
-              <div>
+              <div className={styles.mobileHide}>
                 <Heading as="h2" size="md">
                   What happens next
                 </Heading>
@@ -186,13 +192,16 @@ export default function RegisterThankYouPage() {
                 </ul>
               </div>
 
-              <Stack direction="row" gap={12} wrap style={{ marginTop: 4 }}>
+              <Stack
+                direction="row"
+                gap={12}
+                wrap
+                className={styles.buttonRow}
+                style={{ marginTop: 4 }}
+              >
                 <Link href="/">
                   <Button>Back to homepage</Button>
                 </Link>
-                <Button variant="secondary" disabled>
-                  Update profile details
-                </Button>
               </Stack>
               <Text as="p" style={{ margin: 0, fontSize: 13, color: "var(--color-text-muted)" }}>
                 Profile editing will be available when MatchTech goes live.
