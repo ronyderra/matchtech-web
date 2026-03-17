@@ -1,4 +1,3 @@
-import * as pdfjsLib from "pdfjs-dist";
 import { franc } from "franc";
 
 const PDFJS_WORKER_VERSION = "5.5.207";
@@ -7,8 +6,14 @@ const MAX_PAGES = 5;
 const MIN_TEXT_LENGTH_FOR_SCANNED_CHECK = 100; // below this = likely image-only (optional)
 const MIN_TEXT_LENGTH_FOR_LANGUAGE_CHECK = 100; // need enough text to detect language
 
-if (typeof window !== "undefined") {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS_WORKER_VERSION}/build/pdf.worker.min.mjs`;
+let _pdfjsLib: typeof import("pdfjs-dist") | null = null;
+async function getPdfjs() {
+  if (typeof window === "undefined") return null;
+  if (_pdfjsLib) return _pdfjsLib;
+  const lib = await import("pdfjs-dist");
+  lib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${PDFJS_WORKER_VERSION}/build/pdf.worker.min.mjs`;
+  _pdfjsLib = lib;
+  return lib;
 }
 
 export class PdfRejectError extends Error {
@@ -33,6 +38,9 @@ export async function extractTextFromPdf(file: File): Promise<string> {
     console.warn("extractTextFromPdf: file is not a PDF", file.name);
     return "";
   }
+
+  const pdfjsLib = await getPdfjs();
+  if (!pdfjsLib) return "";
 
   if (file.size > MAX_FILE_SIZE_BYTES) {
     throw new PdfRejectError(

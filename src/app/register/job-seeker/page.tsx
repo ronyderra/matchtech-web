@@ -22,6 +22,8 @@ import {
   TextArea,
   TagInput,
   Divider,
+  ProgressBar,
+  Toast,
 } from "@/components/ui";
 import type {
   JobPosition,
@@ -29,6 +31,8 @@ import type {
   Seniority,
   EmploymentType,
   WorkPreference,
+  PriorityPreference,
+  CompensationPreference,
 } from "@/types";
 import { useUserStore } from "@/store";
 import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
@@ -149,8 +153,8 @@ export default function JobSeekerRegisterPage() {
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
 
   // Step 2: complete profile
-  const [role, setRole] = useState("");
-  const [yearsOfExperienceStr, setYearsOfExperienceStr] = useState("");
+  const [role] = useState("");
+  const [yearsOfExperienceStr] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
@@ -181,11 +185,42 @@ export default function JobSeekerRegisterPage() {
 
   // PDF error popup (step 2)
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [cvProcessing, setCvProcessing] = useState(false);
+  const [cvProgress, setCvProgress] = useState(0);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastStatus, setToastStatus] = useState<"success" | "error" | "info">("info");
+  const [toastTitle, setToastTitle] = useState("");
+  const [toastDescription, setToastDescription] = useState("");
+
+  function showToast(status: "success" | "error" | "info", title: string, description?: string) {
+    setToastStatus(status);
+    setToastTitle(title);
+    setToastDescription(description ?? "");
+    setToastOpen(true);
+    window.setTimeout(() => setToastOpen(false), 4500);
+  }
+
+  async function postWithTimeout(url: string, body: unknown, timeoutMs: number) {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+      const text = await res.text();
+      return { ok: res.ok, status: res.status, text };
+    } finally {
+      window.clearTimeout(timeout);
+    }
+  }
 
   // Step 1: availability
   const [availability, setAvailability] = useState("");
-  const [priorities, setPriorities] = useState<string[]>([]);
-  const [compensationPreferences, setCompensationPreferences] = useState<string[]>([]);
+  const [priorities, setPriorities] = useState<PriorityPreference[]>([]);
+  const [compensationPreferences, setCompensationPreferences] = useState<CompensationPreference[]>([]);
 
   // Same gradient themes as hero section swipe cards (radial gradient)
   const THEME_GRADIENTS: Record<
@@ -246,7 +281,6 @@ export default function JobSeekerRegisterPage() {
     return () => URL.revokeObjectURL(url);
   }, [imageFiles]);
 
-  const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === steps.length - 1;
 
   async function handleCompleteRegistration() {
@@ -312,9 +346,9 @@ export default function JobSeekerRegisterPage() {
           : undefined,
       availableForWork: true,
       availableFrom: availability || undefined,
-      priorities: priorities.length ? (priorities.slice(0, 3) as any) : undefined,
+      priorities: priorities.length ? priorities.slice(0, 3) : undefined,
       compensationPreferences: compensationPreferences.length
-        ? (compensationPreferences.slice(0, 3) as any)
+        ? compensationPreferences.slice(0, 3)
         : undefined,
       jobPosition: jobPositionWithId,
       experiences: experiences.length
@@ -366,6 +400,12 @@ export default function JobSeekerRegisterPage() {
           description="Complete the steps below to create your account."
         >
           <Stack gap={32}>
+            <Toast
+              open={toastOpen}
+              status={toastStatus}
+              title={toastTitle}
+              description={toastDescription || undefined}
+            />
             <Stepper steps={steps} currentIndex={currentStep} />
 
             {currentStep === 0 && (
@@ -588,7 +628,7 @@ export default function JobSeekerRegisterPage() {
                         const trimmed = next.slice(0, 3);
                         // If "Not important" is selected, it should be the only selection.
                         setCompensationPreferences(
-                          trimmed.includes("Not important") ? ["Not important"] : trimmed
+                          (trimmed.includes("Not important") ? ["Not important"] : trimmed) as CompensationPreference[]
                         );
                       }}
                     />
@@ -600,7 +640,7 @@ export default function JobSeekerRegisterPage() {
                       value={priorities}
                       options={PRIORITY_OPTIONS}
                       maxSelected={3}
-                      onChange={(next) => setPriorities(next.slice(0, 3))}
+                      onChange={(next) => setPriorities(next.slice(0, 3) as PriorityPreference[])}
                     />
                   )}
                 </FormField>
@@ -645,20 +685,51 @@ export default function JobSeekerRegisterPage() {
                       setPdfError("Only PDF files are accepted. Please upload a PDF.");
                     }
                     setCvFiles(fileList);
-                    fileList.forEach((file) => {
-                      extractTextFromPdf(file).catch((err) => {
+                    const file = fileList[0];
+                    if (!file) return;
+                    setCvProcessing(true);
+                    setCvProgress(10);
+                    showToast("info", "Processing CV", "Extracting text from your PDF…");
+                    extractTextFromPdf(file)
+                      .then(async (fullText) => {
+                        setCvProgress(60);
+                        const result = await postWithTimeout(
+                          "/api/openai",
+                          { CV: fullText, fileName: file.name },
+                          15000
+                        );
+                        if (!result.ok) {
+                          throw new Error(`OpenAI proxy returned ${result.status}`);
+                        }
+                        console.log("[CV parse response]", result.text);
+                        setCvProgress(100);
+                        showToast("success", "CV processed", "Data extracted successfully.");
+                      })
+                      .catch((err) => {
+                        const isAbort =
+                          err instanceof DOMException && err.name === "AbortError";
                         const message =
-                          err instanceof PdfRejectError
-                            ? err.message
-                            : err instanceof Error
+                          isAbort
+                            ? "We couldn’t get a response in time. Please continue and fill details manually."
+                            : err instanceof PdfRejectError
                               ? err.message
-                              : "This PDF could not be read. Please use a different file.";
-                        setPdfError(message);
+                              : err instanceof Error
+                                ? err.message
+                                : "There was a problem processing your CV. Please continue manually.";
+                        showToast("error", "CV processing failed", message);
                         setCvFiles((prev) => prev.filter((f) => f !== file));
+                      })
+                      .finally(() => {
+                        setCvProcessing(false);
+                        setCvProgress(0);
                       });
-                    });
                   }}
                 />
+                {cvProcessing ? (
+                  <div style={{ marginTop: 12 }}>
+                    <ProgressBar value={Math.max(5, cvProgress)} max={100} label="Processing…" />
+                  </div>
+                ) : null}
                 <Modal
                   open={!!pdfError}
                   title="Problem with PDF"
