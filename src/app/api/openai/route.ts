@@ -53,13 +53,15 @@ OUTPUT FORMAT:
     {
       "companyName": string | null,
       "industry": string | null,
-      "years": string | null,
+      "years": number | null,
       "role": string | null
     }
   ],
   "skills": string[],
   "languages": string[]
 }`;
+    const extraConstraint =
+      "IMPORTANT: experience[].years must be a NUMBER representing years-in-company (e.g. 2, 3.5). If you cannot infer reliably, return null.";
 
     const openaiResponse = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
@@ -80,7 +82,7 @@ OUTPUT FORMAT:
             content: [
               {
                 type: "input_text",
-                text: systemPrompt,
+                text: `${systemPrompt}\n\n${extraConstraint}`,
               },
             ],
           },

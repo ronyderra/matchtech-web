@@ -312,6 +312,18 @@ export default function JobSeekerRegisterPage() {
     setAddressCity(t.address?.city ?? "");
     setAddressCountry(t.address?.country ?? "");
 
+    // Experiences (used in the UI as drafts)
+    if (t.experiences && t.experiences.length > 0) {
+      setExperienceDrafts(
+        t.experiences.map((e) => ({
+          companyName: e.companyName ?? "",
+          industry: e.industry ?? "",
+          yearsInCompany: e.yearsInCompany !== undefined ? String(e.yearsInCompany) : "",
+          roleInCompany: e.jobTitle ?? "",
+        }))
+      );
+    }
+
     // Step 3
     if (t.imageUrl) {
       queueMicrotask(() => setPhotoPreviewUrl(t.imageUrl));
@@ -848,13 +860,22 @@ export default function JobSeekerRegisterPage() {
 
                         try {
                           const responseJson = JSON.parse(result.text) as any;
-                          const maybeOutputText =
-                            typeof responseJson?.output_text === "string"
-                              ? responseJson.output_text
-                              : responseJson?.output?.[0]?.content?.find?.(
-                                  (c: any) => c?.type === "output_text" && typeof c?.text === "string"
-                                )?.text;
-                          const parsed = JSON.parse(String(maybeOutputText ?? "{}")) as any;
+                          // The API might return:
+                          // 1) the parsed JSON object directly, OR
+                          // 2) a Responses API envelope where JSON is inside output_text/content.
+                          const parsed =
+                            responseJson && typeof responseJson === "object" && "firstName" in responseJson
+                              ? responseJson
+                              : (() => {
+                                  const maybeOutputText =
+                                    typeof responseJson?.output_text === "string"
+                                      ? responseJson.output_text
+                                      : responseJson?.output?.[0]?.content?.find?.(
+                                          (c: any) =>
+                                            c?.type === "output_text" && typeof c?.text === "string"
+                                        )?.text;
+                                  return JSON.parse(String(maybeOutputText ?? "{}"));
+                                })();
 
                           const nextFirst = parsed?.firstName ?? null;
                           const nextLast = parsed?.lastName ?? null;
@@ -884,6 +905,29 @@ export default function JobSeekerRegisterPage() {
                           if (typeof nextResumeUrl === "string") setResumeUrl(nextResumeUrl);
                           if (nextSkills.length) setSkillsProfile(nextSkills.map(String));
                           if (nextLanguages.length) setLanguages(nextLanguages.map(String));
+
+                          // Experience rows (Step 3 in your flow)
+                          if (Array.isArray(parsed?.experience)) {
+                            const drafts = parsed.experience
+                              .map((e: any) => ({
+                                companyName: e?.companyName ? String(e.companyName) : "",
+                                industry: e?.industry ? String(e.industry) : "",
+                                yearsInCompany:
+                                  typeof e?.years === "number" && Number.isFinite(e.years)
+                                    ? String(e.years)
+                                    : "",
+                                roleInCompany: e?.role ? String(e.role) : "",
+                              }))
+                              .filter(
+                                (e: any) =>
+                                  e.companyName || e.industry || e.yearsInCompany || e.roleInCompany
+                              );
+                            setExperienceDrafts(
+                              drafts.length
+                                ? drafts
+                                : [{ companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" }]
+                            );
+                          }
 
                           // Persist to draft immediately
                           patchUser({
@@ -917,7 +961,10 @@ export default function JobSeekerRegisterPage() {
                                   jobTitle: e?.role ? String(e.role) : "",
                                   industry: e?.industry ? String(e.industry) : undefined,
                                   employmentType: jobPosition.employmentType,
-                                  yearsInCompany: undefined,
+                                  yearsInCompany:
+                                    typeof e?.years === "number" && Number.isFinite(e.years)
+                                      ? e.years
+                                      : undefined,
                                 }))
                               : undefined,
                           } as any);
