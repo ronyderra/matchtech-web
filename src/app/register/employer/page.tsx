@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Breadcrumbs,
   Container,
@@ -153,7 +154,7 @@ export default function EmployerRegisterPage() {
   const [industry, setIndustry] = useState("");
   const [companyCity, setCompanyCity] = useState("");
   const [companyDescription, setCompanyDescription] = useState("");
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     initDraft("company");
@@ -172,7 +173,7 @@ export default function EmployerRegisterPage() {
     setIndustry(c.industry ?? "");
     setCompanyCity(c.address?.city ?? "");
     setCompanyDescription(c.description ?? "");
-    setUsername(c.id ?? "");
+    setEmail(c.email ?? "");
     if (c.imageUrl) queueMicrotask(() => setPhotoPreviewUrl(c.imageUrl));
     const themeMatch = (Object.keys(THEME_GRADIENTS) as BackgroundTheme[]).find(
       (k) => THEME_GRADIENTS[k].start === c.backgroundColor
@@ -258,7 +259,7 @@ export default function EmployerRegisterPage() {
           backgroundColor: THEME_GRADIENTS[backgroundTheme].start,
         });
       } else if (currentStep === 4) {
-        patchUser({ type: "company", id: username.trim() || user.id } as any);
+        patchUser({ type: "company", email: email.trim() || undefined } as any);
       }
     }
 
@@ -352,6 +353,19 @@ export default function EmployerRegisterPage() {
                   </button>
                 </p>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
+                  <Link href="/" style={{ textDecoration: "none" }}>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      style={{
+                        backgroundColor: "var(--color-surface)",
+                        border: "1px solid var(--color-border)",
+                        color: "var(--color-text-primary)",
+                      }}
+                    >
+                      Go back home
+                    </Button>
+                  </Link>
                   <Button onClick={handleNext}>Continue</Button>
                 </Stack>
               </FormSection>
@@ -672,16 +686,17 @@ export default function EmployerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  Choose a username and password to sign in to your account.
+                  Use your work email and a password to sign in to your account.
                 </p>
-                <FormField id="username" label="Username" required>
+                <FormField id="account-email" label="Email" required>
                   {(field) => (
                     <Input
                       {...field}
-                      placeholder="Choose a username"
-                      autoComplete="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      type="email"
+                      placeholder="you@company.com"
+                      autoComplete="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   )}
                 </FormField>
@@ -702,14 +717,23 @@ export default function EmployerRegisterPage() {
                     checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
                   >
-                    I agree to the Terms of Service and Privacy Policy
+                    I agree to the{" "}
+                    <Link href="/terms" style={{ color: "var(--color-primary)", textDecoration: "underline" }}>
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link href="/privacy" style={{ color: "var(--color-primary)", textDecoration: "underline" }}>
+                      Privacy Policy
+                    </Link>
                   </Checkbox>
                 </Stack>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
                   <Button type="button" variant="secondary" onClick={handleBack}>
                     Back
                   </Button>
-                  <Button onClick={handleNext}>Complete registration</Button>
+                  <Button onClick={handleNext} disabled={!email.trim() || !agreedToTerms}>
+                    Complete registration
+                  </Button>
                 </Stack>
               </FormSection>
             )}

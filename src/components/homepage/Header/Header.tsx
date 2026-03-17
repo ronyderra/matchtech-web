@@ -31,7 +31,7 @@ export function Header() {
               <span
                 style={{
                   fontWeight: 700,
-                  fontSize: "var(--font-size-title)",
+                  fontSize: "clamp(19px, 2vw, 26px)",
                   letterSpacing: "-0.02em",
                 }}
               >

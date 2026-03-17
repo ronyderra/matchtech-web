@@ -6,16 +6,19 @@
 
 @media (min-width: 768px) {
   .step3Layout {
-    flex-direction: row;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    column-gap: 32px;
+    row-gap: 24px;
+    align-items: start;
   }
 
   .step3Form {
-    flex: 1;
     min-width: 0;
   }
 
   .step3Preview {
-    flex: 0 0 320px;
+    width: 320px;
+    justify-self: end;
   }
 }

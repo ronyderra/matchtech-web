@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Breadcrumbs,
   Container,
@@ -185,9 +186,6 @@ export default function JobSeekerRegisterPage() {
     { companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" },
   ]);
 
-  // Step 4: account
-  const [username, setUsername] = useState("");
-
   // PDF error popup (step 2)
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [cvProcessing, setCvProcessing] = useState(false);
@@ -348,8 +346,6 @@ export default function JobSeekerRegisterPage() {
     );
     if (themeMatch) setBackgroundTheme(themeMatch);
 
-    // Step 4
-    setUsername(t.id ?? "");
     setAgreedToTerms(false);
     setAgreedToCvExtraction(false);
   }, [user]);
@@ -385,8 +381,7 @@ export default function JobSeekerRegisterPage() {
       imageUrl = dataUrl;
     }
     const backgroundColor = THEME_GRADIENTS[backgroundTheme].start;
-    const fullName =
-      `${firstName} ${lastName}`.trim() || username.trim() || "User";
+    const fullName = `${firstName} ${lastName}`.trim() || email.trim().split("@")[0] || "User";
 
     const experiences = experienceDrafts
       .map((exp) => ({
@@ -397,8 +392,15 @@ export default function JobSeekerRegisterPage() {
       }))
       .filter((exp) => exp.companyName || exp.roleInCompany);
 
+    const id =
+      user?.type === "talent"
+        ? user.id
+        : typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : String(Date.now());
+
     const talent: TalentDetails = {
-      id: username.trim() || crypto.randomUUID(),
+      id,
       type: "talent",
       firstName: firstName.trim(),
       lastName: lastName.trim(),
@@ -526,13 +528,6 @@ export default function JobSeekerRegisterPage() {
         backgroundColor: THEME_GRADIENTS[backgroundTheme].start,
       });
       return;
-    }
-
-    if (stepIndex === 4) {
-      patchUser({
-        type: "talent",
-        id: username.trim() || user.id,
-      });
     }
   }
 
@@ -790,33 +785,64 @@ export default function JobSeekerRegisterPage() {
                     )}
                   </FormField>
                 </FormRow>
-                <FormField id="compensation-preferences" label="Which additional compensation matters to you? (pick up to 3)">
-                  {() => (
-                    <MultiSelectChips
-                      value={compensationPreferences}
-                      options={COMPENSATION_PREFERENCE_OPTIONS}
-                      maxSelected={3}
-                      onChange={(next) => {
-                        const trimmed = next.slice(0, 3);
-                        // If "Not important" is selected, it should be the only selection.
-                        setCompensationPreferences(
-                          (trimmed.includes("Not important") ? ["Not important"] : trimmed) as CompensationPreference[]
-                        );
-                      }}
-                    />
-                  )}
-                </FormField>
-                <FormField id="priorities" label="What matters most to you? (pick up to 3)">
-                  {() => (
-                    <MultiSelectChips
-                      value={priorities}
-                      options={PRIORITY_OPTIONS}
-                      maxSelected={3}
-                      onChange={(next) => setPriorities(next.slice(0, 3) as PriorityPreference[])}
-                    />
-                  )}
-                </FormField>
+                <div style={{ marginTop: 14 }}>
+                  <FormField
+                    id="compensation-preferences"
+                    label={
+                      <span style={{ color: "var(--color-text-primary)" }}>
+                        Which additional compensation matters to you? (pick up to 3)
+                      </span>
+                    }
+                  >
+                    {() => (
+                      <MultiSelectChips
+                        value={compensationPreferences}
+                        options={COMPENSATION_PREFERENCE_OPTIONS}
+                        maxSelected={3}
+                        onChange={(next) => {
+                          const trimmed = next.slice(0, 3);
+                          // If "Not important" is selected, it should be the only selection.
+                          setCompensationPreferences(
+                            (trimmed.includes("Not important") ? ["Not important"] : trimmed) as CompensationPreference[]
+                          );
+                        }}
+                      />
+                    )}
+                  </FormField>
+                </div>
+                <div style={{ marginTop: 14 }}>
+                  <FormField
+                    id="priorities"
+                    label={
+                      <span style={{ color: "var(--color-text-primary)" }}>
+                        What matters most to you? (pick up to 3)
+                      </span>
+                    }
+                  >
+                    {() => (
+                      <MultiSelectChips
+                        value={priorities}
+                        options={PRIORITY_OPTIONS}
+                        maxSelected={3}
+                        onChange={(next) => setPriorities(next.slice(0, 3) as PriorityPreference[])}
+                      />
+                    )}
+                  </FormField>
+                </div>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
+                  <Link href="/" style={{ textDecoration: "none" }}>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      style={{
+                        backgroundColor: "var(--color-surface)",
+                        border: "1px solid var(--color-border)",
+                        color: "var(--color-text-primary)",
+                      }}
+                    >
+                      Go back home
+                    </Button>
+                  </Link>
                   <Button
                     onClick={handleNext}
                     disabled={
@@ -1470,16 +1496,6 @@ export default function JobSeekerRegisterPage() {
                   </div>
 
                   <div className={styles.step3Preview}>
-                    <p
-                      style={{
-                        fontSize: "var(--font-size-body-sm)",
-                        fontWeight: 500,
-                        color: "var(--color-text-primary)",
-                        marginBottom: 10,
-                      }}
-                    >
-                      Preview
-                    </p>
                     <div
                       style={{
                         width: "100%",
@@ -1566,16 +1582,17 @@ export default function JobSeekerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  Choose a username and password to sign in to your account. Password must be at least 6 characters and include 1 capital letter and 1 number.
+                  Use your email and a password to sign in to your account. Password must be at least 6 characters and include 1 capital letter and 1 number.
                 </p>
-                <FormField id="username" label="Username" required>
+                <FormField id="account-email" label="Email" required>
                   {(field) => (
                     <Input
                       {...field}
-                      placeholder="Choose a username"
-                      autoComplete="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   )}
                 </FormField>
@@ -1596,14 +1613,23 @@ export default function JobSeekerRegisterPage() {
                     checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
                   >
-                    I agree to the Terms of Service and Privacy Policy
+                    I agree to the{" "}
+                    <Link href="/terms" style={{ color: "var(--color-primary)", textDecoration: "underline" }}>
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link href="/privacy" style={{ color: "var(--color-primary)", textDecoration: "underline" }}>
+                      Privacy Policy
+                    </Link>
                   </Checkbox>
                 </Stack>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
                   <Button type="button" variant="secondary" onClick={handleBack}>
                     Back
                   </Button>
-                  <Button onClick={handleNext}>Complete registration</Button>
+                  <Button onClick={handleNext} disabled={!email.trim() || !agreedToTerms}>
+                    Complete registration
+                  </Button>
                 </Stack>
               </FormSection>
             )}
