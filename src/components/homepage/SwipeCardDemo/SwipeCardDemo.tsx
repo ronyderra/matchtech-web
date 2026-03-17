@@ -525,10 +525,10 @@ export function SwipeCardDemo() {
   }, []);
 
   const startSwipe = useCallback(() => {
-    setPhase("swiping");
-    setSwipeDir((d) => (d === 1 ? -1 : 1));
-    setIndicatorVisible(true);
     const dir: 1 | -1 = swipeDir === 1 ? -1 : 1;
+    setPhase("swiping");
+    setSwipeDir(dir);
+    setIndicatorVisible(true);
     timers.current.push(
       setTimeout(() => {
         const oldFront = currentIndex;

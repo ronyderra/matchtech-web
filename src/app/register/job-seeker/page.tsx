@@ -159,7 +159,6 @@ export default function JobSeekerRegisterPage() {
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
 
   // Step 2: complete profile
-  const [role] = useState("");
   const [yearsOfExperienceStr] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -408,7 +407,7 @@ export default function JobSeekerRegisterPage() {
       avatarUrl,
       imageUrl,
       backgroundColor,
-      role: role.trim() || "Professional",
+      role: jobPosition.departments?.[0]?.trim() || "Professional",
       yearsOfExperience,
       employmentPreference: jobPosition.employmentType,
       country: jobPosition.country,
@@ -1399,7 +1398,6 @@ export default function JobSeekerRegisterPage() {
                         !addressCountry ||
                         !addressCity.trim() ||
                         !bio.trim() ||
-                        !role.trim() ||
                         skillsProfile.length === 0)
                     }
                   >
