@@ -723,7 +723,8 @@ export default function JobSeekerRegisterPage() {
                   </div>
                 </div>
 
-                <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
+                <div className={styles.buttonRow}>
+                <Stack direction="row" gap={12}>
                   <Link href="/" style={{ textDecoration: "none" }}>
                     <Button
                       type="button"
@@ -739,6 +740,7 @@ export default function JobSeekerRegisterPage() {
                   </Link>
                   <Button onClick={handleNext}>Continue</Button>
                 </Stack>
+                </div>
               </FormSection>
             )}
 
@@ -978,7 +980,11 @@ export default function JobSeekerRegisterPage() {
                     )}
                   </FormField>
                 </div>
-                <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
+                <div className={styles.buttonRow}>
+                <Stack direction="row" gap={12}>
+                  <Button type="button" variant="secondary" onClick={handleBack}>
+                    Back
+                  </Button>
                   <Button
                     onClick={handleNext}
                     disabled={
@@ -992,6 +998,7 @@ export default function JobSeekerRegisterPage() {
                     Continue
                   </Button>
                 </Stack>
+                </div>
               </FormSection>
             )}
 
@@ -1561,7 +1568,8 @@ export default function JobSeekerRegisterPage() {
                 </FormSection>
                 </>
                 ) : null}
-                <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
+                <div className={styles.buttonRow}>
+                <Stack direction="row" gap={12}>
                   <Button type="button" variant="secondary" onClick={handleBack}>
                     Back
                   </Button>
@@ -1583,6 +1591,7 @@ export default function JobSeekerRegisterPage() {
                     Continue
                   </Button>
                 </Stack>
+                </div>
               </FormSection>
             )}
 
@@ -1637,7 +1646,8 @@ export default function JobSeekerRegisterPage() {
                     </Link>
                   </Checkbox>
                 </Stack>
-                <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
+                <div className={styles.buttonRow}>
+                <Stack direction="row" gap={12}>
                   <Button type="button" variant="secondary" onClick={handleBack}>
                     Back
                   </Button>
@@ -1645,6 +1655,7 @@ export default function JobSeekerRegisterPage() {
                     Complete registration
                   </Button>
                 </Stack>
+                </div>
               </FormSection>
             )}
           </Stack>

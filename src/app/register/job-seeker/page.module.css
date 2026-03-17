@@ -4,6 +4,12 @@
   gap: 24px;
 }
 
+.step3Form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 @media (min-width: 768px) {
   .step3Layout {
     display: grid;
@@ -15,10 +21,37 @@
 
   .step3Form {
     min-width: 0;
+    align-items: flex-start;
   }
 
   .step3Preview {
     width: 320px;
     justify-self: end;
+  }
+}
+
+.step3Preview {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .step3Preview {
+    align-self: stretch;
+    align-items: stretch;
+  }
+}
+
+.buttonRow {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (max-width: 480px) {
+  .buttonRow {
+    justify-content: center;
   }
 }

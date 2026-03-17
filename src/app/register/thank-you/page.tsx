@@ -63,10 +63,25 @@ export default function RegisterThankYouPage() {
     <Container>
       <div style={{ maxWidth: 1040, margin: "0 auto", paddingTop: 32, paddingBottom: 56 }}>
         <Section>
-          <Grid cols={2} stackOnMobile gap={44} style={{ alignItems: "start" } as any}>
+          <Grid
+            cols={2}
+            stackOnMobile
+            gap={44}
+            style={{ alignItems: "start" } as any}
+          >
             {/* Left: copy + next steps */}
-            <Stack gap={22} style={{ alignItems: "flex-start" }}>
-              <Stack gap={10} style={{ alignItems: "flex-start" }}>
+            <Stack
+              gap={22}
+              style={{
+                alignItems: "flex-start",
+              }}
+            >
+              <Stack
+                gap={10}
+                style={{
+                  alignItems: "flex-start",
+                }}
+              >
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <Heading as="h1" size="lg" style={{ margin: 0 }}>
                     Thank you for registering
@@ -126,6 +141,19 @@ export default function RegisterThankYouPage() {
                 </Card>
               ) : null}
 
+              {/* Mobile: show preview under notify section */}
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <div style={{ width: "100%", maxWidth: 560 }}>
+                  <ProfileCardPreview user={user} />
+                </div>
+              </div>
+
               <Divider />
 
               <Card
@@ -169,11 +197,7 @@ export default function RegisterThankYouPage() {
             </Stack>
 
             {/* Right: preview */}
-            <Stack gap={12} style={{ alignItems: "center" }}>
-              <div style={{ width: "100%", maxWidth: 560 }}>
-                <ProfileCardPreview user={user} />
-              </div>
-            </Stack>
+            <Stack gap={12} style={{ alignItems: "center" }} />
           </Grid>
         </Section>
       </div>

@@ -92,10 +92,8 @@ export function FileUpload({
             <path d="M7 8l5 5 5-5" />
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
           </svg>
-          <div>
-            <div className={styles.fileDropText}>{label}</div>
-            {description ? <div className={styles.fileDropSubtext}>{description}</div> : null}
-          </div>
+          <div className={styles.fileDropText}>{label}</div>
+          {description ? <div className={styles.fileDropSubtext}>{description}</div> : null}
         </div>
       </div>
     </div>
