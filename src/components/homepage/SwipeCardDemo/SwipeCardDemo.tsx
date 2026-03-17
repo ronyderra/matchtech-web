@@ -202,6 +202,7 @@ export function profileToSwipeCardData(user: AppUser): SwipeCardData {
 
 export function ProfileCardPreview({ user }: { user: AppUser }) {
   const card = profileToSwipeCardData(user);
+  const limitedDescription = limitToSentences(card.description, 2);
   const theme = card.theme ?? "blue";
   const themeColors = THEME_COLORS[theme];
   const cardThemeStyle: React.CSSProperties = {
@@ -215,7 +216,7 @@ export function ProfileCardPreview({ user }: { user: AppUser }) {
   };
 
   return (
-    <div className={styles.root}>
+    <div className={[styles.root, styles.previewRoot].join(" ")}>
       <div className={styles.stack}>
         <div className={[styles.cardSlot, styles.front].filter(Boolean).join(" ")}>
           <div className={styles.card} style={cardThemeStyle}>
@@ -291,46 +292,53 @@ export function ProfileCardPreview({ user }: { user: AppUser }) {
                 </>
               )}
 
-              {card.title ? <h2 className={styles.cardTitle}>{card.title}</h2> : null}
-              {card.subtitle ? <p className={styles.cardSubtitle}>{card.subtitle}</p> : null}
-              {card.metaLine ? <p className={styles.cardMetaLine}>{card.metaLine}</p> : null}
-              {card.description ? <p className={styles.cardBody}>{card.description}</p> : null}
+              <h2 className={styles.cardTitle}>{card.title}</h2>
+              <p className={styles.cardSubtitle}>{card.subtitle}</p>
+              <p className={styles.cardMetaLine}>{card.metaLine}</p>
+              <p className={styles.cardBody}>{limitedDescription}</p>
 
-              {card.quickFacts.length > 0 ? (
-                <div className={styles.factsGrid}>
-                  {card.quickFacts.map((f) => (
-                    <div key={f.label} className={styles.factItem}>
-                      <span className={styles.factLabel}>{f.label}</span>
-                      <span className={styles.factValue}>{f.value}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : null}
+              <div className={styles.factsGrid}>
+                {card.quickFacts.map((f) => (
+                  <div key={f.label} className={styles.factItem}>
+                    <span className={styles.factLabel}>{f.label}</span>
+                    <span className={styles.factValue}>{f.value}</span>
+                  </div>
+                ))}
+              </div>
 
-              {card.tags.length > 0 || card.detailItems.length > 0 ? (
-                <div className={styles.divider} />
-              ) : null}
+              <div className={styles.divider} />
 
-              {card.tags.length > 0 ? (
-                <div className={styles.skillsRow}>
-                  {card.tags.map((tag) => (
-                    <span key={tag} className={styles.skillTag}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
+              <div className={styles.skillsRow}>
+                {card.tags.map((tag) => (
+                  <span key={tag} className={styles.skillTag}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
 
-              {card.detailItems.length > 0 ? (
-                <ul className={styles.detailsList}>
-                  {card.detailItems.map((t) => (
-                    <li key={t} className={styles.detailsItem}>
-                      <span className={styles.bulletDot} aria-hidden="true" />
-                      <span>{t}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+              <ul className={styles.detailsList}>
+                {card.detailItems.map((t) => (
+                  <li key={t} className={styles.detailsItem}>
+                    <span className={styles.bulletDot} aria-hidden="true" />
+                    <span>{t}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={styles.cardBottom}>
+              <button type="button" className={`${styles.actionButton} ${styles.actionPass}`}>
+                <span className={styles.actionIcon}>✕</span>
+                <span className={styles.actionLabel}>Pass</span>
+              </button>
+              <button type="button" className={`${styles.actionButton} ${styles.actionInfo}`}>
+                <span className={styles.actionIcon}>i</span>
+                <span className={styles.actionLabel}>Info</span>
+              </button>
+              <button type="button" className={`${styles.actionButton} ${styles.actionMatch}`}>
+                <span className={styles.actionIcon}>✓</span>
+                <span className={styles.actionLabel}>Match</span>
+              </button>
             </div>
           </div>
         </div>
@@ -504,6 +512,14 @@ const CARDS: SwipeCardData[] = [
   },
 ];
 
+function limitToSentences(text: string, maxSentences: number): string {
+  if (!text) return text;
+  const matches = text.match(/[^.!?]*[.!?]/g);
+  if (!matches) return text;
+  const limited = matches.slice(0, maxSentences).join(" ").trim();
+  return limited || text;
+}
+
 const IDLE_MS = 3800;
 const SWIPE_MS = 1000;
 const TRANSITION_MS = 900;
@@ -608,6 +624,7 @@ export function SwipeCardDemo() {
 
           const theme = card.theme ?? "blue";
           const themeColors = THEME_COLORS[theme];
+          const limitedDescription = limitToSentences(card.description, 2);
           const cardThemeStyle: React.CSSProperties = {
             ["--card-banner-start" as string]: themeColors.bannerStart,
             ["--card-banner-mid" as string]: themeColors.bannerMid,
@@ -720,7 +737,7 @@ export function SwipeCardDemo() {
                   <h2 className={styles.cardTitle}>{card.title}</h2>
                   <p className={styles.cardSubtitle}>{card.subtitle}</p>
                   <p className={styles.cardMetaLine}>{card.metaLine}</p>
-                  <p className={styles.cardBody}>{card.description}</p>
+                  <p className={styles.cardBody}>{limitedDescription}</p>
 
                   <div className={styles.factsGrid}>
                     {card.quickFacts.map((f) => (

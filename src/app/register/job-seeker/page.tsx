@@ -157,6 +157,10 @@ export default function JobSeekerRegisterPage() {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToCvExtraction, setAgreedToCvExtraction] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const steps = STEPS;
   type BackgroundTheme = "blue" | "violet" | "teal" | "amber" | "rose" | "emerald";
   const [backgroundTheme, setBackgroundTheme] = useState<BackgroundTheme>("blue");
@@ -1622,12 +1626,70 @@ export default function JobSeekerRegisterPage() {
                 <FormRow>
                   <FormField id="password" label="Password" required>
                     {(field) => (
-                      <Input {...field} type="password" placeholder="Choose a password" autoComplete="new-password" />
+                      <div style={{ position: "relative" }}>
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Choose a password"
+                          autoComplete="new-password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          style={{ paddingRight: 84 }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword((v) => !v)}
+                          style={{
+                            position: "absolute",
+                            right: 10,
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            border: "1px solid var(--color-border)",
+                            background: "var(--color-surface)",
+                            color: "var(--color-text-secondary)",
+                            borderRadius: 999,
+                            padding: "6px 10px",
+                            fontSize: 12,
+                            cursor: "pointer",
+                          }}
+                        >
+                          {showPassword ? "Hide" : "Show"}
+                        </button>
+                      </div>
                     )}
                   </FormField>
                   <FormField id="confirm-password" label="Confirm password" required>
                     {(field) => (
-                      <Input {...field} type="password" placeholder="Confirm password" autoComplete="new-password" />
+                      <div style={{ position: "relative" }}>
+                        <Input
+                          {...field}
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="Confirm password"
+                          autoComplete="new-password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          style={{ paddingRight: 84 }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword((v) => !v)}
+                          style={{
+                            position: "absolute",
+                            right: 10,
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                            border: "1px solid var(--color-border)",
+                            background: "var(--color-surface)",
+                            color: "var(--color-text-secondary)",
+                            borderRadius: 999,
+                            padding: "6px 10px",
+                            fontSize: 12,
+                            cursor: "pointer",
+                          }}
+                        >
+                          {showConfirmPassword ? "Hide" : "Show"}
+                        </button>
+                      </div>
                     )}
                   </FormField>
                 </FormRow>

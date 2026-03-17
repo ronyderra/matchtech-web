@@ -16,6 +16,7 @@ import {
 } from "@/components/ui";
 import { useUserStore } from "@/store";
 import { ProfileCardPreview } from "@/components/homepage/SwipeCardDemo/SwipeCardDemo";
+import styles from "./page.module.css";
 
 function CheckIcon() {
   return (
@@ -142,15 +143,17 @@ export default function RegisterThankYouPage() {
               ) : null}
 
               {/* Mobile: show preview under notify section */}
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <div style={{ width: "100%", maxWidth: 560 }}>
-                  <ProfileCardPreview user={user} />
+              <div className={styles.mobileOnly}>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div style={{ width: "100%", maxWidth: 560 }}>
+                    <ProfileCardPreview user={user} />
+                  </div>
                 </div>
               </div>
 
@@ -197,7 +200,13 @@ export default function RegisterThankYouPage() {
             </Stack>
 
             {/* Right: preview */}
-            <Stack gap={12} style={{ alignItems: "center" }} />
+            <div className={styles.desktopOnly}>
+              <Stack gap={12} style={{ alignItems: "center" }}>
+                <div style={{ width: "100%", maxWidth: 560 }}>
+                  <ProfileCardPreview user={user} />
+                </div>
+              </Stack>
+            </div>
           </Grid>
         </Section>
       </div>

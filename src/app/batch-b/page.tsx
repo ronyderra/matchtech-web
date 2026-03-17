@@ -60,6 +60,7 @@ import {
   Toast,
   Tooltip,
 } from "@/components/ui";
+import { SwipeCardDemo } from "@/components/homepage/SwipeCardDemo/SwipeCardDemo";
 
 const MOCK_ADDRESSES = [
   { id: "1", label: "Berlin, Germany (Remote friendly)" },
@@ -373,6 +374,12 @@ export default function BatchBPage() {
                 <FilePreview name="portfolio.pdf" sizeLabel="1.8 MB" status="uploading" />
               </Stack>
             </Grid>
+
+            <Section title="Swipe demo">
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <SwipeCardDemo />
+              </div>
+            </Section>
 
             <Grid cols={2} stackOnMobile gap={18}>
               <ErrorState

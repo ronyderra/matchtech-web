@@ -6,6 +6,15 @@
   height: 620px;
 }
 
+.previewRoot {
+}
+
+@media (min-width: 768px) {
+  .previewRoot {
+    height: 680px;
+  }
+}
+
 .stack {
   position: absolute;
   inset: 0;
@@ -105,6 +114,10 @@
 .cardTop {
   flex: 0 0 32%;
   position: relative;
+}
+
+.previewRoot .cardTop {
+  flex: 0 0 24%;
 }
 
 .banner {
@@ -325,6 +338,11 @@
   gap: 6px;
 }
 
+.previewRoot .skillsRow {
+  max-height: 28px;
+  overflow: hidden;
+}
+
 .skillTag {
   padding: 4px 10px;
   border-radius: var(--radius-chip);
@@ -496,7 +514,14 @@
 @media (max-width: 480px) {
   .root {
     max-width: min(360px, 92vw);
-    height: clamp(440px, 72vh, 540px);
+  }
+
+  .cardTop {
+    flex: 0 0 22%;
+  }
+
+  .previewRoot .cardTop {
+    flex: 0 0 22%;
   }
 
   .banner {
@@ -527,5 +552,17 @@
 
   .factsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardBody {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .factsGrid > *:nth-child(n + 3) {
+    display: none;
   }
 }
