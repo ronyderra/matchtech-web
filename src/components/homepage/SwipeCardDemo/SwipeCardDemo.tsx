@@ -344,12 +344,12 @@ const CARDS: SwipeCardData[] = [
     type: "company",
     theme: "blue",
     title: "Senior Frontend Engineer",
-    subtitle: "Acme.dev · Product team",
+    subtitle: "I-Need.com · Product team",
     metaLine: "Remote · Full-time · Europe",
     topRightPill: "€110k–€140k · Equity",
     avatarText: "A",
     avatarImageUrl: "/assets/companyImages/company-1.png",
-    companyName: "Acme.dev",
+    companyName: "I-Need.com",
     companyAbout:
       "We build a swipe-first hiring platform used by thousands of candidates and hiring teams every month. Product-led, remote-first, and growing across Europe.",
     companyFacts: [
@@ -403,7 +403,7 @@ const CARDS: SwipeCardData[] = [
     topRightPill: "€90k–€120k · Stock options",
     avatarText: "D",
     avatarImageUrl: "/assets/companyImages/company-2.png",
-    companyName: "DataFirst",
+    companyName: "Hugging-Life",
     companyAbout:
       "Data infrastructure and analytics for enterprise. We help companies unify data pipelines, real-time events, and BI. Series B, 200+ employees.",
     companyFacts: [
@@ -457,7 +457,7 @@ const CARDS: SwipeCardData[] = [
     topRightPill: "€100k–€130k · Bonus",
     avatarText: "S",
     avatarImageUrl: "/assets/companyImages/company-3.png",
-    companyName: "ScaleUp",
+    companyName: "LogigCloud",
     companyAbout:
       "B2B growth and engagement platform for mid-market and enterprise. We help sales and marketing teams align and convert. Remote-first, 150+ people.",
     companyFacts: [
