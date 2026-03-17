@@ -1,6 +1,6 @@
 // Shared literals for job/role level and employment type
-export type Seniority = "any" | "junior" | "mid" | "senior" | "lead" | "principal"
-export type EmploymentType = "any" | "full-time" | "part-time" | "contract" | "freelance"
+export type Seniority = "any" | "student" | "junior" | "mid" | "senior" | "lead" | "principal"
+export type EmploymentType = "any" | "student" | "full-time" | "part-time" | "contract" | "freelance"
 export type WorkPreference = "any" | "remote" | "hybrid" | "onsite"
 
 export type PriorityPreference =

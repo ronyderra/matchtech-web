@@ -38,21 +38,21 @@ import type {
 } from "@/types";
 import { useUserStore } from "@/store";
 import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
-import { COUNTRIES, DEPARTMENTS, INDUSTRIES } from "@/constants/options";
+import { COUNTRIES, DEPARTMENTS } from "@/constants/options";
 import styles from "./page.module.css";
 
 const IS_DEV = process.env.NODE_ENV === "development";
 
 const STEPS = [
   { id: "whatLookingFor", label: "What are you looking for?" },
-  { id: "cv", label: "Upload CV" },
-  { id: "completeProfile", label: "Complete missing information" },
+  { id: "completeProfile", label: "CV & profile" },
   { id: "image", label: "Upload image & background" },
   { id: "account", label: "Create account" },
 ];
 
 const SENIORITY_OPTIONS: { value: Seniority; label: string }[] = [
   { value: "any", label: "Any" },
+  { value: "student", label: "Student position" },
   { value: "junior", label: "Junior" },
   { value: "mid", label: "Mid-level" },
   { value: "senior", label: "Senior" },
@@ -62,6 +62,7 @@ const SENIORITY_OPTIONS: { value: Seniority; label: string }[] = [
 
 const EMPLOYMENT_TYPE_OPTIONS: { value: EmploymentType; label: string }[] = [
   { value: "any", label: "Any" },
+  { value: "student", label: "Student" },
   { value: "full-time", label: "Full-time" },
   { value: "part-time", label: "Part-time" },
   { value: "contract", label: "Contract" },
@@ -150,6 +151,9 @@ export default function JobSeekerRegisterPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [jobPosition, setJobPosition] = useState<Omit<JobPosition, "id">>(defaultJobPosition);
   const [cvFiles, setCvFiles] = useState<File[]>([]);
+  const [cvEntryMode, setCvEntryMode] = useState<"cv" | "manual">("cv");
+  const [cvParsed, setCvParsed] = useState(false);
+  const [cvUploadVisible, setCvUploadVisible] = useState(true);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToCvExtraction, setAgreedToCvExtraction] = useState(false);
@@ -472,11 +476,6 @@ export default function JobSeekerRegisterPage() {
     }
 
     if (stepIndex === 1) {
-      patchUser({ type: "talent" } as any);
-      return;
-    }
-
-    if (stepIndex === 2) {
       patchUser({
         type: "talent",
         firstName,
@@ -521,7 +520,7 @@ export default function JobSeekerRegisterPage() {
       return;
     }
 
-    if (stepIndex === 3) {
+    if (stepIndex === 2) {
       patchUser({
         type: "talent",
         backgroundColor: THEME_GRADIENTS[backgroundTheme].start,
@@ -543,10 +542,6 @@ export default function JobSeekerRegisterPage() {
 
   function handleBack() {
     setCurrentStep((s) => Math.max(0, s - 1));
-  }
-
-  function handleSkipCv() {
-    setCurrentStep((s) => s + 1);
   }
 
   return (
@@ -586,36 +581,18 @@ export default function JobSeekerRegisterPage() {
                 >
                   Tell us what kind of role and setup you want so we can match you with the right opportunities. This maps to your desired job position.
                 </p>
-                <FormRow>
-                  <FormField id="industry" label="Industry" required>
-                    {(field) => (
-                      <Select
-                        {...field}
-                        value={jobPosition.industry}
-                        onChange={(e) =>
-                          setJobPosition((prev) => ({ ...prev, industry: e.target.value }))
-                        }
-                      >
-                        <option value="" disabled>Select industry</option>
-                        {INDUSTRIES.map((industry) => (
-                          <option key={industry} value={industry}>
-                            {industry}
-                          </option>
-                        ))}
-                      </Select>
-                    )}
-                  </FormField>
-                  <FormField id="departments" label="Departments (pick up to 3)" required>
+                <FormRow columns={1}>
+                  <FormField id="departments" label="Departments (pick up to 4)" required>
                     {() => (
                       <MultiSelectDropdown
                         value={jobPosition.departments ?? []}
                         options={DEPARTMENTS.map((d) => ({ value: d, label: d }))}
-                        placeholder="Select up to 3"
-                        maxSelected={3}
+                        placeholder="Select up to 4"
+                        maxSelected={4}
                         onChange={(next) =>
                           setJobPosition((prev) => ({
                             ...prev,
-                            departments: next.slice(0, 3),
+                            departments: next.slice(0, 4),
                           }))
                         }
                       />
@@ -859,244 +836,6 @@ export default function JobSeekerRegisterPage() {
             )}
 
             {currentStep === 1 && (
-              <FormSection title="Upload your CV">
-                <p
-                  style={{
-                    fontSize: "var(--font-size-body-sm)",
-                    color: "var(--color-text-secondary)",
-                    lineHeight: 1.5,
-                    margin: 0,
-                  }}
-                >
-                  We will extract as much information as we can from your CV (job title, experience, skills, location, and more) to build your profile card so you can be matched with relevant opportunities. If we can’t read something, we’ll ask you to fill it in later.
-                </p>
-                <FileUpload
-                  label="CV / Resume"
-                  description="PDF ONLY • English • Max 3MB • Max 5 pages"
-                  accept=".pdf,application/pdf"
-                  onFilesSelected={(files) => {
-                    const fileList = Array.from(files).filter(
-                      (f) => f.type === "application/pdf"
-                    );
-                    if (fileList.length < Array.from(files).length) {
-                      setPdfError("Only PDF files are accepted. Please upload a PDF.");
-                    }
-                    setCvFiles(fileList);
-                    const file = fileList[0];
-                    if (!file) return;
-                    setCvProcessing(true);
-                    setCvProgress(3);
-                    showToast("info", "Processing CV", "Extracting text from your PDF…");
-                    extractTextFromPdf(file)
-                      .then(async (fullText) => {
-                        const result = await postWithTimeout(
-                          "/api/openai",
-                          { CV: fullText, fileName: file.name },
-                          15000
-                        );
-                        if (!result.ok) {
-                          throw new Error(`OpenAI proxy returned ${result.status}`);
-                        }
-                        console.log("[CV parse response]", result.text);
-
-                        try {
-                          const responseJson = JSON.parse(result.text) as any;
-                          // The API might return:
-                          // 1) the parsed JSON object directly, OR
-                          // 2) a Responses API envelope where JSON is inside output_text/content.
-                          const parsed =
-                            responseJson && typeof responseJson === "object" && "firstName" in responseJson
-                              ? responseJson
-                              : (() => {
-                                  const maybeOutputText =
-                                    typeof responseJson?.output_text === "string"
-                                      ? responseJson.output_text
-                                      : responseJson?.output?.[0]?.content?.find?.(
-                                          (c: any) =>
-                                            c?.type === "output_text" && typeof c?.text === "string"
-                                        )?.text;
-                                  return JSON.parse(String(maybeOutputText ?? "{}"));
-                                })();
-
-                          const nextFirst = parsed?.firstName ?? null;
-                          const nextLast = parsed?.lastName ?? null;
-                          const nextEmail = parsed?.email ?? null;
-                          const nextPhone = parsed?.phone ?? null;
-                          const nextCountry = parsed?.country ?? null;
-                          const nextCity = parsed?.city ?? null;
-                          const nextBio = parsed?.bio ?? null;
-                          const nextLinkedin = parsed?.linkedin ?? null;
-                          const nextPortfolio = parsed?.portfolio ?? null;
-                          const nextGithub = parsed?.github ?? null;
-                          const nextResumeUrl = parsed?.resumeUrl ?? null;
-                          const nextSkills = Array.isArray(parsed?.skills) ? parsed.skills : [];
-                          const nextLanguages = Array.isArray(parsed?.languages) ? parsed.languages : [];
-
-                          // Update local UI (so user immediately sees extracted values on step 2)
-                          if (nextFirst) setFirstName(String(nextFirst));
-                          if (nextLast) setLastName(String(nextLast));
-                          if (nextEmail) setEmail(String(nextEmail));
-                          if (nextPhone) setPhoneNumber(String(nextPhone));
-                          if (nextCity) setAddressCity(String(nextCity));
-                          if (nextCountry) setAddressCountry(String(nextCountry));
-                          if (nextBio) setBio(String(nextBio));
-                          if (nextLinkedin) setLinkedinUrl(String(nextLinkedin));
-                          if (nextPortfolio) setPortfolioUrl(String(nextPortfolio));
-                          if (nextGithub) setGithubUrl(String(nextGithub));
-                          if (typeof nextResumeUrl === "string") setResumeUrl(nextResumeUrl);
-                          if (nextSkills.length) setSkillsProfile(nextSkills.map(String));
-                          if (nextLanguages.length) setLanguages(nextLanguages.map(String));
-
-                          // Experience rows (Step 3 in your flow)
-                          if (Array.isArray(parsed?.experience)) {
-                            const drafts = parsed.experience
-                              .map((e: any) => ({
-                                companyName: e?.companyName ? String(e.companyName) : "",
-                                industry: e?.industry ? String(e.industry) : "",
-                                yearsInCompany:
-                                  typeof e?.years === "number" && Number.isFinite(e.years)
-                                    ? String(e.years)
-                                    : "",
-                                roleInCompany: e?.role ? String(e.role) : "",
-                              }))
-                              .filter(
-                                (e: any) =>
-                                  e.companyName || e.industry || e.yearsInCompany || e.roleInCompany
-                              );
-                            setExperienceDrafts(
-                              drafts.length
-                                ? drafts
-                                : [{ companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" }]
-                            );
-                          }
-
-                          // Persist to draft immediately
-                          patchUser({
-                            type: "talent",
-                            firstName: nextFirst ? String(nextFirst) : user?.type === "talent" ? user.firstName : "",
-                            lastName: nextLast ? String(nextLast) : user?.type === "talent" ? user.lastName : "",
-                            fullName: `${nextFirst ?? ""} ${nextLast ?? ""}`.trim(),
-                            email: nextEmail ? String(nextEmail) : undefined,
-                            phoneNumber: nextPhone ? String(nextPhone) : undefined,
-                            bio: nextBio ? String(nextBio) : undefined,
-                            linkedinUrl: nextLinkedin ? String(nextLinkedin) : undefined,
-                            portfolioUrl: nextPortfolio ? String(nextPortfolio) : undefined,
-                            githubUrl: nextGithub ? String(nextGithub) : undefined,
-                            resumeUrl: typeof nextResumeUrl === "string" ? nextResumeUrl : undefined,
-                            skills: nextSkills.map(String),
-                            languages: nextLanguages.map(String),
-                            address:
-                              nextCity || nextCountry
-                                ? {
-                                    city: nextCity ? String(nextCity) : undefined,
-                                    country: nextCountry ? String(nextCountry) : undefined,
-                                  }
-                                : undefined,
-                            experiences: Array.isArray(parsed?.experience)
-                              ? parsed.experience.map((e: any) => ({
-                                  id:
-                                    typeof crypto !== "undefined" && "randomUUID" in crypto
-                                      ? crypto.randomUUID()
-                                      : String(Date.now()),
-                                  companyName: e?.companyName ? String(e.companyName) : "",
-                                  jobTitle: e?.role ? String(e.role) : "",
-                                  industry: e?.industry ? String(e.industry) : undefined,
-                                  employmentType: jobPosition.employmentType,
-                                  yearsInCompany:
-                                    typeof e?.years === "number" && Number.isFinite(e.years)
-                                      ? e.years
-                                      : undefined,
-                                }))
-                              : undefined,
-                          } as any);
-                        } catch {
-                          // If parsing fails, keep going; user can fill manually.
-                        }
-
-                        setCvProgress(100);
-                        showToast("success", "CV processed", "Data extracted successfully.");
-                      })
-                      .catch((err) => {
-                        const isAbort =
-                          err instanceof DOMException && err.name === "AbortError";
-                        const message =
-                          isAbort
-                            ? "We couldn’t get a response in time. Please continue and fill details manually."
-                            : err instanceof PdfRejectError
-                              ? err.message
-                              : err instanceof Error
-                                ? err.message
-                                : "There was a problem processing your CV. Please continue manually.";
-                        showToast("error", "CV processing failed", message);
-                        setCvFiles((prev) => prev.filter((f) => f !== file));
-                      })
-                      .finally(() => {
-                        setCvProcessing(false);
-                        window.setTimeout(() => setCvProgress(0), 400);
-                      });
-                  }}
-                />
-                {cvProcessing ? (
-                  <div style={{ marginTop: 12 }}>
-                    <ProgressBar value={Math.max(5, cvProgress)} max={100} label="Processing…" />
-                  </div>
-                ) : null}
-                <Modal
-                  open={!!pdfError}
-                  title="Problem with PDF"
-                  description={pdfError ?? undefined}
-                  primaryActionLabel="OK"
-                  onPrimaryAction={() => setPdfError(null)}
-                  onClose={() => setPdfError(null)}
-                />
-                {cvFiles.length > 0 && (
-                  <FileListPreview
-                    files={cvFiles}
-                    variant="document"
-                    onRemove={(_, index) => setCvFiles((prev) => prev.filter((_, i) => i !== index))}
-                  />
-                )}
-                <Stack gap={8} style={{ marginTop: 12 }}>
-                  <Checkbox
-                    checked={agreedToCvExtraction}
-                    onChange={(e) => setAgreedToCvExtraction(e.target.checked)}
-                  >
-                    I agree to allow MatchTech AI to extract information from my CV to create my profile card and improve my matches.
-                  </Checkbox>
-                </Stack>
-                <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
-                  <Button type="button" variant="secondary" onClick={handleBack}>
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handleNext}
-                    disabled={!IS_DEV && (!cvFiles.length || !agreedToCvExtraction)}
-                  >
-                    Continue
-                  </Button>
-                </Stack>
-                <p style={{ marginTop: 16, marginBottom: 0 }}>
-                  <button
-                    type="button"
-                    onClick={handleSkipCv}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      padding: 0,
-                      font: "inherit",
-                      color: "var(--color-primary)",
-                      cursor: "pointer",
-                      textDecoration: "underline",
-                      fontSize: "var(--font-size-body-sm)",
-                    }}
-                  >
-                    I don’t have a CV – I’ll fill in my details in the next steps
-                  </button>
-                </p>
-              </FormSection>
-            )}
-
-            {currentStep === 2 && (
               <FormSection title="Complete missing information">
                 <p
                   style={{
@@ -1106,15 +845,292 @@ export default function JobSeekerRegisterPage() {
                     margin: 0,
                   }}
                 >
-                  {cvFiles.length > 0
+                  {cvEntryMode === "cv" && cvFiles.length > 0
                     ? "Review and fix the information below. We extracted this from your CV — correct anything that’s wrong or add what’s missing."
                     : "Fill in your profile so we can create your card. You can add or change this later."}
                 </p>
 
-                <FormSection
-                  title="Personal information"
-                  description="Basic details to build your profile card."
-                >
+                {cvEntryMode === "cv" && cvUploadVisible ? (
+                <FormSection title="Upload your CV">
+                  <p
+                    style={{
+                      fontSize: "var(--font-size-body-sm)",
+                      color: "var(--color-text-secondary)",
+                      lineHeight: 1.5,
+                      margin: 0,
+                    }}
+                  >
+                    Upload a PDF resume and we&apos;ll extract what we can to prefill your profile.
+                  </p>
+                  <FileUpload
+                    label="CV / Resume"
+                    description="PDF ONLY • English • Max 3MB • Max 5 pages"
+                    accept=".pdf,application/pdf"
+                    onFilesSelected={(files) => {
+                      setCvParsed(false);
+                      const fileList = Array.from(files).filter((f) => f.type === "application/pdf");
+                      if (fileList.length < Array.from(files).length) {
+                        setPdfError("Only PDF files are accepted. Please upload a PDF.");
+                      }
+                      setCvFiles(fileList);
+                      const file = fileList[0];
+                      if (!file) return;
+                      setCvProcessing(true);
+                      setCvProgress(3);
+                      showToast("info", "Processing CV", "Extracting text from your PDF…");
+                      extractTextFromPdf(file)
+                        .then(async (fullText) => {
+                          const result = await postWithTimeout(
+                            "/api/openai",
+                            { CV: fullText, fileName: file.name },
+                            15000
+                          );
+                          if (!result.ok) {
+                            throw new Error(`OpenAI proxy returned ${result.status}`);
+                          }
+                          console.log("[CV parse response]", result.text);
+
+                          try {
+                            const responseJson = JSON.parse(result.text) as any;
+                            const parsed =
+                              responseJson && typeof responseJson === "object" && "firstName" in responseJson
+                                ? responseJson
+                                : (() => {
+                                    const maybeOutputText =
+                                      typeof responseJson?.output_text === "string"
+                                        ? responseJson.output_text
+                                        : responseJson?.output?.[0]?.content?.find?.(
+                                            (c: any) =>
+                                              c?.type === "output_text" && typeof c?.text === "string"
+                                          )?.text;
+                                    return JSON.parse(String(maybeOutputText ?? "{}"));
+                                  })();
+
+                            const nextFirst = parsed?.firstName ?? null;
+                            const nextLast = parsed?.lastName ?? null;
+                            const nextEmail = parsed?.email ?? null;
+                            const nextPhone = parsed?.phone ?? null;
+                            const nextCountry = parsed?.country ?? null;
+                            const nextCity = parsed?.city ?? null;
+                            const nextBio = parsed?.bio ?? null;
+                            const nextLinkedin = parsed?.linkedin ?? null;
+                            const nextPortfolio = parsed?.portfolio ?? null;
+                            const nextGithub = parsed?.github ?? null;
+                            const nextResumeUrl = parsed?.resumeUrl ?? null;
+                            const nextSkills = Array.isArray(parsed?.skills) ? parsed.skills : [];
+                            const nextLanguages = Array.isArray(parsed?.languages) ? parsed.languages : [];
+
+                            if (nextFirst) setFirstName(String(nextFirst));
+                            if (nextLast) setLastName(String(nextLast));
+                            if (nextEmail) setEmail(String(nextEmail));
+                            if (nextPhone) setPhoneNumber(String(nextPhone));
+                            if (nextCity) setAddressCity(String(nextCity));
+                            if (nextCountry) setAddressCountry(String(nextCountry));
+                            if (nextBio) setBio(String(nextBio));
+                            if (nextLinkedin) setLinkedinUrl(String(nextLinkedin));
+                            if (nextPortfolio) setPortfolioUrl(String(nextPortfolio));
+                            if (nextGithub) setGithubUrl(String(nextGithub));
+                            if (typeof nextResumeUrl === "string") setResumeUrl(nextResumeUrl);
+                            if (nextSkills.length) setSkillsProfile(nextSkills.map(String));
+                            if (nextLanguages.length) setLanguages(nextLanguages.map(String));
+
+                            if (Array.isArray(parsed?.experience)) {
+                              const drafts = parsed.experience
+                                .map((e: any) => ({
+                                  companyName: e?.companyName ? String(e.companyName) : "",
+                                  industry: e?.industry ? String(e.industry) : "",
+                                  yearsInCompany:
+                                    typeof e?.years === "number" && Number.isFinite(e.years)
+                                      ? String(e.years)
+                                      : "",
+                                  roleInCompany: e?.role ? String(e.role) : "",
+                                }))
+                                .filter(
+                                  (e: any) =>
+                                    e.companyName || e.industry || e.yearsInCompany || e.roleInCompany
+                                );
+                              setExperienceDrafts(
+                                drafts.length
+                                  ? drafts
+                                  : [{ companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" }]
+                              );
+                            }
+
+                            patchUser({
+                              type: "talent",
+                              firstName: nextFirst ? String(nextFirst) : user?.type === "talent" ? user.firstName : "",
+                              lastName: nextLast ? String(nextLast) : user?.type === "talent" ? user.lastName : "",
+                              fullName: `${nextFirst ?? ""} ${nextLast ?? ""}`.trim(),
+                              email: nextEmail ? String(nextEmail) : undefined,
+                              phoneNumber: nextPhone ? String(nextPhone) : undefined,
+                              bio: nextBio ? String(nextBio) : undefined,
+                              linkedinUrl: nextLinkedin ? String(nextLinkedin) : undefined,
+                              portfolioUrl: nextPortfolio ? String(nextPortfolio) : undefined,
+                              githubUrl: nextGithub ? String(nextGithub) : undefined,
+                              resumeUrl: typeof nextResumeUrl === "string" ? nextResumeUrl : undefined,
+                              skills: nextSkills.map(String),
+                              languages: nextLanguages.map(String),
+                              address:
+                                nextCity || nextCountry
+                                  ? {
+                                      city: nextCity ? String(nextCity) : undefined,
+                                      country: nextCountry ? String(nextCountry) : undefined,
+                                    }
+                                  : undefined,
+                              experiences: Array.isArray(parsed?.experience)
+                                ? parsed.experience.map((e: any) => ({
+                                    id:
+                                      typeof crypto !== "undefined" && "randomUUID" in crypto
+                                        ? crypto.randomUUID()
+                                        : String(Date.now()),
+                                    companyName: e?.companyName ? String(e.companyName) : "",
+                                    jobTitle: e?.role ? String(e.role) : "",
+                                    industry: e?.industry ? String(e.industry) : undefined,
+                                    employmentType: jobPosition.employmentType,
+                                    yearsInCompany:
+                                      typeof e?.years === "number" && Number.isFinite(e.years)
+                                        ? e.years
+                                        : undefined,
+                                  }))
+                                : undefined,
+                            } as any);
+                          } catch {
+                            // If parsing fails, keep going; user can fill manually.
+                          }
+
+                          setCvProgress(100);
+                          setCvParsed(true);
+                          setCvUploadVisible(false);
+                          showToast("success", "CV processed", "Data extracted successfully.");
+                        })
+                        .catch((err) => {
+                          const isAbort = err instanceof DOMException && err.name === "AbortError";
+                          const message =
+                            isAbort
+                              ? "We couldn’t get a response in time. Please continue and fill details manually."
+                              : err instanceof PdfRejectError
+                                ? err.message
+                                : err instanceof Error
+                                  ? err.message
+                                  : "There was a problem processing your CV. Please continue manually.";
+                          showToast("error", "CV processing failed", message);
+                          setCvFiles((prev) => prev.filter((f) => f !== file));
+                        })
+                        .finally(() => {
+                          setCvProcessing(false);
+                          window.setTimeout(() => setCvProgress(0), 400);
+                        });
+                    }}
+                  />
+                  {cvProcessing ? (
+                    <div style={{ marginTop: 12 }}>
+                      <ProgressBar value={Math.max(5, cvProgress)} max={100} label="Processing…" />
+                    </div>
+                  ) : null}
+                  <Modal
+                    open={!!pdfError}
+                    title="Problem with PDF"
+                    description={pdfError ?? undefined}
+                    primaryActionLabel="OK"
+                    onPrimaryAction={() => setPdfError(null)}
+                    onClose={() => setPdfError(null)}
+                  />
+                  {cvFiles.length > 0 && (
+                    <FileListPreview
+                      files={cvFiles}
+                      variant="document"
+                      onRemove={(_, index) => setCvFiles((prev) => prev.filter((_, i) => i !== index))}
+                    />
+                  )}
+                  {cvFiles.length > 0 && !cvParsed ? (
+                    <Stack gap={8} style={{ marginTop: 12 }}>
+                      <Checkbox
+                        checked={agreedToCvExtraction}
+                        onChange={(e) => setAgreedToCvExtraction(e.target.checked)}
+                      >
+                        I agree to allow MatchTech AI to extract information from my CV to create my profile card and
+                        improve my matches.
+                      </Checkbox>
+                    </Stack>
+                  ) : null}
+
+                  <p style={{ marginTop: 16, marginBottom: 0 }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCvEntryMode("manual");
+                        setCvUploadVisible(false);
+                        setCvParsed(false);
+                        setCvFiles([]);
+                        setAgreedToCvExtraction(false);
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        font: "inherit",
+                        color: "var(--color-primary)",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        fontSize: "var(--font-size-body-sm)",
+                      }}
+                    >
+                      I don&apos;t have a CV — I&apos;ll fill manually
+                    </button>
+                  </p>
+                </FormSection>
+                ) : null}
+
+                {cvEntryMode === "cv" && cvParsed && !cvUploadVisible ? (
+                  <div style={{ marginTop: 4 }}>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      onClick={() => {
+                        setCvUploadVisible(true);
+                        setCvParsed(false);
+                        setAgreedToCvExtraction(false);
+                        setCvFiles([]);
+                      }}
+                    >
+                      Replace CV
+                    </Button>
+                  </div>
+                ) : null}
+
+                {cvEntryMode === "manual" ? (
+                  <p style={{ marginTop: 4, marginBottom: 0 }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCvEntryMode("cv");
+                        setCvUploadVisible(true);
+                        setCvParsed(false);
+                        setAgreedToCvExtraction(false);
+                        setCvFiles([]);
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        padding: 0,
+                        font: "inherit",
+                        color: "var(--color-primary)",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        fontSize: "var(--font-size-body-sm)",
+                      }}
+                    >
+                      Upload a CV instead
+                    </button>
+                  </p>
+                ) : null}
+
+                {cvEntryMode === "manual" || (cvEntryMode === "cv" && cvParsed) ? (
+                <>
+                  <FormSection
+                    title="Personal information"
+                    description="Basic details to build your profile card."
+                  >
                 <FormRow>
                   <FormField id="first-name" label="First name" required>
                     {(field) => (
@@ -1204,57 +1220,6 @@ export default function JobSeekerRegisterPage() {
                     />
                   )}
                 </FormField>
-                </FormSection>
-
-                <Divider />
-
-                <FormSection title="Links" description="Optional links to your work and profiles.">
-                  <FormField id="linkedin" label="LinkedIn URL (optional)">
-                    {(field) => (
-                      <Input
-                        {...field}
-                        type="url"
-                        placeholder="https://www.linkedin.com/in/username"
-                        value={linkedinUrl}
-                        onChange={(e) => setLinkedinUrl(e.target.value)}
-                      />
-                    )}
-                  </FormField>
-                  <FormField id="portfolio" label="Portfolio URL (optional)">
-                    {(field) => (
-                      <Input
-                        {...field}
-                        type="url"
-                        placeholder="https://your-portfolio.com"
-                        value={portfolioUrl}
-                        onChange={(e) => setPortfolioUrl(e.target.value)}
-                      />
-                    )}
-                  </FormField>
-                  <FormRow>
-                    <FormField id="github" label="GitHub URL (optional)">
-                      {(field) => (
-                        <Input
-                          {...field}
-                          type="url"
-                          placeholder="https://github.com/username"
-                          value={githubUrl}
-                          onChange={(e) => setGithubUrl(e.target.value)}
-                        />
-                      )}
-                    </FormField>
-                    <FormField id="resume" label="Resume URL (optional)">
-                      {(field) => (
-                        <Input
-                          {...field}
-                          type="url"
-                          placeholder="Link to your resume (optional)"
-                          value={resumeUrl}
-                          onChange={(e) => setResumeUrl(e.target.value)}
-                        />
-                      )}
-                    </FormField>
-                  </FormRow>
                 </FormSection>
 
                 <Divider />
@@ -1383,6 +1348,59 @@ export default function JobSeekerRegisterPage() {
                     )}
                   </FormField>
                 </FormSection>
+
+                <Divider />
+
+                <FormSection title="Links" description="Optional links to your work and profiles.">
+                  <FormField id="linkedin" label="LinkedIn URL (optional)">
+                    {(field) => (
+                      <Input
+                        {...field}
+                        type="url"
+                        placeholder="https://www.linkedin.com/in/username"
+                        value={linkedinUrl}
+                        onChange={(e) => setLinkedinUrl(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                  <FormField id="portfolio" label="Portfolio URL (optional)">
+                    {(field) => (
+                      <Input
+                        {...field}
+                        type="url"
+                        placeholder="https://your-portfolio.com"
+                        value={portfolioUrl}
+                        onChange={(e) => setPortfolioUrl(e.target.value)}
+                      />
+                    )}
+                  </FormField>
+                  <FormRow>
+                    <FormField id="github" label="GitHub URL (optional)">
+                      {(field) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          placeholder="https://github.com/username"
+                          value={githubUrl}
+                          onChange={(e) => setGithubUrl(e.target.value)}
+                        />
+                      )}
+                    </FormField>
+                    <FormField id="resume" label="Resume URL (optional)">
+                      {(field) => (
+                        <Input
+                          {...field}
+                          type="url"
+                          placeholder="Link to your resume (optional)"
+                          value={resumeUrl}
+                          onChange={(e) => setResumeUrl(e.target.value)}
+                        />
+                      )}
+                    </FormField>
+                  </FormRow>
+                </FormSection>
+                </>
+                ) : null}
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
                   <Button type="button" variant="secondary" onClick={handleBack}>
                     Back
@@ -1391,6 +1409,7 @@ export default function JobSeekerRegisterPage() {
                     onClick={handleNext}
                     disabled={
                       !IS_DEV &&
+                      ((cvEntryMode === "cv" && cvFiles.length > 0 && !cvParsed && !agreedToCvExtraction) ||
                       (!firstName.trim() ||
                         !lastName.trim() ||
                         !email.trim() ||
@@ -1398,7 +1417,7 @@ export default function JobSeekerRegisterPage() {
                         !addressCountry ||
                         !addressCity.trim() ||
                         !bio.trim() ||
-                        skillsProfile.length === 0)
+                        skillsProfile.length === 0))
                     }
                   >
                     Continue
@@ -1407,7 +1426,7 @@ export default function JobSeekerRegisterPage() {
               </FormSection>
             )}
 
-            {currentStep === 3 && (
+            {currentStep === 2 && (
               <FormSection title="Upload your photo & choose background">
                 <div className={styles.step3Layout}>
                   <div className={styles.step3Form}>
@@ -1570,7 +1589,7 @@ export default function JobSeekerRegisterPage() {
               </FormSection>
             )}
 
-            {currentStep === 4 && (
+            {currentStep === 3 && (
               <FormSection title="Create account">
                 <p
                   style={{

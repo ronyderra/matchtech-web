@@ -30,9 +30,6 @@ export function Stepper({ steps, currentIndex, className, ...props }: StepperPro
       </div>
       <div className={styles.stepperLabels}>
         <span>{steps[currentIndex]?.label}</span>
-        <span>
-          Step {currentIndex + 1} of {steps.length}
-        </span>
       </div>
     </div>
   );
