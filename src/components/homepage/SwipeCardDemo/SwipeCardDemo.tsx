@@ -113,7 +113,7 @@ function formatLocation(city?: string | null, country?: string | null) {
 
 function pickTheme(backgroundColor?: string): CardTheme | undefined {
   if (!backgroundColor) return undefined;
-  const entry = (Object.entries(THEME_COLORS) as [CardTheme, any][])
+  const entry = (Object.entries(THEME_COLORS) as [CardTheme, (typeof THEME_COLORS)[CardTheme]][])
     .find(([, v]) => v.bannerStart === backgroundColor);
   return entry?.[0];
 }
@@ -239,7 +239,11 @@ export function ProfileCardPreview({ user }: { user: AppUser }) {
                     <Image
                       src={card.avatarImageUrl}
                       alt=""
-                      className={styles.bannerAvatarImg}
+                      className={
+                        card.avatarImageUrl.endsWith(".svg")
+                          ? styles.bannerAvatarImgContain
+                          : styles.bannerAvatarImg
+                      }
                       width={96}
                       height={96}
                       unoptimized
@@ -344,7 +348,7 @@ const CARDS: SwipeCardData[] = [
     metaLine: "Remote · Full-time · Europe",
     topRightPill: "€110k–€140k · Equity",
     avatarText: "A",
-    avatarImageUrl: "/assets/profileImages/1.jpg",
+    avatarImageUrl: "/assets/companyImages/company-1.png",
     companyName: "Acme.dev",
     companyAbout:
       "We build a swipe-first hiring platform used by thousands of candidates and hiring teams every month. Product-led, remote-first, and growing across Europe.",
@@ -398,7 +402,7 @@ const CARDS: SwipeCardData[] = [
     metaLine: "Hybrid · Berlin · Full-time",
     topRightPill: "€90k–€120k · Stock options",
     avatarText: "D",
-    avatarImageUrl: "/assets/profileImages/3.jpg",
+    avatarImageUrl: "/assets/companyImages/company-2.png",
     companyName: "DataFirst",
     companyAbout:
       "Data infrastructure and analytics for enterprise. We help companies unify data pipelines, real-time events, and BI. Series B, 200+ employees.",
@@ -452,7 +456,7 @@ const CARDS: SwipeCardData[] = [
     metaLine: "Remote · Full-time · Americas",
     topRightPill: "€100k–€130k · Bonus",
     avatarText: "S",
-    avatarImageUrl: "/assets/profileImages/5.jpg",
+    avatarImageUrl: "/assets/companyImages/company-3.png",
     companyName: "ScaleUp",
     companyAbout:
       "B2B growth and engagement platform for mid-market and enterprise. We help sales and marketing teams align and convert. Remote-first, 150+ people.",
@@ -502,14 +506,15 @@ const CARDS: SwipeCardData[] = [
 
 const IDLE_MS = 3800;
 const SWIPE_MS = 1000;
-const TRANSITION_MS = 700;
+const TRANSITION_MS = 900;
+const EXIT_FADE_MS = 1300;
 
 export function SwipeCardDemo() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [phase, setPhase] = useState<"idle" | "swiping" | "done">("idle");
   const [swipeDir, setSwipeDir] = useState<1 | -1>(1);
   const [exitingIndex, setExitingIndex] = useState<number | null>(null);
-  const [exitingSwipeDir, setExitingSwipeDir] = useState<1 | -1>(1);
+  const [exitingDir, setExitingDir] = useState<1 | -1>(1);
   const [transitioningFromBack, setTransitioningFromBack] = useState(false);
   const [indicatorVisible, setIndicatorVisible] = useState(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -526,12 +531,21 @@ export function SwipeCardDemo() {
     const dir: 1 | -1 = swipeDir === 1 ? -1 : 1;
     timers.current.push(
       setTimeout(() => {
-        setExitingIndex(currentIndex);
-        setExitingSwipeDir(dir);
+        const oldFront = currentIndex;
+        setExitingIndex(oldFront);
+        setExitingDir(dir);
+        // Advance to next card. We do NOT animate the old card into the back;
+        // it simply swipes out, and the next card becomes the new front.
         setCurrentIndex((i) => (i + 1) % CARDS.length);
         setTransitioningFromBack(true);
         setPhase("done");
         setIndicatorVisible(false);
+
+        timers.current.push(
+          setTimeout(() => {
+            setExitingIndex(null);
+          }, EXIT_FADE_MS)
+        );
       }, SWIPE_MS)
     );
   }, [currentIndex, swipeDir]);
@@ -554,7 +568,6 @@ export function SwipeCardDemo() {
       });
     });
     const t = setTimeout(() => {
-      setExitingIndex(null);
       setPhase("idle");
     }, TRANSITION_MS + 50);
     return () => {
@@ -563,12 +576,7 @@ export function SwipeCardDemo() {
     };
   }, [phase]);
 
-  const getSlotRole = (index: number) => {
-    const next = (currentIndex + 1) % CARDS.length;
-    if (index === currentIndex) return "front";
-    if (index === next) return "mid";
-    return "back";
-  };
+  const nextIndex = (currentIndex + 1) % CARDS.length;
 
   const SWIPE_OFFSET_PCT = 35;
   const getCardTransform = (index: number) => {
@@ -577,7 +585,7 @@ export function SwipeCardDemo() {
     if (isFront && phase === "swiping")
       return `translateX(${swipeDir * SWIPE_OFFSET_PCT}%) rotate(${swipeDir * 10}deg)`;
     if (isExiting)
-      return `translateX(${exitingSwipeDir * SWIPE_OFFSET_PCT}%) rotate(${exitingSwipeDir * 10}deg)`;
+      return `translateX(${exitingDir * SWIPE_OFFSET_PCT}%) rotate(${exitingDir * 10}deg)`;
     return undefined;
   };
 
@@ -585,9 +593,12 @@ export function SwipeCardDemo() {
     <div className={styles.root}>
       <div className={styles.stack}>
         {CARDS.map((card, index) => {
-          const role = getSlotRole(index);
-          const isExiting = index === exitingIndex;
           const isFront = index === currentIndex;
+          const isNext = index === nextIndex;
+          const isExiting = index === exitingIndex;
+          if (!isFront && !isNext && !isExiting) return null;
+
+          const role = isFront ? "front" : isNext ? "mid" : "back";
           const swipeClass =
             isFront && phase === "swiping"
               ? swipeDir === 1
@@ -612,12 +623,11 @@ export function SwipeCardDemo() {
               key={index}
               className={[
                 styles.cardSlot,
-                role === "back" && styles.back,
                 role === "mid" && styles.mid,
                 role === "front" && styles.front,
+                isExiting && styles.exiting,
                 isFront && transitioningFromBack && styles.transitioningFromBack,
                 isFront && swipeClass,
-                isExiting && styles.exiting,
               ]
                 .filter(Boolean)
                 .join(" ")}
@@ -651,7 +661,11 @@ export function SwipeCardDemo() {
                         <Image
                           src={card.avatarImageUrl}
                           alt=""
-                          className={styles.bannerAvatarImg}
+                          className={
+                            card.avatarImageUrl.endsWith(".svg")
+                              ? styles.bannerAvatarImgContain
+                              : styles.bannerAvatarImg
+                          }
                           width={96}
                           height={96}
                           unoptimized
