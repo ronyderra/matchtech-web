@@ -175,6 +175,7 @@ export interface CompanyDetails {
 
   // Company info
   industry?: string
+  description?: string
   companySize?: "1-10" | "11-50" | "51-200" | "201-500" | "501-1000" | "1000+"
   foundedYear?: number
 
@@ -187,4 +188,72 @@ export interface CompanyDetails {
   // Meta
   tags?: string[]
   matchScore?: number
+}
+
+// -----------------------------
+// Registration step payloads
+// -----------------------------
+
+export type TalentDetailsDraft = Partial<TalentDetails> & { type: "talent"; id: string }
+export type CompanyDetailsDraft = Partial<CompanyDetails> & { type: "company"; id: string }
+
+export interface JobSeekerStep0Data {
+  jobPosition: Omit<JobPosition, "id">
+  availability?: string
+  priorities?: PriorityPreference[]
+  compensationPreferences?: CompensationPreference[]
+}
+
+export interface JobSeekerCvParsedData {
+  firstName: string | null
+  lastName: string | null
+  email: string | null
+  phone: string | null
+  country: string | null
+  city: string | null
+  bio: string | null
+  linkedin: string | null
+  portfolio: string | null
+  github: string | null
+  resumeUrl: null
+  experience: Array<{
+    companyName: string | null
+    industry: string | null
+    years: string | null
+    role: string | null
+  }>
+  skills: string[]
+  languages: string[]
+}
+
+export interface JobSeekerStep1Data {
+  agreedToCvExtraction: boolean
+  cvFileName?: string
+  parsed?: JobSeekerCvParsedData
+}
+
+export interface JobSeekerStep2Data {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+  bio: string
+  address?: Pick<Address, "city" | "country">
+  linkedinUrl?: string
+  portfolioUrl?: string
+  githubUrl?: string
+  resumeUrl?: string
+  skills: string[]
+  languages?: string[]
+  experiences?: Array<Pick<Experience, "companyName" | "jobTitle" | "industry" | "yearsInCompany">>
+}
+
+export interface EmployerStep0Data {
+  companyName: string
+  industry?: string
+  websiteUrl?: string
+}
+
+export interface EmployerStep1Data {
+  positions: Array<Omit<JobPosition, "id">>
 }

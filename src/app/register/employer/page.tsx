@@ -21,6 +21,8 @@ import {
 } from "@/components/ui";
 import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
 import { INDUSTRIES } from "@/constants/options";
+import { useUserStore } from "@/store";
+import type { CompanyDetails } from "@/types";
 import styles from "./page.module.css";
 
 const IS_DEV = process.env.NODE_ENV === "development";
@@ -121,7 +123,20 @@ const THEME_GRADIENTS: Record<
 
 const MAX_JOB_DESCRIPTION_FILES = 3;
 
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function EmployerRegisterPage() {
+  const user = useUserStore((s) => s.user);
+  const initDraft = useUserStore((s) => s.initDraft);
+  const patchUser = useUserStore((s) => s.patchUser);
+
   const [currentStep, setCurrentStep] = useState(0);
   const [jobDescriptionFiles, setJobDescriptionFiles] = useState<File[]>([]);
   const jobDescriptionFilesRef = useRef<File[]>([]);
@@ -132,6 +147,36 @@ export default function EmployerRegisterPage() {
   const [backgroundTheme, setBackgroundTheme] = useState<BackgroundTheme>("blue");
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [companyName, setCompanyName] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [companyCity, setCompanyCity] = useState("");
+  const [companyDescription, setCompanyDescription] = useState("");
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    initDraft("company");
+  }, [initDraft]);
+
+  const didHydrateRef = useRef(false);
+  useEffect(() => {
+    if (didHydrateRef.current) return;
+    if (!user || user.type !== "company") return;
+    const c = user as CompanyDetails;
+    didHydrateRef.current = true;
+
+    setCareerPageUrl(c.websiteUrl ?? "");
+    setAboutPageUrl("");
+    setCompanyName(c.companyName ?? "");
+    setIndustry(c.industry ?? "");
+    setCompanyCity(c.address?.city ?? "");
+    setCompanyDescription(c.description ?? "");
+    setUsername(c.id ?? "");
+    if (c.imageUrl) queueMicrotask(() => setPhotoPreviewUrl(c.imageUrl));
+    const themeMatch = (Object.keys(THEME_GRADIENTS) as BackgroundTheme[]).find(
+      (k) => THEME_GRADIENTS[k].start === c.backgroundColor
+    );
+    if (themeMatch) setBackgroundTheme(themeMatch);
+  }, [user]);
 
   function handleJobDescriptionFilesSelected(files: FileList) {
     const newFiles = Array.from(files).filter((f) => f.type === "application/pdf");
@@ -189,6 +234,32 @@ export default function EmployerRegisterPage() {
   const isLastStep = currentStep === STEPS.length - 1;
 
   function handleNext() {
+    if (user?.type === "company") {
+      if (currentStep === 0) {
+        patchUser({ type: "company" });
+      } else if (currentStep === 1) {
+        patchUser({
+          type: "company",
+          websiteUrl: careerPageUrl.trim() || undefined,
+        });
+      } else if (currentStep === 2) {
+        patchUser({
+          type: "company",
+          companyName: companyName.trim(),
+          industry: industry || undefined,
+          description: companyDescription.trim() || undefined,
+          address: companyCity ? { city: companyCity } : undefined,
+        } as any);
+      } else if (currentStep === 3) {
+        patchUser({
+          type: "company",
+          backgroundColor: THEME_GRADIENTS[backgroundTheme].start,
+        });
+      } else if (currentStep === 4) {
+        patchUser({ type: "company", id: username.trim() || user.id } as any);
+      }
+    }
+
     if (isLastStep) return;
     setCurrentStep((s) => s + 1);
   }
@@ -360,12 +431,21 @@ export default function EmployerRegisterPage() {
                 </p>
                 <FormField id="company-name" label="Company name" required>
                   {(field) => (
-                    <Input {...field} placeholder="e.g. Acme Ltd" />
+                    <Input
+                      {...field}
+                      placeholder="e.g. Acme Ltd"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                    />
                   )}
                 </FormField>
                 <FormField id="company-industry" label="Industry">
                   {(field) => (
-                    <Select {...field} defaultValue="">
+                    <Select
+                      {...field}
+                      value={industry}
+                      onChange={(e) => setIndustry(e.target.value)}
+                    >
                       <option value="">Select industry</option>
                       {INDUSTRIES.map((industry) => (
                         <option key={industry} value={industry}>{industry}</option>
@@ -375,7 +455,11 @@ export default function EmployerRegisterPage() {
                 </FormField>
                 <FormField id="company-location" label="Location / region">
                   {(field) => (
-                    <Select {...field} defaultValue="">
+                    <Select
+                      {...field}
+                      value={companyCity}
+                      onChange={(e) => setCompanyCity(e.target.value)}
+                    >
                       <option value="">Select city</option>
                       {ISRAEL_CITIES.map((city) => (
                         <option key={city} value={city}>{city}</option>
@@ -385,7 +469,13 @@ export default function EmployerRegisterPage() {
                 </FormField>
                 <FormField id="company-description" label="Short company description (optional)">
                   {(field) => (
-                    <TextArea {...field} placeholder="What does your company do?" rows={3} />
+                    <TextArea
+                      {...field}
+                      placeholder="What does your company do?"
+                      rows={3}
+                      value={companyDescription}
+                      onChange={(e) => setCompanyDescription(e.target.value)}
+                    />
                   )}
                 </FormField>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
@@ -405,7 +495,17 @@ export default function EmployerRegisterPage() {
                       label="Company logo or image"
                       description="Your logo or a representative image. JPG or PNG. Max 5MB."
                       accept=".jpg,.jpeg,.png,.webp"
-                      onFilesSelected={(files) => setImageFiles(Array.from(files))}
+                      onFilesSelected={(files) => {
+                        const next = Array.from(files);
+                        setImageFiles(next);
+                        const file = next[0];
+                        if (!file) return;
+                        fileToDataUrl(file)
+                          .then((dataUrl) => {
+                            patchUser({ type: "company", logoUrl: dataUrl, imageUrl: dataUrl });
+                          })
+                          .catch(() => {});
+                      }}
                     />
                     {imageFiles.length > 0 && (
                       <FileListPreview
@@ -440,7 +540,13 @@ export default function EmployerRegisterPage() {
                             type="button"
                             title={THEME_GRADIENTS[theme].label}
                             aria-label={`${THEME_GRADIENTS[theme].label} background`}
-                            onClick={() => setBackgroundTheme(theme)}
+                            onClick={() => {
+                              setBackgroundTheme(theme);
+                              patchUser({
+                                type: "company",
+                                backgroundColor: THEME_GRADIENTS[theme].start,
+                              });
+                            }}
                             style={{
                               width: 40,
                               height: 40,
@@ -565,7 +671,13 @@ export default function EmployerRegisterPage() {
                 </p>
                 <FormField id="username" label="Username" required>
                   {(field) => (
-                    <Input {...field} placeholder="Choose a username" autoComplete="username" />
+                    <Input
+                      {...field}
+                      placeholder="Choose a username"
+                      autoComplete="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
                   )}
                 </FormField>
                 <FormRow>

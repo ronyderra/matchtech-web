@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Breadcrumbs,
   Container,
@@ -140,6 +140,9 @@ function fileToDataUrl(file: File): Promise<string> {
 }
 
 export default function JobSeekerRegisterPage() {
+  const user = useUserStore((s) => s.user);
+  const initDraft = useUserStore((s) => s.initDraft);
+  const patchUser = useUserStore((s) => s.patchUser);
   const setUser = useUserStore((s) => s.setUser);
   const [currentStep, setCurrentStep] = useState(0);
   const [jobPosition, setJobPosition] = useState<Omit<JobPosition, "id">>(defaultJobPosition);
@@ -269,6 +272,61 @@ export default function JobSeekerRegisterPage() {
     backgroundImage: `radial-gradient(circle at 10% 0%, ${THEME_GRADIENTS[theme].start} 0%, ${THEME_GRADIENTS[theme].mid} 42%, ${THEME_GRADIENTS[theme].end} 100%)`,
   });
 
+  const didHydrateRef = useRef(false);
+  useEffect(() => {
+    initDraft("talent");
+  }, [initDraft]);
+
+  // Hydrate local form state once from persisted draft
+  useEffect(() => {
+    if (didHydrateRef.current) return;
+    if (!user || user.type !== "talent") return;
+
+    const t = user as TalentDetails;
+    didHydrateRef.current = true;
+
+    // Step 0
+    if (t.jobPosition) {
+      const { id: _id, ...jp } = t.jobPosition;
+      setJobPosition({
+        ...defaultJobPosition,
+        ...jp,
+      });
+    }
+    setAvailability(t.availableFrom ?? "");
+    setPriorities((t.priorities ?? []) as PriorityPreference[]);
+    setCompensationPreferences((t.compensationPreferences ?? []) as CompensationPreference[]);
+
+    // Step 1/2
+    setFirstName(t.firstName ?? "");
+    setLastName(t.lastName ?? "");
+    setEmail(t.email ?? "");
+    setPhoneNumber(t.phoneNumber ?? "");
+    setBio(t.bio ?? "");
+    setSkillsProfile(t.skills ?? []);
+    setLanguages((t.languages ?? []) as string[]);
+    setLinkedinUrl(t.linkedinUrl ?? "");
+    setPortfolioUrl(t.portfolioUrl ?? "");
+    setGithubUrl(t.githubUrl ?? "");
+    setResumeUrl(t.resumeUrl ?? "");
+    setAddressCity(t.address?.city ?? "");
+    setAddressCountry(t.address?.country ?? "");
+
+    // Step 3
+    if (t.imageUrl) {
+      queueMicrotask(() => setPhotoPreviewUrl(t.imageUrl));
+    }
+    const themeMatch = (Object.keys(THEME_GRADIENTS) as BackgroundTheme[]).find(
+      (k) => THEME_GRADIENTS[k].start === t.backgroundColor
+    );
+    if (themeMatch) setBackgroundTheme(themeMatch);
+
+    // Step 4
+    setUsername(t.id ?? "");
+    setAgreedToTerms(false);
+    setAgreedToCvExtraction(false);
+  }, [user]);
+
   // Create preview URL when user selects a photo; revoke on change or unmount
   useEffect(() => {
     if (imageFiles.length === 0) {
@@ -367,7 +425,92 @@ export default function JobSeekerRegisterPage() {
     setUser(talent);
   }
 
+  function saveStepToDraft(stepIndex: number) {
+    if (user?.type !== "talent") return;
+
+    if (stepIndex === 0) {
+      patchUser({
+        type: "talent",
+        availableFrom: availability || undefined,
+        priorities: priorities.length ? priorities.slice(0, 3) : undefined,
+        compensationPreferences: compensationPreferences.length
+          ? compensationPreferences.slice(0, 3)
+          : undefined,
+        jobPosition: {
+          ...jobPosition,
+        } as any,
+      });
+      return;
+    }
+
+    if (stepIndex === 1) {
+      patchUser({ type: "talent" } as any);
+      return;
+    }
+
+    if (stepIndex === 2) {
+      patchUser({
+        type: "talent",
+        firstName,
+        lastName,
+        fullName: `${firstName} ${lastName}`.trim(),
+        bio,
+        skills: skillsProfile,
+        languages: languages.length ? languages : undefined,
+        linkedinUrl: linkedinUrl.trim() || undefined,
+        portfolioUrl: portfolioUrl.trim() || undefined,
+        githubUrl: githubUrl.trim() || undefined,
+        resumeUrl: resumeUrl.trim() || undefined,
+        email,
+        phoneNumber,
+        address:
+          addressCity.trim() || addressCountry
+            ? { city: addressCity.trim() || undefined, country: addressCountry || undefined }
+            : undefined,
+        experiences:
+          experienceDrafts.length
+            ? experienceDrafts
+                .map((exp) => ({
+                  companyName: exp.companyName.trim(),
+                  jobTitle: exp.roleInCompany.trim(),
+                  industry: exp.industry.trim() || undefined,
+                  yearsInCompany: exp.yearsInCompany ? Number(exp.yearsInCompany) : undefined,
+                }))
+                .filter((exp) => exp.companyName || exp.jobTitle)
+                .map((exp) => ({
+                  id:
+                    typeof crypto !== "undefined" && "randomUUID" in crypto
+                      ? crypto.randomUUID()
+                      : String(Date.now()),
+                  companyName: exp.companyName,
+                  jobTitle: exp.jobTitle,
+                  industry: exp.industry,
+                  employmentType: jobPosition.employmentType,
+                  yearsInCompany: exp.yearsInCompany,
+                }))
+            : undefined,
+      });
+      return;
+    }
+
+    if (stepIndex === 3) {
+      patchUser({
+        type: "talent",
+        backgroundColor: THEME_GRADIENTS[backgroundTheme].start,
+      });
+      return;
+    }
+
+    if (stepIndex === 4) {
+      patchUser({
+        type: "talent",
+        id: username.trim() || user.id,
+      });
+    }
+  }
+
   function handleNext() {
+    saveStepToDraft(currentStep);
     if (isLastStep) {
       void handleCompleteRegistration();
       return;
@@ -702,6 +845,86 @@ export default function JobSeekerRegisterPage() {
                           throw new Error(`OpenAI proxy returned ${result.status}`);
                         }
                         console.log("[CV parse response]", result.text);
+
+                        try {
+                          const responseJson = JSON.parse(result.text) as any;
+                          const maybeOutputText =
+                            typeof responseJson?.output_text === "string"
+                              ? responseJson.output_text
+                              : responseJson?.output?.[0]?.content?.find?.(
+                                  (c: any) => c?.type === "output_text" && typeof c?.text === "string"
+                                )?.text;
+                          const parsed = JSON.parse(String(maybeOutputText ?? "{}")) as any;
+
+                          const nextFirst = parsed?.firstName ?? null;
+                          const nextLast = parsed?.lastName ?? null;
+                          const nextEmail = parsed?.email ?? null;
+                          const nextPhone = parsed?.phone ?? null;
+                          const nextCountry = parsed?.country ?? null;
+                          const nextCity = parsed?.city ?? null;
+                          const nextBio = parsed?.bio ?? null;
+                          const nextLinkedin = parsed?.linkedin ?? null;
+                          const nextPortfolio = parsed?.portfolio ?? null;
+                          const nextGithub = parsed?.github ?? null;
+                          const nextResumeUrl = parsed?.resumeUrl ?? null;
+                          const nextSkills = Array.isArray(parsed?.skills) ? parsed.skills : [];
+                          const nextLanguages = Array.isArray(parsed?.languages) ? parsed.languages : [];
+
+                          // Update local UI (so user immediately sees extracted values on step 2)
+                          if (nextFirst) setFirstName(String(nextFirst));
+                          if (nextLast) setLastName(String(nextLast));
+                          if (nextEmail) setEmail(String(nextEmail));
+                          if (nextPhone) setPhoneNumber(String(nextPhone));
+                          if (nextCity) setAddressCity(String(nextCity));
+                          if (nextCountry) setAddressCountry(String(nextCountry));
+                          if (nextBio) setBio(String(nextBio));
+                          if (nextLinkedin) setLinkedinUrl(String(nextLinkedin));
+                          if (nextPortfolio) setPortfolioUrl(String(nextPortfolio));
+                          if (nextGithub) setGithubUrl(String(nextGithub));
+                          if (typeof nextResumeUrl === "string") setResumeUrl(nextResumeUrl);
+                          if (nextSkills.length) setSkillsProfile(nextSkills.map(String));
+                          if (nextLanguages.length) setLanguages(nextLanguages.map(String));
+
+                          // Persist to draft immediately
+                          patchUser({
+                            type: "talent",
+                            firstName: nextFirst ? String(nextFirst) : user?.type === "talent" ? user.firstName : "",
+                            lastName: nextLast ? String(nextLast) : user?.type === "talent" ? user.lastName : "",
+                            fullName: `${nextFirst ?? ""} ${nextLast ?? ""}`.trim(),
+                            email: nextEmail ? String(nextEmail) : undefined,
+                            phoneNumber: nextPhone ? String(nextPhone) : undefined,
+                            bio: nextBio ? String(nextBio) : undefined,
+                            linkedinUrl: nextLinkedin ? String(nextLinkedin) : undefined,
+                            portfolioUrl: nextPortfolio ? String(nextPortfolio) : undefined,
+                            githubUrl: nextGithub ? String(nextGithub) : undefined,
+                            resumeUrl: typeof nextResumeUrl === "string" ? nextResumeUrl : undefined,
+                            skills: nextSkills.map(String),
+                            languages: nextLanguages.map(String),
+                            address:
+                              nextCity || nextCountry
+                                ? {
+                                    city: nextCity ? String(nextCity) : undefined,
+                                    country: nextCountry ? String(nextCountry) : undefined,
+                                  }
+                                : undefined,
+                            experiences: Array.isArray(parsed?.experience)
+                              ? parsed.experience.map((e: any) => ({
+                                  id:
+                                    typeof crypto !== "undefined" && "randomUUID" in crypto
+                                      ? crypto.randomUUID()
+                                      : String(Date.now()),
+                                  companyName: e?.companyName ? String(e.companyName) : "",
+                                  jobTitle: e?.role ? String(e.role) : "",
+                                  industry: e?.industry ? String(e.industry) : undefined,
+                                  employmentType: jobPosition.employmentType,
+                                  yearsInCompany: undefined,
+                                }))
+                              : undefined,
+                          } as any);
+                        } catch {
+                          // If parsing fails, keep going; user can fill manually.
+                        }
+
                         setCvProgress(100);
                         showToast("success", "CV processed", "Data extracted successfully.");
                       })
@@ -1105,7 +1328,17 @@ export default function JobSeekerRegisterPage() {
                       label="Your photo"
                       description="A clear headshot or professional photo. JPG or PNG. Max 5MB."
                       accept=".jpg,.jpeg,.png,.webp"
-                      onFilesSelected={(files) => setImageFiles(Array.from(files))}
+                      onFilesSelected={(files) => {
+                        const next = Array.from(files);
+                        setImageFiles(next);
+                        const file = next[0];
+                        if (!file) return;
+                        fileToDataUrl(file)
+                          .then((dataUrl) => {
+                            patchUser({ type: "talent", avatarUrl: dataUrl, imageUrl: dataUrl });
+                          })
+                          .catch(() => {});
+                      }}
                     />
                     {imageFiles.length > 0 && (
                       <FileListPreview
@@ -1141,7 +1374,13 @@ export default function JobSeekerRegisterPage() {
                             type="button"
                             title={THEME_GRADIENTS[theme].label}
                             aria-label={`${THEME_GRADIENTS[theme].label} background`}
-                            onClick={() => setBackgroundTheme(theme)}
+                            onClick={() => {
+                              setBackgroundTheme(theme);
+                              patchUser({
+                                type: "talent",
+                                backgroundColor: THEME_GRADIENTS[theme].start,
+                              });
+                            }}
                             style={{
                               width: 40,
                               height: 40,
