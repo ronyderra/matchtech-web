@@ -32,6 +32,8 @@ import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
 import { COUNTRIES, DEPARTMENTS, INDUSTRIES } from "@/constants/options";
 import styles from "./page.module.css";
 
+const IS_DEV = process.env.NODE_ENV === "development";
+
 const STEPS = [
   { id: "whatLookingFor", label: "What are you looking for?" },
   { id: "cv", label: "Upload CV" },
@@ -553,10 +555,11 @@ export default function JobSeekerRegisterPage() {
                   <Button
                     onClick={handleNext}
                     disabled={
-                      !jobPosition.country ||
-                      !jobPosition.departments?.length ||
-                      jobPosition.salaryMin === undefined ||
-                      !jobPosition.currency
+                      !IS_DEV &&
+                      (!jobPosition.country ||
+                        !jobPosition.departments?.length ||
+                        jobPosition.salaryMin === undefined ||
+                        !jobPosition.currency)
                     }
                   >
                     Continue
@@ -579,7 +582,7 @@ export default function JobSeekerRegisterPage() {
                 </p>
                 <FileUpload
                   label="CV / Resume"
-                  description="Upload your CV or resume as a PDF only, in English. Max 3MB, 5 pages."
+                  description="PDF ONLY • English • Max 3MB • Max 5 pages"
                   accept=".pdf,application/pdf"
                   onFilesSelected={(files) => {
                     const fileList = Array.from(files).filter(
@@ -623,7 +626,7 @@ export default function JobSeekerRegisterPage() {
                     checked={agreedToCvExtraction}
                     onChange={(e) => setAgreedToCvExtraction(e.target.checked)}
                   >
-                    I agree to allow MatchTech to extract information from my CV to create my profile card and improve my matches.
+                    I agree to allow MatchTech AI to extract information from my CV to create my profile card and improve my matches.
                   </Checkbox>
                 </Stack>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
@@ -632,7 +635,7 @@ export default function JobSeekerRegisterPage() {
                   </Button>
                   <Button
                     onClick={handleNext}
-                    disabled={!cvFiles.length || !agreedToCvExtraction}
+                    disabled={!IS_DEV && (!cvFiles.length || !agreedToCvExtraction)}
                   >
                     Continue
                   </Button>

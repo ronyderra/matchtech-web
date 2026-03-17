@@ -23,6 +23,8 @@ import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
 import { INDUSTRIES } from "@/constants/options";
 import styles from "./page.module.css";
 
+const IS_DEV = process.env.NODE_ENV === "development";
+
 const STEPS = [
   { id: "whatLookingFor", label: "What you're looking for" },
   { id: "website", label: "Upload your website" },
@@ -228,7 +230,7 @@ export default function EmployerRegisterPage() {
                 </p>
                 <FileUpload
                   label="Job descriptions"
-                  description="Upload up to 3 job descriptions. PDF only, in English. Max 3MB, 5 pages each."
+                  description="PDF ONLY • English • Max 3 files • Max 3MB • Max 5 pages (each)"
                   accept=".pdf,application/pdf"
                   multiple
                   onFilesSelected={handleJobDescriptionFilesSelected}
@@ -317,7 +319,7 @@ export default function EmployerRegisterPage() {
                   <Button type="button" variant="secondary" onClick={handleBack}>
                     Back
                   </Button>
-                  <Button onClick={handleNext} disabled={!canContinueStep2}>
+                  <Button onClick={handleNext} disabled={!IS_DEV && !canContinueStep2}>
                     Continue
                   </Button>
                 </Stack>

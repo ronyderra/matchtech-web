@@ -3,6 +3,33 @@ export type Seniority = "any" | "junior" | "mid" | "senior" | "lead" | "principa
 export type EmploymentType = "any" | "full-time" | "part-time" | "contract" | "freelance"
 export type WorkPreference = "any" | "remote" | "hybrid" | "onsite"
 
+export type PriorityPreference =
+  | "High salary"
+  | "Remote work"
+  | "Flexible hours"
+  | "Work-life balance"
+  | "Fast growth"
+  | "Learning & mentorship"
+  | "Stability"
+  | "Great team / culture"
+  | "Interesting product"
+  | "Strong tech stack"
+  | "Impact / ownership"
+  | "Equity upside"
+
+export type CompensationPreference =
+  | "Performance bonus"
+  | "Revenue share / commission"
+  | "Equity / stock options"
+  | "Signing bonus"
+  | "Profit sharing"
+  | "Retention bonus"
+  | "Tips / variable earnings"
+  | "Overtime pay"
+  | "Benefits (health, pension, etc.)"
+  | "Flexible compensation (choose your mix)"
+  | "Not important"
+
 export interface JobPosition {
   id: string
 
@@ -102,6 +129,10 @@ export interface TalentDetails {
   availableForWork: boolean
   availableFrom?: string
   noticePeriodWeeks?: number
+
+  // Preferences (step 1)
+  priorities?: PriorityPreference[]
+  compensationPreferences?: CompensationPreference[]
 
   // Current / desired position (single)
   jobPosition: JobPosition
