@@ -1,3 +1,5 @@
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -10,7 +12,8 @@ export async function POST(req: Request) {
       });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
+    const apiKey = process.env.OPENAI_API_KEY?.trim();
+    if (!apiKey) {
       return new Response(JSON.stringify({ error: "Missing OPENAI_API_KEY" }), {
         status: 500,
         headers: { "Content-Type": "application/json" },
@@ -67,7 +70,7 @@ OUTPUT FORMAT:
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
         model,
@@ -110,7 +113,7 @@ OUTPUT FORMAT:
 
     const outputText =
       data.output_text ??
-      data.output?.[0]?.content?.find((item: any) => item.type === "output_text")?.text;
+      data.output?.[0]?.content?.find((item: { type?: string; text?: string }) => item.type === "output_text")?.text;
 
     if (!outputText) {
       return new Response(
