@@ -51,6 +51,7 @@
 /* Individual card: white surface, soft border, subtle shadow */
 .card {
   position: relative;
+  cursor: pointer;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
