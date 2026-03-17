@@ -169,6 +169,14 @@
   color: var(--color-text-muted);
 }
 
+@media (min-width: 768px) {
+  .multiChipButton > * {
+    font-size: var(--font-size-body-sm) !important;
+    font-weight: var(--font-weight-medium) !important;
+    padding: 6px 11px !important;
+  }
+}
+
 .rangeRoot {
   width: 100%;
   display: flex;
