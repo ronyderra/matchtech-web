@@ -44,9 +44,9 @@ import styles from "./page.module.css";
 const IS_DEV = process.env.NODE_ENV === "development";
 
 const STEPS = [
+  { id: "image", label: "Upload image & background" },
   { id: "whatLookingFor", label: "What are you looking for?" },
   { id: "completeProfile", label: "CV & profile" },
-  { id: "image", label: "Upload image & background" },
   { id: "account", label: "Create account" },
 ];
 
@@ -463,6 +463,14 @@ export default function JobSeekerRegisterPage() {
     if (stepIndex === 0) {
       patchUser({
         type: "talent",
+        backgroundColor: THEME_GRADIENTS[backgroundTheme].start,
+      });
+      return;
+    }
+
+    if (stepIndex === 1) {
+      patchUser({
+        type: "talent",
         availableFrom: availability || undefined,
         priorities: priorities.length ? priorities.slice(0, 3) : undefined,
         compensationPreferences: compensationPreferences.length
@@ -475,7 +483,7 @@ export default function JobSeekerRegisterPage() {
       return;
     }
 
-    if (stepIndex === 1) {
+    if (stepIndex === 2) {
       patchUser({
         type: "talent",
         firstName,
@@ -516,14 +524,6 @@ export default function JobSeekerRegisterPage() {
                   yearsInCompany: exp.yearsInCompany,
                 }))
             : undefined,
-      });
-      return;
-    }
-
-    if (stepIndex === 2) {
-      patchUser({
-        type: "talent",
-        backgroundColor: THEME_GRADIENTS[backgroundTheme].start,
       });
       return;
     }
@@ -570,6 +570,179 @@ export default function JobSeekerRegisterPage() {
             <Stepper steps={steps} currentIndex={currentStep} />
 
             {currentStep === 0 && (
+              <FormSection title="Upload your photo & choose background">
+                <div className={styles.step3Layout}>
+                  <div className={styles.step3Form}>
+                    <FileUpload
+                      label="Your photo"
+                      description="A clear headshot or professional photo. JPG or PNG. Max 5MB."
+                      accept=".jpg,.jpeg,.png,.webp"
+                      onFilesSelected={(files) => {
+                        const next = Array.from(files);
+                        setImageFiles(next);
+                        const file = next[0];
+                        if (!file) return;
+                        fileToDataUrl(file)
+                          .then((dataUrl) => {
+                            patchUser({ type: "talent", avatarUrl: dataUrl, imageUrl: dataUrl });
+                          })
+                          .catch(() => {});
+                      }}
+                    />
+                    {imageFiles.length > 0 && (
+                      <FileListPreview
+                        files={imageFiles}
+                        variant="image"
+                        onRemove={(_, index) => setImageFiles((prev) => prev.filter((_, i) => i !== index))}
+                      />
+                    )}
+
+                    <div style={{ marginTop: 20 }}>
+                      <label
+                        style={{
+                          display: "block",
+                          fontSize: "var(--font-size-body-sm)",
+                          fontWeight: 500,
+                          color: "var(--color-text-primary)",
+                          marginBottom: 10,
+                        }}
+                      >
+                        Background color
+                      </label>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: 10,
+                          alignItems: "center",
+                        }}
+                      >
+                        {(Object.keys(THEME_GRADIENTS) as BackgroundTheme[]).map((theme) => (
+                          <button
+                            key={theme}
+                            type="button"
+                            title={THEME_GRADIENTS[theme].label}
+                            aria-label={`${THEME_GRADIENTS[theme].label} background`}
+                            onClick={() => {
+                              setBackgroundTheme(theme);
+                              patchUser({
+                                type: "talent",
+                                backgroundColor: THEME_GRADIENTS[theme].start,
+                              });
+                            }}
+                            style={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: 12,
+                              ...gradientStyle(theme),
+                              border:
+                                backgroundTheme === theme
+                                  ? "3px solid var(--color-primary)"
+                                  : "2px solid var(--color-border)",
+                              boxShadow:
+                                backgroundTheme === theme
+                                  ? "0 0 0 1px var(--color-primary)"
+                                  : "0 2px 6px rgba(0,0,0,0.12)",
+                              cursor: "pointer",
+                              padding: 0,
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 6 }}>
+                        Same gradient styles as the hero cards on the homepage.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className={styles.step3Preview}>
+                    <div
+                      style={{
+                        width: "100%",
+                        maxWidth: 320,
+                        paddingBottom: 56,
+                        overflow: "visible",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "100%",
+                          aspectRatio: "420 / 200",
+                          borderRadius: 16,
+                          ...gradientStyle(backgroundTheme),
+                          position: "relative",
+                          overflow: "visible",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: "50%",
+                            bottom: -40,
+                            transform: "translateX(-50%)",
+                            width: 96,
+                            height: 96,
+                            borderRadius: "50%",
+                            backgroundColor: "var(--color-surface)",
+                            border: "5px solid var(--color-surface)",
+                            boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+                            overflow: "hidden",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {photoPreviewUrl ? (
+                            <img
+                              src={photoPreviewUrl}
+                              alt="Your photo preview"
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          ) : (
+                            <span
+                              style={{
+                                fontSize: 32,
+                                color: "var(--color-text-muted)",
+                                fontWeight: 600,
+                              }}
+                            >
+                              ?
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 8 }}>
+                      This is how your profile will look with your photo and chosen background.
+                    </p>
+                  </div>
+                </div>
+
+                <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
+                  <Link href="/" style={{ textDecoration: "none" }}>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      style={{
+                        backgroundColor: "var(--color-surface)",
+                        border: "1px solid var(--color-border)",
+                        color: "var(--color-text-primary)",
+                      }}
+                    >
+                      Go back home
+                    </Button>
+                  </Link>
+                  <Button onClick={handleNext}>Continue</Button>
+                </Stack>
+              </FormSection>
+            )}
+
+            {currentStep === 1 && (
               <FormSection title="What are you looking for?">
                 <p
                   style={{
@@ -806,19 +979,6 @@ export default function JobSeekerRegisterPage() {
                   </FormField>
                 </div>
                 <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
-                  <Link href="/" style={{ textDecoration: "none" }}>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      style={{
-                        backgroundColor: "var(--color-surface)",
-                        border: "1px solid var(--color-border)",
-                        color: "var(--color-text-primary)",
-                      }}
-                    >
-                      Go back home
-                    </Button>
-                  </Link>
                   <Button
                     onClick={handleNext}
                     disabled={
@@ -835,7 +995,7 @@ export default function JobSeekerRegisterPage() {
               </FormSection>
             )}
 
-            {currentStep === 1 && (
+            {currentStep === 2 && (
               <FormSection title="Complete missing information">
                 <p
                   style={{
@@ -1422,169 +1582,6 @@ export default function JobSeekerRegisterPage() {
                   >
                     Continue
                   </Button>
-                </Stack>
-              </FormSection>
-            )}
-
-            {currentStep === 2 && (
-              <FormSection title="Upload your photo & choose background">
-                <div className={styles.step3Layout}>
-                  <div className={styles.step3Form}>
-                    <FileUpload
-                      label="Your photo"
-                      description="A clear headshot or professional photo. JPG or PNG. Max 5MB."
-                      accept=".jpg,.jpeg,.png,.webp"
-                      onFilesSelected={(files) => {
-                        const next = Array.from(files);
-                        setImageFiles(next);
-                        const file = next[0];
-                        if (!file) return;
-                        fileToDataUrl(file)
-                          .then((dataUrl) => {
-                            patchUser({ type: "talent", avatarUrl: dataUrl, imageUrl: dataUrl });
-                          })
-                          .catch(() => {});
-                      }}
-                    />
-                    {imageFiles.length > 0 && (
-                      <FileListPreview
-                        files={imageFiles}
-                        variant="image"
-                        onRemove={(_, index) => setImageFiles((prev) => prev.filter((_, i) => i !== index))}
-                      />
-                    )}
-
-                    <div style={{ marginTop: 20 }}>
-                      <label
-                        style={{
-                          display: "block",
-                          fontSize: "var(--font-size-body-sm)",
-                          fontWeight: 500,
-                          color: "var(--color-text-primary)",
-                          marginBottom: 10,
-                        }}
-                      >
-                        Background color
-                      </label>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: 10,
-                          alignItems: "center",
-                        }}
-                      >
-                        {(Object.keys(THEME_GRADIENTS) as BackgroundTheme[]).map((theme) => (
-                          <button
-                            key={theme}
-                            type="button"
-                            title={THEME_GRADIENTS[theme].label}
-                            aria-label={`${THEME_GRADIENTS[theme].label} background`}
-                            onClick={() => {
-                              setBackgroundTheme(theme);
-                              patchUser({
-                                type: "talent",
-                                backgroundColor: THEME_GRADIENTS[theme].start,
-                              });
-                            }}
-                            style={{
-                              width: 40,
-                              height: 40,
-                              borderRadius: 12,
-                              ...gradientStyle(theme),
-                              border:
-                                backgroundTheme === theme
-                                  ? "3px solid var(--color-primary)"
-                                  : "2px solid var(--color-border)",
-                              boxShadow:
-                                backgroundTheme === theme
-                                  ? "0 0 0 1px var(--color-primary)"
-                                  : "0 2px 6px rgba(0,0,0,0.12)",
-                              cursor: "pointer",
-                              padding: 0,
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 6 }}>
-                        Same gradient styles as the hero cards on the homepage.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className={styles.step3Preview}>
-                    <div
-                      style={{
-                        width: "100%",
-                        maxWidth: 320,
-                        paddingBottom: 56,
-                        overflow: "visible",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: "100%",
-                          aspectRatio: "420 / 200",
-                          borderRadius: 16,
-                          ...gradientStyle(backgroundTheme),
-                          position: "relative",
-                          overflow: "visible",
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                        }}
-                      >
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: "50%",
-                            bottom: -40,
-                            transform: "translateX(-50%)",
-                            width: 96,
-                            height: 96,
-                            borderRadius: "50%",
-                            backgroundColor: "var(--color-surface)",
-                            border: "5px solid var(--color-surface)",
-                            boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
-                            overflow: "hidden",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          {photoPreviewUrl ? (
-                            <img
-                              src={photoPreviewUrl}
-                              alt="Your photo preview"
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                objectFit: "cover",
-                              }}
-                            />
-                          ) : (
-                            <span
-                              style={{
-                                fontSize: 32,
-                                color: "var(--color-text-muted)",
-                                fontWeight: 600,
-                              }}
-                            >
-                              ?
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <p style={{ fontSize: 12, color: "var(--color-text-muted)", marginTop: 8 }}>
-                      This is how your profile will look with your photo and chosen background.
-                    </p>
-                  </div>
-                </div>
-
-                <Stack direction="row" gap={12} style={{ marginTop: 24 }}>
-                  <Button type="button" variant="secondary" onClick={handleBack}>
-                    Back
-                  </Button>
-                  <Button onClick={handleNext}>Continue</Button>
                 </Stack>
               </FormSection>
             )}

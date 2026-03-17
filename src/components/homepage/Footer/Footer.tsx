@@ -12,7 +12,7 @@ export function Footer() {
         <div className={styles.topGrid}>
           <div className={styles.brandCol}>
             <Link href="/" className={styles.brand} aria-label="Go to MatchTech home">
-              MatchTech.com
+              MatchTech
             </Link>
 
             <div className={styles.socialRow} aria-label="Social links">

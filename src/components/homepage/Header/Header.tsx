@@ -33,9 +33,11 @@ export function Header() {
                   fontWeight: 700,
                   fontSize: "clamp(19px, 2vw, 26px)",
                   letterSpacing: "-0.02em",
+                  color: "var(--color-primary)",
+                  textShadow: "0 1px 2px rgba(15, 23, 42, 0.25)",
                 }}
               >
-                MatchTech.com
+                MatchTech
               </span>
             </Link>
 
