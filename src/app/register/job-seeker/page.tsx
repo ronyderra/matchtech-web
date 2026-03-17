@@ -220,6 +220,19 @@ export default function JobSeekerRegisterPage() {
     }
   }
 
+  // Smooth progress animation while processing (avoids big jumps)
+  useEffect(() => {
+    if (!cvProcessing) return;
+    const id = window.setInterval(() => {
+      setCvProgress((p) => {
+        if (p >= 92) return p; // leave room for real completion
+        const step = p < 30 ? 3 : p < 60 ? 2 : 1;
+        return Math.min(92, p + step);
+      });
+    }, 180);
+    return () => window.clearInterval(id);
+  }, [cvProcessing]);
+
   // Step 1: availability
   const [availability, setAvailability] = useState("");
   const [priorities, setPriorities] = useState<PriorityPreference[]>([]);
@@ -843,11 +856,10 @@ export default function JobSeekerRegisterPage() {
                     const file = fileList[0];
                     if (!file) return;
                     setCvProcessing(true);
-                    setCvProgress(10);
+                    setCvProgress(3);
                     showToast("info", "Processing CV", "Extracting text from your PDF…");
                     extractTextFromPdf(file)
                       .then(async (fullText) => {
-                        setCvProgress(60);
                         const result = await postWithTimeout(
                           "/api/openai",
                           { CV: fullText, fileName: file.name },
@@ -991,7 +1003,7 @@ export default function JobSeekerRegisterPage() {
                       })
                       .finally(() => {
                         setCvProcessing(false);
-                        setCvProgress(0);
+                        window.setTimeout(() => setCvProgress(0), 400);
                       });
                   }}
                 />
