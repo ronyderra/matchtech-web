@@ -97,6 +97,18 @@ export type { SearchInputProps } from "./search-input";
 export { MultiSelect } from "./multi-select";
 export type { MultiSelectOption, MultiSelectProps } from "./multi-select";
 
+export { MultiSelectDropdown } from "./multi-select-dropdown";
+export type {
+  MultiSelectDropdownOption,
+  MultiSelectDropdownProps,
+} from "./multi-select-dropdown";
+
+export { MultiSelectChips } from "./multi-select-chips";
+export type {
+  MultiSelectChipsOption,
+  MultiSelectChipsProps,
+} from "./multi-select-chips";
+
 export { TagInput } from "./tag-input";
 export type { TagInputProps } from "./tag-input";
 

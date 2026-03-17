@@ -8,7 +8,7 @@ export interface JobPosition {
 
   // Job information
   industry: string
-  department?: string
+  departments?: string[]
   seniority: Seniority
   employmentType: EmploymentType
 

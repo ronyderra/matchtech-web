@@ -109,6 +109,63 @@
   background: rgba(148, 163, 184, 0.10);
 }
 
+.multiOptionDisabled {
+  opacity: 0.55;
+}
+
+.multiChipsRoot {
+  width: 100%;
+}
+
+.multiChipsOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.multiChipButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.multiChipButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.multiChipButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.multiChipButton:focus-visible {
+  outline: none;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.multiChipButton:hover:not(:disabled) :global(.chip) {
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.multiChipButton:disabled {
+  cursor: not-allowed;
+}
+
+.multiChipSelected {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+}
+
+.multiChipDisabled {
+  opacity: 0.55;
+}
+
+.multiChipsHint {
+  margin-top: 6px;
+  font-size: var(--font-size-body-sm);
+  color: var(--color-text-muted);
+}
+
 .rangeRoot {
   width: 100%;
   display: flex;

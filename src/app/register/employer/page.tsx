@@ -20,6 +20,7 @@ import {
   Modal,
 } from "@/components/ui";
 import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
+import { INDUSTRIES } from "@/constants/options";
 import styles from "./page.module.css";
 
 const STEPS = [
@@ -70,25 +71,6 @@ const ISRAEL_CITIES = [
   "Netivot",
   "Remote (Israel)",
   "Any",
-];
-
-const INDUSTRIES = [
-  "Technology / Software",
-  "FinTech",
-  "Healthcare",
-  "Marketing / Advertising",
-  "Design",
-  "Education",
-  "E-commerce",
-  "Cybersecurity",
-  "Gaming",
-  "Real Estate",
-  "Legal",
-  "Manufacturing",
-  "Retail",
-  "Media / Entertainment",
-  "Non-profit",
-  "Other",
 ];
 
 type BackgroundTheme = "blue" | "violet" | "teal" | "amber" | "rose" | "emerald";

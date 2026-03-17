@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./advanced-inputs.module.css";
 import { cn } from "./cn";
 import { Chip } from "./chip";
@@ -15,6 +15,7 @@ export type MultiSelectProps = {
   value: string[];
   onChange: (value: string[]) => void;
   placeholder?: string;
+  maxSelected?: number;
 };
 
 export function MultiSelect({
@@ -22,21 +23,53 @@ export function MultiSelect({
   value,
   onChange,
   placeholder,
+  maxSelected,
 }: MultiSelectProps) {
   const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
   function toggleOption(optionValue: string) {
     if (value.includes(optionValue)) {
       onChange(value.filter((v) => v !== optionValue));
     } else {
-      onChange([...value, optionValue]);
+      if (maxSelected !== undefined && value.length >= maxSelected) return;
+      const next = [...value, optionValue];
+      onChange(next);
+      if (maxSelected !== undefined && next.length >= maxSelected) {
+        setOpen(false);
+      }
     }
   }
 
   const selectedOptions = options.filter((opt) => value.includes(opt.value));
 
+  useEffect(() => {
+    if (!open) return;
+
+    function onPointerDown(event: MouseEvent | PointerEvent) {
+      const root = rootRef.current;
+      if (!root) return;
+      if (event.target instanceof Node && !root.contains(event.target)) {
+        setOpen(false);
+      }
+    }
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    }
+
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   return (
-    <div className={styles.multiRoot}>
+    <div className={styles.multiRoot} ref={rootRef}>
       <div
         className={styles.multiField}
         onClick={() => setOpen((prev) => !prev)}
@@ -59,14 +92,18 @@ export function MultiSelect({
           <div className={styles.multiMenu} role="listbox">
             {options.map((opt) => {
               const selected = value.includes(opt.value);
+              const disabled =
+                !selected && maxSelected !== undefined && value.length >= maxSelected;
               return (
                 <button
                   key={opt.value}
                   type="button"
                   className={styles.multiOption}
                   onClick={() => toggleOption(opt.value)}
+                  disabled={disabled}
+                  aria-disabled={disabled}
                 >
-                  <span>{opt.label}</span>
+                  <span className={cn(disabled && styles.multiOptionDisabled)}>{opt.label}</span>
                   {selected ? <span aria-hidden="true">✓</span> : null}
                 </button>
               );
