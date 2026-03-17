@@ -27,6 +27,7 @@ export function HeroSection() {
             <Heading
               as="h1"
               size="xl"
+              className={styles.heroTitle}
               style={{
                 fontSize: 48,
                 lineHeight: "56px",
@@ -92,7 +93,7 @@ export function HeroSection() {
               By joining or signing in, you agree to MatchTech&apos;s User
               <br />
               <Link
-                href="/terms"
+                href="/user-agreement"
                 style={{ color: "var(--color-primary)", textDecoration: "none" }}
               >
                 User Agreement
