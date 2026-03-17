@@ -6,8 +6,10 @@ frontend:
         - npm ci
     build:
       commands:
-        - env | grep -e OPENAI_API_KEY -e OPENAI_MODEL >> .env.production
-        - env | grep -e NEXT_PUBLIC_ >> .env.production
+        - touch .env.production
+        - '[ -n "$OPENAI_API_KEY" ] && echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> .env.production'
+        - '[ -n "$OPENAI_MODEL" ] && echo "OPENAI_MODEL=$OPENAI_MODEL" >> .env.production'
+        - 'env | grep "^NEXT_PUBLIC_" >> .env.production || true'
         - npm run build
   artifacts:
     baseDirectory: .next
