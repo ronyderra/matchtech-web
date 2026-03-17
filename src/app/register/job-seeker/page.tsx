@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
   Breadcrumbs,
   Container,
@@ -140,6 +141,7 @@ function fileToDataUrl(file: File): Promise<string> {
 }
 
 export default function JobSeekerRegisterPage() {
+  const router = useRouter();
   const user = useUserStore((s) => s.user);
   const initDraft = useUserStore((s) => s.initDraft);
   const patchUser = useUserStore((s) => s.patchUser);
@@ -537,7 +539,9 @@ export default function JobSeekerRegisterPage() {
   function handleNext() {
     saveStepToDraft(currentStep);
     if (isLastStep) {
-      void handleCompleteRegistration();
+      void handleCompleteRegistration().then(() => {
+        router.push("/register/thank-you");
+      });
       return;
     }
     setCurrentStep((s) => s + 1);

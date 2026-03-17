@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import styles from "./SwipeCardDemo.module.css";
+import type { AppUser } from "@/store/user-store";
+import type { CompanyDetails, TalentDetails } from "@/types";
 
 type CardType = "company" | "talent";
 
@@ -82,7 +84,7 @@ const THEME_COLORS: Record<
   },
 };
 
-type SwipeCardData = {
+export type SwipeCardData = {
   type: CardType;
   theme?: CardTheme;
   title: string;
@@ -103,6 +105,235 @@ type SwipeCardData = {
   companyAbout?: string;
   companyFacts?: { label: string; value: string }[];
 };
+
+function formatLocation(city?: string | null, country?: string | null) {
+  const parts = [city, country].filter((p) => p && String(p).trim());
+  return parts.join(", ");
+}
+
+function pickTheme(backgroundColor?: string): CardTheme | undefined {
+  if (!backgroundColor) return undefined;
+  const entry = (Object.entries(THEME_COLORS) as [CardTheme, any][])
+    .find(([, v]) => v.bannerStart === backgroundColor);
+  return entry?.[0];
+}
+
+export function profileToSwipeCardData(user: AppUser): SwipeCardData {
+  if (user.type === "talent") {
+    const t = user as TalentDetails;
+    const name = t.fullName?.trim() || `${t.firstName ?? ""} ${t.lastName ?? ""}`.trim() || "Your profile";
+    const role = t.jobPosition?.departments?.[0] || t.role || "Role preference";
+    const location = formatLocation(t.city, t.country) || formatLocation(t.address?.city, t.address?.country);
+    const metaBits = [
+      t.yearsOfExperience ? `${t.yearsOfExperience}+ years` : null,
+      t.workPreference && t.workPreference !== "any" ? t.workPreference : null,
+      t.availableFrom ? `Available: ${t.availableFrom}` : null,
+      location || null,
+    ].filter(Boolean);
+
+    const skills = (t.skills ?? []).filter(Boolean).slice(0, 8);
+    const languages = (t.languages ?? []).filter(Boolean).slice(0, 3);
+    const expCount = (t.experiences ?? []).length;
+
+    return {
+      type: "talent",
+      theme: pickTheme(t.backgroundColor) ?? "violet",
+      title: name,
+      subtitle: role,
+      metaLine: metaBits.join(" · "),
+      topRightPill: expCount ? `${expCount} roles` : t.yearsOfExperience ? `${t.yearsOfExperience} yrs exp` : "Profile",
+      avatarText: (t.firstName?.[0] ?? "U") + (t.lastName?.[0] ?? ""),
+      avatarImageUrl: t.avatarUrl || t.imageUrl || undefined,
+      description: (t.bio ?? "").trim() || "Bio will be available when MatchTech goes live.",
+      tags: skills,
+      quickFacts: [
+        t.availableFrom ? { label: "Availability", value: t.availableFrom } : null,
+        t.workPreference && t.workPreference !== "any" ? { label: "Work style", value: t.workPreference } : null,
+        languages.length ? { label: "Languages", value: languages.join(", ") } : null,
+      ].filter(Boolean) as { label: string; value: string }[],
+      detailItems: (t.experiences ?? [])
+        .slice(0, 3)
+        .map((e) => [e.jobTitle, e.companyName].filter(Boolean).join(" · "))
+        .filter((s) => s.trim().length > 0),
+    };
+  }
+
+  const c = user as CompanyDetails;
+  const firstPosition = c.positions?.[0];
+  const location = formatLocation(c.address?.city, c.address?.country);
+  const posTitle = firstPosition?.industry || firstPosition?.departments?.[0] || "Open position";
+  const posMeta = [
+    firstPosition?.workPreference && firstPosition.workPreference !== "any" ? firstPosition.workPreference : null,
+    location || null,
+    c.industry || null,
+  ].filter(Boolean);
+
+  return {
+    type: "company",
+    theme: pickTheme(c.backgroundColor) ?? "blue",
+    title: firstPosition?.id ? firstPosition.id : posTitle,
+    subtitle: c.companyName || "Your company",
+    metaLine: posMeta.join(" · "),
+    topRightPill: c.positions?.length ? `${c.positions.length} positions` : "Hiring soon",
+    avatarText: (c.companyName?.[0] ?? "C").toUpperCase(),
+    avatarImageUrl: c.logoUrl || c.imageUrl || undefined,
+    companyName: c.companyName || undefined,
+    companyAbout: (c.description ?? "").trim() || undefined,
+    companyFacts: [
+      c.industry ? { label: "Industry", value: c.industry } : null,
+      location ? { label: "Location", value: location } : null,
+    ].filter(Boolean) as { label: string; value: string }[],
+    description:
+      firstPosition?.shortDescription ||
+      "We’ll finalize your company card once MatchTech goes live.",
+    tags: (firstPosition?.skillsRequired ?? []).slice(0, 8),
+    quickFacts: [
+      c.positions?.length ? { label: "Open roles", value: String(c.positions.length) } : null,
+      firstPosition?.employmentType && firstPosition.employmentType !== "any"
+        ? { label: "Employment", value: firstPosition.employmentType }
+        : null,
+    ].filter(Boolean) as { label: string; value: string }[],
+    detailItems: (c.positions ?? [])
+      .slice(0, 3)
+      .map((p) => [p.industry, p.departments?.[0], p.workPreference].filter(Boolean).join(" · "))
+      .filter((s) => s.trim().length > 0),
+  };
+}
+
+export function ProfileCardPreview({ user }: { user: AppUser }) {
+  const card = profileToSwipeCardData(user);
+  const theme = card.theme ?? "blue";
+  const themeColors = THEME_COLORS[theme];
+  const cardThemeStyle: React.CSSProperties = {
+    ["--card-banner-start" as string]: themeColors.bannerStart,
+    ["--card-banner-mid" as string]: themeColors.bannerMid,
+    ["--card-banner-end" as string]: themeColors.bannerEnd,
+    ["--card-type-pill-bg" as string]: themeColors.typePillBg,
+    ["--card-type-pill-color" as string]: themeColors.typePillColor,
+    ["--card-type-pill-border" as string]: themeColors.typePillBorder,
+    ["--card-bullet-bg" as string]: themeColors.bulletBg,
+  };
+
+  return (
+    <div className={styles.root}>
+      <div className={styles.stack}>
+        <div className={[styles.cardSlot, styles.front].filter(Boolean).join(" ")}>
+          <div className={styles.card} style={cardThemeStyle}>
+            <div className={styles.cardTop}>
+              <div
+                className={[
+                  styles.banner,
+                  !card.bannerImageUrl && styles.bannerUnified,
+                ].filter(Boolean).join(" ")}
+                style={
+                  card.bannerImageUrl
+                    ? { backgroundImage: `url(${card.bannerImageUrl})` }
+                    : undefined
+                }
+              >
+                <span className={styles.bannerType}>
+                  {card.type === "company" ? "Company" : "Talent"}
+                </span>
+                <div className={styles.bannerAvatar}>
+                  {card.avatarImageUrl ? (
+                    <Image
+                      src={card.avatarImageUrl}
+                      alt=""
+                      className={styles.bannerAvatarImg}
+                      width={96}
+                      height={96}
+                      unoptimized
+                    />
+                  ) : (
+                    card.avatarText
+                  )}
+                </div>
+                {card.topRightPill ? (
+                  <span className={styles.bannerHighlight}>{card.topRightPill}</span>
+                ) : null}
+              </div>
+            </div>
+
+            <div className={styles.cardMain}>
+              <div className={styles.metaRowTop}>
+                <span className={styles.typePill}>
+                  {card.type === "company" ? "Company" : "Talent"}
+                </span>
+                <span className={styles.scorePill}>
+                  Match score <strong>92%</strong>
+                </span>
+              </div>
+
+              {card.type === "company" && (card.companyName || card.companyAbout) && (
+                <>
+                  <p className={styles.sectionLabel}>About the company</p>
+                  {card.companyName ? (
+                    <h3 className={styles.companyName}>{card.companyName}</h3>
+                  ) : null}
+                  {card.companyAbout ? (
+                    <p className={styles.companyAbout}>{card.companyAbout}</p>
+                  ) : null}
+                  {card.companyFacts && card.companyFacts.length > 0 ? (
+                    <div className={styles.factsGrid}>
+                      {card.companyFacts.map((f) => (
+                        <div key={f.label} className={styles.factItem}>
+                          <span className={styles.factLabel}>{f.label}</span>
+                          <span className={styles.factValue}>{f.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : null}
+                  <p className={styles.sectionLabel}>Role we&apos;re hiring for</p>
+                </>
+              )}
+
+              {card.title ? <h2 className={styles.cardTitle}>{card.title}</h2> : null}
+              {card.subtitle ? <p className={styles.cardSubtitle}>{card.subtitle}</p> : null}
+              {card.metaLine ? <p className={styles.cardMetaLine}>{card.metaLine}</p> : null}
+              {card.description ? <p className={styles.cardBody}>{card.description}</p> : null}
+
+              {card.quickFacts.length > 0 ? (
+                <div className={styles.factsGrid}>
+                  {card.quickFacts.map((f) => (
+                    <div key={f.label} className={styles.factItem}>
+                      <span className={styles.factLabel}>{f.label}</span>
+                      <span className={styles.factValue}>{f.value}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              {card.tags.length > 0 || card.detailItems.length > 0 ? (
+                <div className={styles.divider} />
+              ) : null}
+
+              {card.tags.length > 0 ? (
+                <div className={styles.skillsRow}>
+                  {card.tags.map((tag) => (
+                    <span key={tag} className={styles.skillTag}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+
+              {card.detailItems.length > 0 ? (
+                <ul className={styles.detailsList}>
+                  {card.detailItems.map((t) => (
+                    <li key={t} className={styles.detailsItem}>
+                      <span className={styles.bulletDot} aria-hidden="true" />
+                      <span>{t}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const CARDS: SwipeCardData[] = [
   {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
   Breadcrumbs,
   Container,
@@ -133,6 +134,7 @@ function fileToDataUrl(file: File): Promise<string> {
 }
 
 export default function EmployerRegisterPage() {
+  const router = useRouter();
   const user = useUserStore((s) => s.user);
   const initDraft = useUserStore((s) => s.initDraft);
   const patchUser = useUserStore((s) => s.patchUser);
@@ -260,7 +262,10 @@ export default function EmployerRegisterPage() {
       }
     }
 
-    if (isLastStep) return;
+    if (isLastStep) {
+      router.push("/register/thank-you");
+      return;
+    }
     setCurrentStep((s) => s + 1);
   }
 
