@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={sourceSans.variable}>
         {children}
+        <Script src="https://embed.typeform.com/next/embed.js" strategy="afterInteractive" />
       </body>
     </html>
   );

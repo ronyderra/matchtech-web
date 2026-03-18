@@ -28,7 +28,7 @@ export function RegisterRoleDialog({ open, onClose, onOpenLogin }: RegisterRoleD
       <Stack gap={12} style={{ marginTop: 8 }}>
         <Button
           fullWidth
-          onClick={() => goTo("/register/job-seeker")}
+          onClick={() => goTo("/register/typ/job-seeker")}
           style={{ justifyContent: "space-between" }}
         >
           <span>Register as Talent</span>

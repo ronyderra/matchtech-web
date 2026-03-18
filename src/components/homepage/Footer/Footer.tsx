@@ -69,7 +69,7 @@ export function Footer() {
           <div className={styles.linksCol}>
             <div className={styles.linkGroup}>
               <p className={styles.linkTitle}>Product</p>
-              <Link className={styles.link} href="/register/job-seeker">
+              <Link className={styles.link} href="/register/typ/job-seeker">
                 Personal
               </Link>
               <Link className={styles.link} href="/register/employer">

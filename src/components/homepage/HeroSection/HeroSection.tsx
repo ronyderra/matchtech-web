@@ -55,7 +55,7 @@ export function HeroSection() {
               wrap
               style={{ alignItems: "center" }}
             >
-              <Link href="/register/job-seeker">
+              <Link href="/register/typ/job-seeker">
                 <Button
                   style={{
                     height: 48,
