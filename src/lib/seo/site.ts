@@ -22,7 +22,7 @@ export const DEFAULT_TITLE = `${SITE_NAME} - Swipe-first hiring`;
 export const DEFAULT_DESCRIPTION =
   "MatchTech is a swipe-based recruitment platform for job seekers and employers—designed for fast, high-signal matching and introductions.";
 
-export const HOMEPAGE_TITLE = `Swipe to Match, Find the Right Fit Faster | ${SITE_NAME}`;
+export const HOMEPAGE_TITLE = `${SITE_NAME}`;
 export const HOMEPAGE_DESCRIPTION =
   "Swipe to match with opportunities. Find the right fit faster with MatchTech's swipe-first recruitment platform.";
 
