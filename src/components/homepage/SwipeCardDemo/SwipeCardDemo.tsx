@@ -327,15 +327,15 @@ export function ProfileCardPreview({ user }: { user: AppUser }) {
             </div>
 
             <div className={styles.cardBottom}>
-              <button type="button" className={`${styles.actionButton} ${styles.actionPass}`}>
+              <button type="button" disabled className={`${styles.actionButton} ${styles.actionPass}`}>
                 <span className={styles.actionIcon}>✕</span>
                 <span className={styles.actionLabel}>Pass</span>
               </button>
-              <button type="button" className={`${styles.actionButton} ${styles.actionInfo}`}>
+              <button type="button" disabled className={`${styles.actionButton} ${styles.actionInfo}`}>
                 <span className={styles.actionIcon}>i</span>
                 <span className={styles.actionLabel}>Info</span>
               </button>
-              <button type="button" className={`${styles.actionButton} ${styles.actionMatch}`}>
+              <button type="button" disabled className={`${styles.actionButton} ${styles.actionMatch}`}>
                 <span className={styles.actionIcon}>✓</span>
                 <span className={styles.actionLabel}>Match</span>
               </button>
@@ -769,16 +769,17 @@ export function SwipeCardDemo() {
                 </div>
 
                 <div className={styles.cardBottom}>
-                  <button type="button" className={`${styles.actionButton} ${styles.actionPass}`}>
+                  <button type="button" disabled className={`${styles.actionButton} ${styles.actionPass}`}>
                     <span className={styles.actionIcon}>✕</span>
                     <span className={styles.actionLabel}>Pass</span>
                   </button>
-                  <button type="button" className={`${styles.actionButton} ${styles.actionInfo}`}>
+                  <button type="button" disabled className={`${styles.actionButton} ${styles.actionInfo}`}>
                     <span className={styles.actionIcon}>i</span>
                     <span className={styles.actionLabel}>Info</span>
                   </button>
                   <button
                     type="button"
+                    disabled
                     className={`${styles.actionButton} ${styles.actionMatch}`}
                   >
                     <span className={styles.actionIcon}>✓</span>
