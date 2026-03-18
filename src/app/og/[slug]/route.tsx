@@ -41,6 +41,7 @@ function SwipeMock({
         top,
         width: 360,
         height: 220,
+        display: "flex",
         borderRadius: 28,
         transform: `rotate(${rotate}deg)`,
         background: `linear-gradient(135deg, ${tones.a} 0%, rgba(0,0,0,0) 80%), radial-gradient(circle at 20% 0%, ${tones.b} 0%, rgba(0,0,0,0) 55%)`,
@@ -58,7 +59,15 @@ function SwipeMock({
           opacity: 0.75,
         }}
       />
-      <div style={{ position: "absolute", left: 28, top: 26 }}>
+      <div
+        style={{
+          position: "absolute",
+          left: 28,
+          top: 26,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <div
           style={{
             width: 64,
@@ -172,7 +181,7 @@ export async function GET(
           >
             <img src={logoUrl} width={40} height={40} alt="" />
           </div>
-          <div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ fontSize: 34, fontWeight: 800, lineHeight: "1.05" }}>{SITE_NAME}</div>
             <div style={{ marginTop: 6, fontSize: 18, color: "rgba(255,255,255,0.82)" }}>
               Swipe-based hiring platform
@@ -195,7 +204,14 @@ export async function GET(
           </div>
         </div>
 
-        <div style={{ position: "relative", paddingTop: 26 }}>
+        <div
+          style={{
+            position: "relative",
+            paddingTop: 26,
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <div style={{ fontSize: 54, fontWeight: 900, lineHeight: 1.02, maxWidth: 880 }}>
             {picked.title}
           </div>
@@ -212,7 +228,14 @@ export async function GET(
             {picked.description}
           </div>
 
-          <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              pointerEvents: "none",
+              display: "flex",
+            }}
+          >
             <SwipeMock left={720} top={250} rotate={10} tone={picked.tone} />
             <SwipeMock left={520} top={270} rotate={-8} tone="teal" />
           </div>
