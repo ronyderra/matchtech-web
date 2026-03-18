@@ -138,7 +138,7 @@ export async function GET(
       tone: "blue" as const,
     },
     homepage: {
-      title: "Swipe to Match, Find the Right Fit Faster",
+      title: "Swipe to Match,\nFind the Right Fit Faster",
       description: "Swipe-first hiring. Match faster. Find the right fit with MatchTech.",
       bgA: "rgba(10, 102, 194, 0.95)",
       bgB: "rgba(124, 58, 237, 0.95)",
@@ -147,6 +147,7 @@ export async function GET(
   } as const;
 
   const picked = contentBySlug[pickedSlug as keyof typeof contentBySlug] ?? contentBySlug.default;
+  const titleLines = picked.title.split("\n");
 
   return new ImageResponse(
     (
@@ -212,8 +213,19 @@ export async function GET(
             flexDirection: "column",
           }}
         >
-          <div style={{ fontSize: 54, fontWeight: 900, lineHeight: 1.02, maxWidth: 880 }}>
-            {picked.title}
+          <div
+            style={{
+              fontSize: 54,
+              fontWeight: 900,
+              lineHeight: 1.02,
+              maxWidth: 880,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            {titleLines.map((line, idx) => (
+              <div key={`${idx}-${line}`}>{line}</div>
+            ))}
           </div>
           <div
             style={{

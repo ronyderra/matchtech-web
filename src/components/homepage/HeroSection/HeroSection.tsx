@@ -31,7 +31,9 @@ export function HeroSection() {
                 lineHeight: "56px",
               }}
             >
-              Swipe to Match, Find the Right Fit Faster
+              Swipe to Match,
+              <br />
+              Find the Right Fit Faster
             </Heading>
             <Text
               as="p"
