@@ -31,7 +31,7 @@ export function HeroSection() {
                 lineHeight: "56px",
               }}
             >
-              Swipe-first hiring for job seekers and employers
+              Swipe to Match, Find the Right Fit Faster
             </Heading>
             <Text
               as="p"

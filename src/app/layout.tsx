@@ -35,21 +35,21 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/brand/matchtech-wordmark-square.png",
-        sizes: "32x32",
-        type: "image/png",
+        url: "/brand/favicon-all-blue.svg",
+        sizes: "any",
+        type: "image/svg+xml",
       },
       {
-        url: "/brand/matchtech-wordmark-square.png",
-        sizes: "16x16",
-        type: "image/png",
+        url: "/brand/favicon-all-blue.svg",
+        sizes: "any",
+        type: "image/svg+xml",
       },
     ],
     apple: [
       {
-        url: "/brand/matchtech-wordmark-square.png",
-        sizes: "180x180",
-        type: "image/png",
+        url: "/brand/favicon-all-blue.svg",
+        sizes: "any",
+        type: "image/svg+xml",
       },
     ],
   },

@@ -129,8 +129,8 @@ export async function GET(
       tone: "blue" as const,
     },
     homepage: {
-      title: "Swipe-first hiring for job seekers & employers",
-      description: "Discover talent, match faster, and connect with less back-and-forth.",
+      title: "Swipe to Match, Find the Right Fit Faster",
+      description: "Swipe-first hiring. Match faster. Find the right fit with MatchTech.",
       bgA: "rgba(10, 102, 194, 0.95)",
       bgB: "rgba(124, 58, 237, 0.95)",
       tone: "violet" as const,
