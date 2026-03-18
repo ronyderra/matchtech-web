@@ -32,11 +32,12 @@ export function Header() {
             <Link href="/" aria-label="Go to MatchTech home">
               <span
                 style={{
-                  fontWeight: 700,
+                  fontWeight: 600,
+                  fontFamily: "Georgia, 'Times New Roman', Times, serif",
                   fontSize: "clamp(21px, 2.4vw, 26px)",
-                  letterSpacing: "-0.02em",
+                  letterSpacing: "-0.05em",
                   color: "var(--color-primary)",
-                  textShadow: "0 1px 2px rgba(15, 23, 42, 0.25)",
+                  // textShadow: "0 1px 2px rgba(15, 23, 42, 0.25)",
                 }}
               >
                 MatchTech
