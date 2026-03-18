@@ -1,10 +1,29 @@
 import { Header } from "@/components/homepage/Header/Header";
 import { Footer } from "@/components/homepage/Footer/Footer";
 import { Container, Section, Stack, Heading, Text } from "@/components/ui";
+import { MatchTechStructuredData } from "@/components/seo/MatchTechStructuredData";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
+
+const ABOUT_TITLE = "About MatchTech | Swipe-first hiring for job seekers and employers";
+const ABOUT_DESCRIPTION =
+  "Learn how MatchTech builds a swipe-first recruitment experience for job seekers and employers, designed for speed, clarity, and high-signal matching.";
+
+export const metadata: Metadata = createPageMetadata({
+  pathname: "/about",
+  title: ABOUT_TITLE,
+  description: ABOUT_DESCRIPTION,
+});
 
 export default function AboutUsPage() {
   return (
     <>
+      <MatchTechStructuredData
+        page="about"
+        path="/about"
+        title={ABOUT_TITLE}
+        description={ABOUT_DESCRIPTION}
+      />
       <Header />
       <main style={{ paddingTop: 120 }}>
         <Section style={{ paddingTop: 64, paddingBottom: 64 }}>

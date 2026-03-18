@@ -1,5 +1,3 @@
-"use client";
-
 import { Container, Section } from "@/components/ui";
 import styles from "./HowItWorks.module.css";
 
@@ -8,7 +6,7 @@ const STEPS = [
     number: 1,
     title: "Swipe",
     description:
-      "Browse roles or candidates with a simple swipe. Pass or match in seconds and focus on what fits you best.",
+      "Swipe through roles and candidates. Pass or match in seconds and focus on what fits job seekers and hiring teams.",
     icon: (
       <svg
         width="120"
@@ -36,7 +34,7 @@ const STEPS = [
     number: 2,
     title: "Get matched",
     description:
-      "When both sides match, you're connected. Get introduced to roles or talent that fit without the back-and-forth.",
+      "When both sides match, you're connected. Get introduced to the right roles and talent with less back-and-forth.",
     icon: (
       <svg
         width="120"
@@ -92,7 +90,7 @@ export function HowItWorks() {
     <Section className={styles.section}>
       <Container>
         <header className={styles.header}>
-          <h2 className={styles.title}>We make things easier for you:</h2>
+          <h2 className={styles.title}>How swipe-first hiring works for job seekers and employers</h2>
         </header>
 
         <div className={styles.cardGrid} role="list">

@@ -1,10 +1,29 @@
 import { Header } from "@/components/homepage/Header/Header";
 import { Footer } from "@/components/homepage/Footer/Footer";
 import { Container, Section, Stack, Heading, Text } from "@/components/ui";
+import { MatchTechStructuredData } from "@/components/seo/MatchTechStructuredData";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
+
+const USER_AGREEMENT_TITLE = "User Agreement | MatchTech";
+const USER_AGREEMENT_DESCRIPTION =
+  "Understand the expectations for using MatchTech, including account responsibilities and acceptable use.";
+
+export const metadata: Metadata = createPageMetadata({
+  pathname: "/user-agreement",
+  title: USER_AGREEMENT_TITLE,
+  description: USER_AGREEMENT_DESCRIPTION,
+});
 
 export default function UserAgreementPage() {
   return (
     <>
+      <MatchTechStructuredData
+        page="user-agreement"
+        path="/user-agreement"
+        title={USER_AGREEMENT_TITLE}
+        description={USER_AGREEMENT_DESCRIPTION}
+      />
       <Header />
       <main style={{ paddingTop: 120 }}>
         <Section style={{ paddingTop: 64, paddingBottom: 64 }}>
@@ -27,8 +46,8 @@ export default function UserAgreementPage() {
                     User Agreement
                   </Heading>
                   <Text as="p" style={{ color: "var(--color-text-secondary)" }}>
-                    This User Agreement is a simple placeholder for the MatchTech demo. It describes
-                    the basic expectations for using the platform and will be updated before launch.
+                    This User Agreement describes the basic expectations for using MatchTech,
+                    including your account responsibilities and acceptable use.
                   </Text>
                   <Text as="p">
                     MatchTech is designed to help candidates and companies connect when there’s mutual

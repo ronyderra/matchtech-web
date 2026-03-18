@@ -1,10 +1,29 @@
 import { Header } from "@/components/homepage/Header/Header";
 import { Footer } from "@/components/homepage/Footer/Footer";
 import { Container, Section, Stack, Heading, Text } from "@/components/ui";
+import { MatchTechStructuredData } from "@/components/seo/MatchTechStructuredData";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
+
+const TERMS_TITLE = "Terms of Use | MatchTech";
+const TERMS_DESCRIPTION =
+  "Read the Terms of Use for accessing and using MatchTech, a swipe-based hiring platform for job seekers and employers.";
+
+export const metadata: Metadata = createPageMetadata({
+  pathname: "/terms",
+  title: TERMS_TITLE,
+  description: TERMS_DESCRIPTION,
+});
 
 export default function TermsOfUsePage() {
   return (
     <>
+      <MatchTechStructuredData
+        page="terms"
+        path="/terms"
+        title={TERMS_TITLE}
+        description={TERMS_DESCRIPTION}
+      />
       <Header />
       <main style={{ paddingTop: 120 }}>
         <Section style={{ paddingTop: 64, paddingBottom: 64 }}>
@@ -27,8 +46,8 @@ export default function TermsOfUsePage() {
                     Terms of Use
                   </Heading>
                   <Text as="p" style={{ color: "var(--color-text-secondary)" }}>
-                    These Terms of Use govern your access to and use of MatchTech. This page is a
-                    simple placeholder and will be updated as MatchTech moves from demo to launch.
+                    These Terms of Use govern your access to and use of MatchTech, including our
+                    swipe-based hiring features and related services.
                   </Text>
                   <Text as="p">
                     By accessing or using MatchTech, you agree that you understand these terms and will
@@ -57,8 +76,8 @@ export default function TermsOfUsePage() {
                     and respectful. We may remove content that violates these terms or is unlawful.
                   </Text>
                   <Text as="p">
-                    MatchTech is a product demo and certain features may be incomplete or change without
-                    notice. We do not guarantee matches, responses, interviews, or hiring outcomes.
+                    MatchTech may be updated over time. We do not guarantee matches, responses,
+                    interviews, or hiring outcomes.
                   </Text>
 
                   <Heading as="h2" size="md" style={{ color: "var(--color-primary)" }}>

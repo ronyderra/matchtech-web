@@ -108,7 +108,7 @@ function FileItem({
   useEffect(() => {
     if (variant !== "image" || !isImage) return;
     const url = URL.createObjectURL(file);
-    setThumbUrl(url);
+    queueMicrotask(() => setThumbUrl(url));
     return () => URL.revokeObjectURL(url);
   }, [file, variant, isImage]);
 
@@ -127,7 +127,13 @@ function FileItem({
       )}
       <div className={styles.iconWrap}>
         {variant === "image" && thumbUrl ? (
-          <img src={thumbUrl} alt="" className={styles.thumb} />
+          <img
+            src={thumbUrl}
+            alt={`Preview thumbnail: ${file.name}`}
+            className={styles.thumb}
+            width={56}
+            height={56}
+          />
         ) : (
           isImage ? <ImageIcon /> : <DocumentIcon />
         )}

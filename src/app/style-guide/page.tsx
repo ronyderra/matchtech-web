@@ -1,5 +1,21 @@
 import { SwipeLayout } from "@/components/SwipeLayout";
 
+import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/seo/metadata";
+
+const TITLE = "MatchTech Style Guide | MatchTech";
+const DESCRIPTION = "Internal UI style guide and component validation (noindex).";
+
+export const metadata: Metadata = createPageMetadata({
+  pathname: "/style-guide",
+  title: TITLE,
+  description: DESCRIPTION,
+  robots: {
+    index: false,
+    follow: false,
+  },
+});
+
 export default function StyleGuidePage() {
   return (
     <div>

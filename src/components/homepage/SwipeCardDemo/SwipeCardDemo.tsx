@@ -239,7 +239,7 @@ export function ProfileCardPreview({ user }: { user: AppUser }) {
                   {card.avatarImageUrl ? (
                     <Image
                       src={card.avatarImageUrl}
-                      alt=""
+                      alt={card.type === "company" ? "Company logo" : "Candidate photo"}
                       className={
                         card.avatarImageUrl.endsWith(".svg")
                           ? styles.bannerAvatarImgContain
@@ -292,7 +292,7 @@ export function ProfileCardPreview({ user }: { user: AppUser }) {
                 </>
               )}
 
-              <h2 className={styles.cardTitle}>{card.title}</h2>
+              <h3 className={styles.cardTitle}>{card.title}</h3>
               <p className={styles.cardSubtitle}>{card.subtitle}</p>
               <p className={styles.cardMetaLine}>{card.metaLine}</p>
               <p className={styles.cardBody}>{limitedDescription}</p>
@@ -677,7 +677,7 @@ export function SwipeCardDemo() {
                       {card.avatarImageUrl ? (
                         <Image
                           src={card.avatarImageUrl}
-                          alt=""
+                      alt={card.type === "company" ? "Company logo" : "Candidate photo"}
                           className={
                             card.avatarImageUrl.endsWith(".svg")
                               ? styles.bannerAvatarImgContain
@@ -734,7 +734,7 @@ export function SwipeCardDemo() {
                     </>
                   )}
 
-                  <h2 className={styles.cardTitle}>{card.title}</h2>
+                  <h3 className={styles.cardTitle}>{card.title}</h3>
                   <p className={styles.cardSubtitle}>{card.subtitle}</p>
                   <p className={styles.cardMetaLine}>{card.metaLine}</p>
                   <p className={styles.cardBody}>{limitedDescription}</p>

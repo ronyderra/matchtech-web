@@ -1,10 +1,29 @@
 import { Header } from "@/components/homepage/Header/Header";
 import { Footer } from "@/components/homepage/Footer/Footer";
 import { Container, Section, Stack, Heading, Text } from "@/components/ui";
+import { MatchTechStructuredData } from "@/components/seo/MatchTechStructuredData";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
+
+const PARTNER_TITLE = "Partner with MatchTech | Talent & Hiring Collaborations";
+const PARTNER_DESCRIPTION =
+  "Partner with MatchTech through co-marketing, talent pipelines, and swipe-first hiring program pilots for communities and employers.";
+
+export const metadata: Metadata = createPageMetadata({
+  pathname: "/partner",
+  title: PARTNER_TITLE,
+  description: PARTNER_DESCRIPTION,
+});
 
 export default function PartnerWithUsPage() {
   return (
     <>
+      <MatchTechStructuredData
+        page="partner"
+        path="/partner"
+        title={PARTNER_TITLE}
+        description={PARTNER_DESCRIPTION}
+      />
       <Header />
       <main style={{ paddingTop: 120 }}>
         <Section style={{ paddingTop: 64, paddingBottom: 64 }}>

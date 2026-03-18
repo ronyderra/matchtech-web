@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Container, Section, Stack, Heading, Text, Button, Grid } from "@/components/ui";
 import { SwipeCardDemo } from "@/components/homepage/SwipeCardDemo/SwipeCardDemo";
@@ -33,7 +31,7 @@ export function HeroSection() {
                 lineHeight: "56px",
               }}
             >
-              Where Talent and Opportunity Meet With a Swipe.
+              Swipe-first hiring for job seekers and employers
             </Heading>
             <Text
               as="p"
@@ -44,8 +42,7 @@ export function HeroSection() {
                 maxWidth: 520,
               }}
             >
-              MatchTech is a modern hiring platform where job seekers and companies
-              connect through a simple swipe-based experience.
+              MatchTech is a swipe-based recruitment platform for job seekers and employers, helping you discover talent, match faster, and connect with less back-and-forth.
             </Text>
 
             {/* Desktop CTAs: horizontal */}

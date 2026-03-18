@@ -1,10 +1,29 @@
 import { Header } from "@/components/homepage/Header/Header";
 import { Footer } from "@/components/homepage/Footer/Footer";
 import { Container, Section, Stack, Heading, Text } from "@/components/ui";
+import { MatchTechStructuredData } from "@/components/seo/MatchTechStructuredData";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
+
+const PRIVACY_TITLE = "Privacy Policy | MatchTech";
+const PRIVACY_DESCRIPTION =
+  "How MatchTech collects, uses, and protects information for candidates and hiring teams.";
+
+export const metadata: Metadata = createPageMetadata({
+  pathname: "/privacy",
+  title: PRIVACY_TITLE,
+  description: PRIVACY_DESCRIPTION,
+});
 
 export default function PrivacyPolicyPage() {
   return (
     <>
+      <MatchTechStructuredData
+        page="privacy"
+        path="/privacy"
+        title={PRIVACY_TITLE}
+        description={PRIVACY_DESCRIPTION}
+      />
       <Header />
       <main style={{ paddingTop: 120 }}>
         <Section style={{ paddingTop: 64, paddingBottom: 64 }}>
@@ -27,8 +46,8 @@ export default function PrivacyPolicyPage() {
                     Privacy Policy
                   </Heading>
                   <Text as="p" style={{ color: "var(--color-text-secondary)" }}>
-                    This Privacy Policy explains how MatchTech handles information. This is a simple
-                    placeholder policy for the demo and will be refined before launch.
+                    This Privacy Policy explains how MatchTech handles information and your privacy
+                    rights when using our swipe-based hiring platform.
                   </Text>
                   <Text as="p">
                     In general, we aim to collect only what we need to operate the service, improve the

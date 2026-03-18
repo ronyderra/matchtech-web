@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { Container, Text } from "@/components/ui";
 import styles from "./Footer.module.css";

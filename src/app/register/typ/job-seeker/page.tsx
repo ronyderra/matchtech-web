@@ -1,5 +1,6 @@
 "use client";
 
+import Script from "next/script";
 import { useEffect } from "react";
 
 type TypeformWindow = Window & {
@@ -34,6 +35,7 @@ export default function JobSeekerTypeformEmbedPage() {
 
   return (
     <>
+      <Script src="https://embed.typeform.com/next/embed.js" strategy="afterInteractive" />
       <div
         data-tf-live="01KM0CD4821QK58739X18ET7QH"
         style={{ minHeight: "min(980px, 85vh)" }}

@@ -1,10 +1,29 @@
 import { Header } from "@/components/homepage/Header/Header";
 import { Footer } from "@/components/homepage/Footer/Footer";
 import { Container, Section, Stack, Heading, Text } from "@/components/ui";
+import { MatchTechStructuredData } from "@/components/seo/MatchTechStructuredData";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
+
+const CONTACT_TITLE = "Contact MatchTech | Support, Partnerships & Press";
+const CONTACT_DESCRIPTION =
+  "Get in touch with MatchTech for product support, partnerships, or press inquiries. We aim to reply as soon as possible.";
+
+export const metadata: Metadata = createPageMetadata({
+  pathname: "/contact",
+  title: CONTACT_TITLE,
+  description: CONTACT_DESCRIPTION,
+});
 
 export default function ContactPage() {
   return (
     <>
+      <MatchTechStructuredData
+        page="contact"
+        path="/contact"
+        title={CONTACT_TITLE}
+        description={CONTACT_DESCRIPTION}
+      />
       <Header />
       <main style={{ paddingTop: 120 }}>
         <Section style={{ paddingTop: 64, paddingBottom: 64 }}>

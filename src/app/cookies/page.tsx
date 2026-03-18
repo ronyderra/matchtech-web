@@ -1,10 +1,29 @@
 import { Header } from "@/components/homepage/Header/Header";
 import { Footer } from "@/components/homepage/Footer/Footer";
 import { Container, Section, Stack, Heading, Text } from "@/components/ui";
+import { MatchTechStructuredData } from "@/components/seo/MatchTechStructuredData";
+import { createPageMetadata } from "@/lib/seo/metadata";
+import type { Metadata } from "next";
+
+const COOKIES_TITLE = "Cookie Policy | MatchTech";
+const COOKIES_DESCRIPTION =
+  "Learn how MatchTech uses cookies and similar technologies to run the site and improve the experience.";
+
+export const metadata: Metadata = createPageMetadata({
+  pathname: "/cookies",
+  title: COOKIES_TITLE,
+  description: COOKIES_DESCRIPTION,
+});
 
 export default function CookiePolicyPage() {
   return (
     <>
+      <MatchTechStructuredData
+        page="cookies"
+        path="/cookies"
+        title={COOKIES_TITLE}
+        description={COOKIES_DESCRIPTION}
+      />
       <Header />
       <main style={{ paddingTop: 120 }}>
         <Section style={{ paddingTop: 64, paddingBottom: 64 }}>
@@ -27,8 +46,8 @@ export default function CookiePolicyPage() {
                     Cookie Policy
                   </Heading>
                   <Text as="p" style={{ color: "var(--color-text-secondary)" }}>
-                    This Cookie Policy describes how MatchTech uses cookies and similar technologies.
-                    This page is a simple placeholder for the demo.
+                    This Cookie Policy describes how MatchTech uses cookies and similar technologies
+                    to run the site and improve the experience for candidates and employers.
                   </Text>
                   <Text as="p">
                     Cookies help us run core features and understand how the site is being used. We use

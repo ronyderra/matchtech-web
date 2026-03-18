@@ -44,31 +44,33 @@ export function Header() {
               </span>
             </Link>
 
-            <Stack direction="row" gap={12} align="center">
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                style={{
-                  color: "var(--color-primary)",
-                  backgroundColor: "transparent",
-                }}
-                onClick={() => setLoginOpen(true)}
-              >
-                Log in
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                style={{
-                  boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
-                  transition: "all 0.2s ease",
-                }}
-                onClick={() => setRegisterOpen(true)}
-              >
-                Register
-              </Button>
-            </Stack>
+            <nav aria-label="Primary navigation">
+              <Stack direction="row" gap={12} align="center">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  style={{
+                    color: "var(--color-primary)",
+                    backgroundColor: "transparent",
+                  }}
+                  onClick={() => setLoginOpen(true)}
+                >
+                  Log in
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  style={{
+                    boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
+                    transition: "all 0.2s ease",
+                  }}
+                  onClick={() => setRegisterOpen(true)}
+                >
+                  Register
+                </Button>
+              </Stack>
+            </nav>
           </div>
         </Container>
       </header>
