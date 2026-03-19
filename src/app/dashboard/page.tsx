@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/auth";
+import { CompanySwipeDeck } from "@/components/dashboard/CompanySwipeDeck/CompanySwipeDeck";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -62,42 +63,8 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      <section
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          gap: 12,
-          marginBottom: 24,
-        }}
-      >
-        <article style={{ padding: 16, border: "1px solid var(--color-border)", borderRadius: 12 }}>
-          <p style={{ margin: 0, fontSize: 12, color: "var(--color-text-muted)" }}>New matches</p>
-          <p style={{ margin: "4px 0 0", fontSize: 26, fontWeight: 700 }}>24</p>
-        </article>
-        <article style={{ padding: 16, border: "1px solid var(--color-border)", borderRadius: 12 }}>
-          <p style={{ margin: 0, fontSize: 12, color: "var(--color-text-muted)" }}>Pending applications</p>
-          <p style={{ margin: "4px 0 0", fontSize: 26, fontWeight: 700 }}>7</p>
-        </article>
-        <article style={{ padding: 16, border: "1px solid var(--color-border)", borderRadius: 12 }}>
-          <p style={{ margin: 0, fontSize: 12, color: "var(--color-text-muted)" }}>Profile strength</p>
-          <p style={{ margin: "4px 0 0", fontSize: 26, fontWeight: 700 }}>82%</p>
-        </article>
-      </section>
-
-      <section
-        style={{
-          padding: 18,
-          border: "1px solid var(--color-border)",
-          borderRadius: 12,
-          marginBottom: 20,
-        }}
-      >
-        <h2 style={{ margin: "0 0 10px", fontSize: 18 }}>Next steps</h2>
-        <ul style={{ margin: 0, paddingLeft: 18, color: "var(--color-text-secondary)", lineHeight: 1.6 }}>
-          <li>Complete your profile details and skills.</li>
-          <li>Review suggested companies and swipe to match.</li>
-          <li>Track your applications from this dashboard.</li>
-        </ul>
+      <section style={{ marginBottom: 20 }}>
+        <CompanySwipeDeck />
       </section>
 
       <Link
