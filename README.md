@@ -44,9 +44,9 @@ npm install
 npm run dev
 ```
 
-2. Use a single env file: `.env.local`
+2. Use a single env file: `.env`
 
-3. Fill these values in `.env.local`:
+3. Fill these values in `.env`:
    - `AUTH_SECRET`
    - `AUTH_URL` (for local dev use `http://localhost:3000`)
    - `LINKEDIN_CLIENT_ID`

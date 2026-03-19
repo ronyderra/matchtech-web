@@ -8,9 +8,7 @@ frontend:
       commands:
         - touch .env.production
         - '[ -n "$NEXTAUTH_URL" ] && echo "NEXTAUTH_URL=$NEXTAUTH_URL" >> .env.production'
-        - '[ -z "$NEXTAUTH_URL" ] && [ -n "$AUTH_URL" ] && echo "NEXTAUTH_URL=$AUTH_URL" >> .env.production'
         - '[ -n "$NEXTAUTH_SECRET" ] && echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> .env.production'
-        - '[ -z "$NEXTAUTH_SECRET" ] && [ -n "$AUTH_SECRET" ] && echo "NEXTAUTH_SECRET=$AUTH_SECRET" >> .env.production'
         - '[ -n "$AUTH_URL" ] && echo "AUTH_URL=$AUTH_URL" >> .env.production'
         - '[ -n "$AUTH_SECRET" ] && echo "AUTH_SECRET=$AUTH_SECRET" >> .env.production'
         - '[ -n "$LINKEDIN_CLIENT_ID" ] && echo "LINKEDIN_CLIENT_ID=$LINKEDIN_CLIENT_ID" >> .env.production'
