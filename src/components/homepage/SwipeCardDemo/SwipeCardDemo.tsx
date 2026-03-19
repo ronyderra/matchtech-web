@@ -240,11 +240,7 @@ export function ProfileCardPreview({ user }: { user: AppUser }) {
                     <Image
                       src={card.avatarImageUrl}
                       alt={card.type === "company" ? "Company logo" : "Candidate photo"}
-                      className={
-                        card.avatarImageUrl.endsWith(".svg")
-                          ? styles.bannerAvatarImgContain
-                          : styles.bannerAvatarImg
-                      }
+                      className={getAvatarImageClass(card.avatarImageUrl)}
                       width={96}
                       height={96}
                       unoptimized
@@ -351,163 +347,187 @@ const CARDS: SwipeCardData[] = [
   {
     type: "company",
     theme: "blue",
-    title: "Senior Frontend Engineer",
-    subtitle: "I-Need.com · Product team",
-    metaLine: "Remote · Full-time · Europe",
-    topRightPill: "€110k–€140k · Equity",
-    avatarText: "A",
-    avatarImageUrl: "/assets/companyImages/company-1.png",
-    companyName: "I-Need.com",
+    title: "Senior Software Engineer",
+    subtitle: "Google · Search & AI",
+    metaLine: "Mountain View · Full-time · Hybrid",
+    topRightPill: "$220k-$320k · Equity",
+    avatarText: "G",
+    avatarImageUrl: "/assets/companyImages/google.png",
+    companyName: "Google",
     companyAbout:
-      "We build a swipe-first hiring platform used by thousands of candidates and hiring teams every month. Product-led, remote-first, and growing across Europe.",
+      "Google builds products used by billions across Search, YouTube, Android, Cloud, and AI research.",
     companyFacts: [
-      { label: "Industry", value: "HR Tech" },
-      { label: "Size", value: "~80 people" },
-      { label: "HQ", value: "Amsterdam" },
+      { label: "Industry", value: "Internet & AI" },
+      { label: "Size", value: "180k+ employees" },
+      { label: "HQ", value: "Mountain View" },
     ],
     description:
-      "Help shape our core product experience: own UI architecture, design system, and accessibility. You’ll work with product and backend in a small, async-friendly team.",
-    tags: ["React", "TypeScript", "Next.js", "5+ years"],
+      "Build large-scale systems powering products used worldwide. Partner with product and research teams to ship performant and reliable experiences.",
+    tags: ["Distributed systems", "Go", "C++", "Large scale"],
     quickFacts: [
       { label: "Level", value: "Senior" },
-      { label: "Team", value: "12 engineers" },
-      { label: "Process", value: "2 interviews" },
+      { label: "Team", value: "Search & AI" },
+      { label: "Process", value: "Tech screens + onsite" },
     ],
     detailItems: [
-      "Own core UI architecture and performance",
-      "Design system and accessibility standards",
-      "Async-friendly team across EU time zones",
+      "Design and optimize critical backend services",
+      "Ship features with strict reliability targets",
+      "Collaborate across product, infra, and ML teams",
     ],
   },
   {
-    type: "talent",
+    type: "company",
     theme: "violet",
-    title: "Leah Kim",
-    subtitle: "Product Designer",
-    metaLine: "7+ years · Remote-first · CET",
-    topRightPill: "7 yrs exp",
-    avatarText: "LK",
-    avatarImageUrl: "/assets/profileImages/2.jpg",
+    title: "Cloud Platform Engineer",
+    subtitle: "Microsoft · Azure",
+    metaLine: "Seattle · Full-time · Hybrid",
+    topRightPill: "$190k-$280k · RSU",
+    avatarText: "M",
+    avatarImageUrl: "/assets/companyImages/microsoft.png",
+    companyName: "Microsoft",
+    companyAbout:
+      "Microsoft powers enterprise software, cloud infrastructure, and developer tools across the globe.",
+    companyFacts: [
+      { label: "Industry", value: "Cloud & Enterprise" },
+      { label: "Size", value: "220k+ employees" },
+      { label: "HQ", value: "Redmond" },
+    ],
     description:
-      "Designs thoughtful, research-driven experiences for B2B SaaS teams. Previously at Flow Studio and Northline.",
-    tags: ["Product design", "Figma", "Design systems", "User research"],
+      "Develop cloud services that support millions of workloads. Improve scalability, security, and developer productivity across Azure.",
+    tags: ["Azure", ".NET", "Kubernetes", "Cloud security"],
     quickFacts: [
-      { label: "Availability", value: "2 weeks" },
-      { label: "Work style", value: "Remote" },
-      { label: "Focus", value: "SaaS UX" },
+      { label: "Level", value: "Senior" },
+      { label: "Team", value: "Azure Core" },
+      { label: "Process", value: "Technical + behavioral" },
     ],
     detailItems: [
-      "Strong discovery → delivery collaboration",
-      "Runs workshops and rapid prototyping",
-      "Comfortable owning a full product area",
+      "Build resilient multi-tenant platform services",
+      "Improve deployment and observability workflows",
+      "Partner with security and product engineering",
     ],
   },
   {
     type: "company",
     theme: "teal",
-    title: "Backend Engineer",
-    subtitle: "DataFirst · Platform",
-    metaLine: "Hybrid · Berlin · Full-time",
-    topRightPill: "€90k–€120k · Stock options",
-    avatarText: "D",
-    avatarImageUrl: "/assets/companyImages/company-2.png",
-    companyName: "Hugging-Life",
+    title: "iOS Framework Engineer",
+    subtitle: "Apple · Core OS",
+    metaLine: "Cupertino · Full-time · Onsite",
+    topRightPill: "$210k-$300k · Equity",
+    avatarText: "A",
+    avatarImageUrl: "/assets/companyImages/apple.png",
+    companyName: "Apple",
     companyAbout:
-      "Data infrastructure and analytics for enterprise. We help companies unify data pipelines, real-time events, and BI. Series B, 200+ employees.",
+      "Apple designs iconic consumer hardware and software across iPhone, Mac, services, and wearables.",
     companyFacts: [
-      { label: "Industry", value: "Data / Analytics" },
-      { label: "Size", value: "200+" },
-      { label: "HQ", value: "Berlin" },
+      { label: "Industry", value: "Consumer Technology" },
+      { label: "Size", value: "160k+ employees" },
+      { label: "HQ", value: "Cupertino" },
     ],
     description:
-      "Own APIs and data pipelines that power matching, notifications, and analytics at scale across the platform.",
-    tags: ["Go", "PostgreSQL", "Redis", "Distributed systems"],
+      "Create system-level features for Apple platforms with deep focus on performance, privacy, and polished user experience.",
+    tags: ["Swift", "Objective-C", "Systems", "Performance"],
     quickFacts: [
-      { label: "Stack", value: "Go + Postgres" },
-      { label: "On-call", value: "1x / month" },
-      { label: "Impact", value: "Core platform" },
+      { label: "Level", value: "Senior" },
+      { label: "Team", value: "Core OS" },
+      { label: "Process", value: "Technical panel" },
     ],
     detailItems: [
-      "Build reliable services with SLAs",
-      "Improve observability and tooling",
-      "Work closely with product and data",
+      "Implement high-performance platform components",
+      "Collaborate with hardware and UX teams",
+      "Maintain strict quality and privacy standards",
     ],
   },
   {
-    type: "talent",
+    type: "company",
     theme: "amber",
-    title: "Jordan Lee",
-    subtitle: "UX Researcher",
-    metaLine: "5+ years · Hybrid · PST",
-    topRightPill: "5 yrs exp",
-    avatarText: "JL",
-    avatarImageUrl: "/assets/profileImages/4.jpg",
+    title: "Senior Backend Engineer",
+    subtitle: "Amazon · AWS",
+    metaLine: "Seattle · Full-time · Hybrid",
+    topRightPill: "$180k-$270k · RSU",
+    avatarText: "A",
+    avatarImageUrl: "/assets/companyImages/amazon.png",
+    companyName: "Amazon",
+    companyAbout:
+      "Amazon builds global consumer platforms and cloud services through AWS, e-commerce, and logistics innovation.",
+    companyFacts: [
+      { label: "Industry", value: "E-commerce & Cloud" },
+      { label: "Size", value: "1.5M+ employees" },
+      { label: "HQ", value: "Seattle" },
+    ],
     description:
-      "Uncovers user needs and shapes product strategy through mixed-method research. Led research at Horizon and Stellar.",
-    tags: ["User research", "Interviews", "Usability", "Analytics"],
+      "Build services that power highly available AWS products and internal platforms with strong operational excellence.",
+    tags: ["Java", "AWS", "Microservices", "Reliability"],
     quickFacts: [
-      { label: "Availability", value: "1 month" },
-      { label: "Work style", value: "Hybrid" },
-      { label: "Focus", value: "B2B discovery" },
+      { label: "Level", value: "Senior" },
+      { label: "Team", value: "AWS Core" },
+      { label: "Process", value: "Bar raiser loop" },
     ],
     detailItems: [
-      "End-to-end research from planning to insights",
-      "Strong stakeholder and workshop facilitation",
-      "Quant and qual with clear deliverables",
+      "Design services with high throughput and low latency",
+      "Own operations, dashboards, and incident response",
+      "Drive architecture reviews across partner teams",
     ],
   },
   {
     type: "company",
     theme: "rose",
-    title: "Product Manager",
-    subtitle: "ScaleUp · Growth",
-    metaLine: "Remote · Full-time · Americas",
-    topRightPill: "€100k–€130k · Bonus",
-    avatarText: "S",
-    avatarImageUrl: "/assets/companyImages/company-3.png",
-    companyName: "LogigCloud",
+    title: "Machine Learning Engineer",
+    subtitle: "NVIDIA · AI Platform",
+    metaLine: "Santa Clara · Full-time · Hybrid",
+    topRightPill: "$230k-$340k · Equity",
+    avatarText: "N",
+    avatarImageUrl: "/assets/companyImages/nvidia.png",
+    companyName: "NVIDIA",
     companyAbout:
-      "B2B growth and engagement platform for mid-market and enterprise. We help sales and marketing teams align and convert. Remote-first, 150+ people.",
+      "NVIDIA advances accelerated computing and AI infrastructure across GPUs, software platforms, and data center systems.",
     companyFacts: [
-      { label: "Industry", value: "SaaS / Growth" },
-      { label: "Size", value: "150+" },
-      { label: "HQ", value: "Austin" },
+      { label: "Industry", value: "Semiconductors & AI" },
+      { label: "Size", value: "30k+ employees" },
+      { label: "HQ", value: "Santa Clara" },
     ],
     description:
-      "Drive roadmap and go-to-market for our core product. Own discovery, prioritization, and launch with design and engineering.",
-    tags: ["Product", "Roadmap", "B2B", "4+ years"],
+      "Develop ML tooling and model optimization workflows that enable state-of-the-art AI applications at scale.",
+    tags: ["Python", "CUDA", "PyTorch", "Model optimization"],
     quickFacts: [
       { label: "Level", value: "Senior" },
-      { label: "Team", value: "Product + Eng" },
-      { label: "Process", value: "Case + fit" },
+      { label: "Team", value: "AI Platform" },
+      { label: "Process", value: "Technical deep dive" },
     ],
     detailItems: [
-      "Own discovery, prioritization, and launch",
-      "Work with design and engineering leads",
-      "Metrics-driven and customer-close",
+      "Optimize training and inference performance",
+      "Collaborate with hardware and research teams",
+      "Ship production-grade ML platform features",
     ],
   },
   {
-    type: "talent",
+    type: "company",
     theme: "emerald",
-    title: "Sam Rivera",
-    subtitle: "Full-Stack Engineer",
-    metaLine: "6+ years · Remote · EST",
-    topRightPill: "6 yrs exp",
-    avatarText: "SR",
-    avatarImageUrl: "/assets/profileImages/michael-dam-mEZ3PoFGs_k-unsplash.jpg",
+    title: "Product Engineer",
+    subtitle: "Meta · Social Platform",
+    metaLine: "Menlo Park · Full-time · Hybrid",
+    topRightPill: "$210k-$310k · Equity",
+    avatarText: "M",
+    avatarImageUrl: "/assets/companyImages/meta.png",
+    companyName: "Meta",
+    companyAbout:
+      "Meta builds social platforms and communication products connecting billions of people worldwide.",
+    companyFacts: [
+      { label: "Industry", value: "Social & AI" },
+      { label: "Size", value: "70k+ employees" },
+      { label: "HQ", value: "Menlo Park" },
+    ],
     description:
-      "Builds scalable web apps and APIs with React and Node. Shipped products at FinTech and health-tech startups.",
-    tags: ["React", "Node.js", "TypeScript", "PostgreSQL"],
+      "Build end-to-end product experiences with speed and impact, from backend APIs to responsive interfaces.",
+    tags: ["React", "Hack", "GraphQL", "Product sense"],
     quickFacts: [
-      { label: "Availability", value: "3 weeks" },
-      { label: "Work style", value: "Remote" },
-      { label: "Focus", value: "Full-stack" },
+      { label: "Level", value: "Senior" },
+      { label: "Team", value: "Core Product" },
+      { label: "Process", value: "Coding + product interview" },
     ],
     detailItems: [
-      "Strong in both frontend and backend",
-      "Experience with regulated industries",
-      "Comfortable leading technical decisions",
+      "Ship fast experiments with strong metrics ownership",
+      "Build scalable APIs for high traffic products",
+      "Work closely with design, data, and research",
     ],
   },
 ];
@@ -518,6 +538,16 @@ function limitToSentences(text: string, maxSentences: number): string {
   if (!matches) return text;
   const limited = matches.slice(0, maxSentences).join(" ").trim();
   return limited || text;
+}
+
+function getAvatarImageClass(avatarImageUrl: string): string {
+  if (avatarImageUrl.includes("/microsoft.png")) {
+    return `${styles.bannerAvatarImg} ${styles.bannerAvatarImgMicrosoft}`;
+  }
+  if (avatarImageUrl.endsWith(".svg")) {
+    return styles.bannerAvatarImgContain;
+  }
+  return styles.bannerAvatarImg;
 }
 
 const IDLE_MS = 3800;
@@ -678,11 +708,7 @@ export function SwipeCardDemo() {
                         <Image
                           src={card.avatarImageUrl}
                       alt={card.type === "company" ? "Company logo" : "Candidate photo"}
-                          className={
-                            card.avatarImageUrl.endsWith(".svg")
-                              ? styles.bannerAvatarImgContain
-                              : styles.bannerAvatarImg
-                          }
+                          className={getAvatarImageClass(card.avatarImageUrl)}
                           width={96}
                           height={96}
                           unoptimized

@@ -31,9 +31,8 @@ export function HeroSection() {
                 lineHeight: "56px",
               }}
             >
-              Swipe to Match,
-              <br />
-              Find the Right Fit Faster
+              Swipe & Apply Linkedin companies,
+              for Free
             </Heading>
             <Text
               as="p"
@@ -44,7 +43,7 @@ export function HeroSection() {
                 maxWidth: 520,
               }}
             >
-              MatchTech is a swipe-based recruitment platform for job seekers and employers, helping you discover talent, match faster, and connect with less back-and-forth.
+              MatchTech Brings Jobs registered on LinkedIn to you, just swipe and apply for Free.
             </Text>
 
             {/* Desktop CTAs: horizontal */}
