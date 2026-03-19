@@ -32,7 +32,7 @@ export function HeroSection() {
                 lineHeight: "56px",
               }}
             >
-              Swipe & Apply Linkedin companies,
+              Swipe & Apply Verified companies,
               for Free
             </Heading>
             <Text
@@ -44,7 +44,7 @@ export function HeroSection() {
                 maxWidth: 520,
               }}
             >
-              MatchTech Brings Jobs registered on LinkedIn to you, just swipe and apply for Free.
+              MatchTech Brings Talents and Companies together, just swipe and apply for Free.
             </Text>
 
             {/* Primary CTA */}
