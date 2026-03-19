@@ -34,3 +34,25 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## LinkedIn Sign-In setup
+
+1. Install dependencies and run locally:
+
+```bash
+npm install
+npm run dev
+```
+
+2. Use a single env file: `.env.local`
+
+3. Fill these values in `.env.local`:
+   - `AUTH_SECRET`
+   - `AUTH_URL` (for local dev use `http://localhost:3000`)
+   - `LINKEDIN_CLIENT_ID`
+   - `LINKEDIN_CLIENT_SECRET`
+
+4. In your LinkedIn Developer app, set this OAuth redirect URI:
+   - `http://localhost:3000/api/auth/callback/linkedin`
+
+5. Open the homepage and click `Sign in with LinkedIn`.

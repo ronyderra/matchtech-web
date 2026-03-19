@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Container, Section, Stack, Heading, Text, Button, Grid } from "@/components/ui";
+import { Container, Section, Stack, Heading, Text, Grid } from "@/components/ui";
 import { SwipeCardDemo } from "@/components/homepage/SwipeCardDemo/SwipeCardDemo";
+import { LinkedInSignInButton } from "@/components/homepage/HeroSection/LinkedInSignInButton";
 import styles from "./HeroSection.module.css";
 
 export function HeroSection() {
@@ -46,38 +47,14 @@ export function HeroSection() {
               MatchTech Brings Jobs registered on LinkedIn to you, just swipe and apply for Free.
             </Text>
 
-            {/* Desktop CTAs: horizontal */}
+            {/* Primary CTA */}
             <Stack
               direction="row"
               gap={16}
               wrap
               style={{ alignItems: "center" }}
             >
-              <Link href="/register/typ/job-seeker">
-                <Button
-                  style={{
-                    height: 48,
-                    paddingInline: 24,
-                    borderRadius: 8,
-                    boxShadow: "0px 1px 2px rgba(0,0,0,0.1)",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  Find a Job
-                </Button>
-              </Link>
-              <Link href="/register/employer">
-                <Button
-                  variant="secondary"
-                  style={{
-                    height: 48,
-                    paddingInline: 24,
-                    borderRadius: 8,
-                  }}
-                >
-                  Hire Talent
-                </Button>
-              </Link>
+              <LinkedInSignInButton />
             </Stack>
 
             <Text
