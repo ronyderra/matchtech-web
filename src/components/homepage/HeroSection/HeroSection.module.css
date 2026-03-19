@@ -9,6 +9,8 @@
 @media (max-width: 480px) {
   .heroTitle {
     padding-top: 0;
+    font-size: 40px !important;
+    line-height: 50.4px !important;
   }
 }
 
