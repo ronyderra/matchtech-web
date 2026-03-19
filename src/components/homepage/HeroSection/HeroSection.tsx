@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container, Section, Stack, Heading, Text, Grid } from "@/components/ui";
 import { SwipeCardDemo } from "@/components/homepage/SwipeCardDemo/SwipeCardDemo";
-import { LinkedInSignInButton } from "@/components/homepage/HeroSection/LinkedInSignInButton";
+import { RegisterWithLinkedInButton } from "@/components/auth/RegisterWithLinkedInButton/RegisterWithLinkedInButton";
 import styles from "./HeroSection.module.css";
 
 export function HeroSection() {
@@ -54,7 +54,7 @@ export function HeroSection() {
               wrap
               style={{ alignItems: "center" }}
             >
-              <LinkedInSignInButton />
+              <RegisterWithLinkedInButton />
             </Stack>
 
             <Text
