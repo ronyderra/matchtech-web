@@ -6,7 +6,7 @@
   height: 34px;
   padding: 0 12px 0 0;
   border: 1px solid #005e93;
-  border-radius: 5px;
+  border-radius: 2px;
   background: #0077b5;
   color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
@@ -39,7 +39,7 @@
   width: 34px;
   height: 34px;
   border-right: 1px solid rgba(0, 0, 0, 0.18);
-  border-radius: 4px 0 0 4px;
+  border-radius: 9px 0 0 9px;
   background: rgba(0, 0, 0, 0.1);
 }
 
@@ -64,14 +64,14 @@
   .root {
     height: 31px;
     padding-right: 11px;
-    border-radius: 3px;
+    border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.24);
   }
 
   .iconTile {
     width: 31px;
     height: 31px;
-    border-radius: 2px 0 0 2px;
+    border-radius: 9px 0 0 9px;
   }
 
   .iconText {
