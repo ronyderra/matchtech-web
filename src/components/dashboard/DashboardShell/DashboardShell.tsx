@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -61,14 +61,17 @@ function NavIcon({ name }: { name: IconName }) {
 
 export function DashboardShell({ children, user }: DashboardShellProps) {
   const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className={styles.shell}>
-      <aside className={styles.sidebar}>
-        <div className={styles.logoWrap}>
-          <Link href="/" className={styles.logo} aria-label="Go to MatchTech home">
-            MatchTech
-          </Link>
+    <div className={`${styles.shell} ${isCollapsed ? styles.shellCollapsed : ""}`}>
+      <aside className={`${styles.sidebar} ${isCollapsed ? styles.sidebarCollapsed : ""}`}>
+        <div className={styles.sidebarTop}>
+          <div className={styles.logoWrap}>
+            <Link href="/" className={styles.logo} aria-label="Go to MatchTech home">
+              MatchTech
+            </Link>
+          </div>
         </div>
 
         <div className={styles.userRow}>
@@ -93,22 +96,34 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
               className={`${styles.navLink} ${isActive ? styles.active : ""}`}
             >
               <NavIcon name={item.icon as IconName} />
-              <span className={styles.navText}>{item.label}</span>
+              {!isCollapsed ? <span className={styles.navText}>{item.label}</span> : null}
             </Link>
             );
           })}
         </nav>
 
-        <button
-          type="button"
-          aria-label="Logout"
-          title="Logout"
-          className={styles.logoutBtn}
-          onClick={() => void signOut({ callbackUrl: "/" })}
-        >
-          <NavIcon name="logout" />
-          <span className={styles.navText}>Logout</span>
-        </button>
+        <div className={styles.bottomActions}>
+          <button
+            type="button"
+            className={styles.collapseBtn}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={() => setIsCollapsed((v) => !v)}
+          >
+            <span aria-hidden="true">{isCollapsed ? "»" : "«"}</span>
+          </button>
+
+          <button
+            type="button"
+            aria-label="Logout"
+            title="Logout"
+            className={styles.logoutBtn}
+            onClick={() => void signOut({ callbackUrl: "/" })}
+          >
+            <NavIcon name="logout" />
+            {!isCollapsed ? <span className={styles.navText}>Logout</span> : null}
+          </button>
+        </div>
       </aside>
 
       <main className={styles.main}>{children}</main>

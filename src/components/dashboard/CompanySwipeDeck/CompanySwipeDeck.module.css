@@ -8,9 +8,7 @@
 }
 
 .actionsDock {
-  position: sticky;
-  bottom: 14px;
-  z-index: 12;
+  position: static;
   margin-top: 14px;
   padding: 8px;
   border-radius: 16px;
@@ -36,6 +34,7 @@
 }
 
 .card {
+  height: 100%;
   border: 1px solid var(--color-border);
   border-radius: 18px;
   overflow: hidden;
@@ -112,7 +111,34 @@
 }
 
 .body {
+  display: flex;
+  flex-direction: column;
   padding: 16px;
+}
+
+@media (min-width: 901px) {
+  .root {
+    width: min(620px, 100%);
+    min-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 24px;
+  }
+
+  .deck {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .actionsDock {
+    position: fixed;
+    left: calc(50% + (var(--sidebar-width, 260px) / 2));
+    transform: translateX(-50%);
+    bottom: 18px;
+    z-index: 50;
+    margin-top: 0;
+    width: min(620px, calc(100vw - var(--sidebar-width, 260px) - 60px));
+  }
 }
 
 .logoRow {
