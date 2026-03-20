@@ -3,7 +3,7 @@ import { CompanySwipeDeck } from "@/components/dashboard/CompanySwipeDeck/Compan
 export default function SwipePage() {
   return (
     <main style={{ maxWidth: 980, margin: "0 auto" }}>
-      <section>
+      <section style={{ display: "flex", justifyContent: "center" }}>
         <CompanySwipeDeck />
       </section>
     </main>

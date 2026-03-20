@@ -43,7 +43,7 @@ export function CompanySwipeDeck() {
     setIndex((prev) => (prev + 1) % COMPANY_SWIPE_CARDS.length);
   }
 
-  function renderCard(card: (typeof COMPANY_SWIPE_CARDS)[number], showActions: boolean) {
+  function renderCard(card: (typeof COMPANY_SWIPE_CARDS)[number]) {
     return (
       <>
         <div className={styles.banner}>
@@ -87,34 +87,6 @@ export function CompanySwipeDeck() {
             ))}
           </ul>
 
-          {showActions ? (
-            <div className={styles.actions}>
-              <button
-                type="button"
-                disabled={!!swipeDirection}
-                className={`${styles.actionBtn} ${styles.pass}`}
-                onClick={() => onAction("pass")}
-              >
-                Pass
-              </button>
-              <button
-                type="button"
-                disabled={!!swipeDirection}
-                className={`${styles.actionBtn} ${styles.info}`}
-                onClick={() => onAction("info")}
-              >
-                Info
-              </button>
-              <button
-                type="button"
-                disabled={!!swipeDirection}
-                className={`${styles.actionBtn} ${styles.match}`}
-                onClick={() => onAction("match")}
-              >
-                Match
-              </button>
-            </div>
-          ) : null}
         </div>
       </>
     );
@@ -124,7 +96,7 @@ export function CompanySwipeDeck() {
     <div className={styles.root}>
       <div className={styles.deck}>
         <article className={`${styles.card} ${styles.backCard}`} aria-hidden="true">
-          {renderCard(next, false)}
+          {renderCard(next)}
         </article>
 
         <article
@@ -135,8 +107,43 @@ export function CompanySwipeDeck() {
             swipeDirection === "right" ? styles.swipeRight : "",
           ].join(" ")}
         >
-          {renderCard(current, true)}
+          {renderCard(current)}
         </article>
+      </div>
+
+      <div className={styles.actionsDock}>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            disabled={!!swipeDirection}
+            className={`${styles.actionBtn} ${styles.pass}`}
+            onClick={() => onAction("pass")}
+            aria-label="Pass"
+            title="Pass"
+          >
+            <span aria-hidden="true">✕</span>
+          </button>
+          <button
+            type="button"
+            disabled={!!swipeDirection}
+            className={`${styles.actionBtn} ${styles.info}`}
+            onClick={() => onAction("info")}
+            aria-label="Info"
+            title="Info"
+          >
+            <span aria-hidden="true">i</span>
+          </button>
+          <button
+            type="button"
+            disabled={!!swipeDirection}
+            className={`${styles.actionBtn} ${styles.match}`}
+            onClick={() => onAction("match")}
+            aria-label="Match"
+            title="Match"
+          >
+            <span aria-hidden="true">✓</span>
+          </button>
+        </div>
       </div>
     </div>
   );
