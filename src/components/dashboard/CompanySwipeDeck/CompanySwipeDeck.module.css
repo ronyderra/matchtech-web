@@ -7,6 +7,106 @@
   position: relative;
 }
 
+.gatePanel {
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: linear-gradient(135deg, #f8fbff 0%, #f4f8ff 100%);
+}
+
+.gateEyebrow {
+  margin: 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.gateTitle {
+  margin: 5px 0 4px;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.gateText {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.gateChecklist {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gateRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  padding: 8px 10px;
+}
+
+.gateRowLabel {
+  font-size: 14px;
+}
+
+.gateStatus {
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pending {
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #f59e0b40;
+}
+
+.completed {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #22c55e40;
+}
+
+.gateActions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gateButton,
+.gateButtonSecondary {
+  height: 36px;
+  border-radius: var(--radius-button);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.gateButton {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.gateButtonSecondary {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
 .actionsDock {
   position: static;
   margin-top: 14px;
@@ -15,6 +115,13 @@
   background: rgba(248, 250, 252, 0.9);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.lockHint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  text-align: center;
 }
 
 @media (max-width: 900px) {
@@ -30,6 +137,18 @@
     bottom: 76px;
     z-index: 60;
     margin-top: 0;
+  }
+
+  .gatePanel {
+    padding: 12px;
+  }
+
+  .gateTitle {
+    font-size: 18px;
+  }
+
+  .gateRowLabel {
+    font-size: 13px;
   }
 }
 
