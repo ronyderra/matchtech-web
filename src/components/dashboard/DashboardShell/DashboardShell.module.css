@@ -1,8 +1,7 @@
 .shell {
   --sidebar-width: 260px;
   min-height: 100vh;
-  display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  display: block;
   background: transparent;
 }
 
@@ -11,15 +10,18 @@
 }
 
 .sidebar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   height: 100vh;
+  width: var(--sidebar-width);
   padding: 20px 16px;
   border-right: 1px solid var(--color-border);
   background: var(--color-surface);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow: hidden;
 }
 
 .sidebarCollapsed {
@@ -135,6 +137,7 @@
 }
 
 .main {
+  margin-left: var(--sidebar-width);
   padding: 28px 24px 96px;
 }
 
@@ -198,7 +201,7 @@
 @media (max-width: 900px) {
   .shell {
     --sidebar-width: 0px;
-    grid-template-columns: 1fr;
+    display: block;
   }
 
   .sidebar {
@@ -206,6 +209,7 @@
   }
 
   .main {
+    margin-left: 0;
     padding: 16px 14px 88px;
   }
 
