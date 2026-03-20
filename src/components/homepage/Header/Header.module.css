@@ -15,12 +15,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 34px;
+  min-height: 38px;
   padding: 0 12px;
   border-radius: 999px;
-  color: var(--color-primary);
-  text-decoration: none;
-  font-size: 14px;
+  color: #111111;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-size: 16px;
   font-weight: 600;
   white-space: nowrap;
   transition:
@@ -32,10 +33,10 @@
 
 .navLink:hover {
   background: rgba(10, 102, 194, 0.1);
-  color: #0a66c2;
+  color: #111111;
   transform: translateY(-1px);
   box-shadow: 0 2px 6px rgba(10, 102, 194, 0.18);
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .navLink:active {
