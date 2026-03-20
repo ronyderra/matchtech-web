@@ -1,8 +1,9 @@
 .root {
-  display: grid;
-  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
+  width: min(420px, 100%);
+}
+
+.deck {
+  position: relative;
 }
 
 .card {
@@ -11,6 +12,51 @@
   overflow: hidden;
   background: var(--color-surface);
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  will-change: transform, opacity;
+}
+
+.backCard {
+  position: absolute;
+  inset: 0;
+  transform: scale(0.97) translateY(10px);
+  opacity: 0.86;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.frontCard {
+  position: relative;
+  z-index: 2;
+}
+
+.frontCard.swipeLeft {
+  animation: swipeLeftOut 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.frontCard.swipeRight {
+  animation: swipeRightOut 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes swipeLeftOut {
+  from {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-42%) rotate(-10deg);
+    opacity: 0;
+  }
+}
+
+@keyframes swipeRightOut {
+  from {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(42%) rotate(10deg);
+    opacity: 0;
+  }
 }
 
 .banner {
@@ -139,6 +185,18 @@
   color: #fff;
   font-weight: 600;
   cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    opacity 0.12s ease;
+}
+
+.actionBtn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.actionBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .pass {
@@ -153,48 +211,3 @@
   background: #22c55e;
 }
 
-.panel {
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  padding: 16px;
-}
-
-.panelTitle {
-  margin: 0 0 10px;
-  font-size: 18px;
-}
-
-.panelMuted {
-  margin: 0 0 12px;
-  color: var(--color-text-secondary);
-}
-
-.statGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.stat {
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 10px;
-}
-
-.statLabel {
-  display: block;
-  font-size: 12px;
-  color: var(--color-text-muted);
-}
-
-.statValue {
-  display: block;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-@media (max-width: 900px) {
-  .root {
-    grid-template-columns: 1fr;
-  }
-}
