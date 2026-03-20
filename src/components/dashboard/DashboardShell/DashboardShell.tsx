@@ -61,7 +61,7 @@ function NavIcon({ name }: { name: IconName }) {
 
 export function DashboardShell({ children, user }: DashboardShellProps) {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
     <div className={`${styles.shell} ${isCollapsed ? styles.shellCollapsed : ""}`}>

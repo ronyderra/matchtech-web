@@ -87,6 +87,28 @@ export function CompanySwipeDeck() {
             ))}
           </ul>
 
+          <section className={styles.desktopExtraInfo} aria-label="More company details">
+            <h4 className={styles.extraTitle}>Company details</h4>
+            <div className={styles.extraGrid}>
+              <div className={styles.extraItem}>
+                <span className={styles.extraLabel}>Compensation</span>
+                <span className={styles.extraValue}>{card.compensation}</span>
+              </div>
+              <div className={styles.extraItem}>
+                <span className={styles.extraLabel}>Role meta</span>
+                <span className={styles.extraValue}>{card.roleMeta}</span>
+              </div>
+              <div className={styles.extraItem}>
+                <span className={styles.extraLabel}>Profile ID</span>
+                <span className={styles.extraValue}>{card.id}</span>
+              </div>
+              <div className={styles.extraItem}>
+                <span className={styles.extraLabel}>Top skills</span>
+                <span className={styles.extraValue}>{card.tags.join(", ")}</span>
+              </div>
+            </div>
+          </section>
+
         </div>
       </>
     );
