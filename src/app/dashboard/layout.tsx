@@ -18,5 +18,5 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     image: session?.user?.image ?? null,
   };
 
-  return <DashboardShell user={user}>{children}</DashboardShell>;
+  return <div className="home-bg"><DashboardShell user={user}>{children}</DashboardShell></div>;
 }

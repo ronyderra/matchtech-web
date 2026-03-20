@@ -3,7 +3,7 @@
   min-height: 100vh;
   display: grid;
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-  background: #f8fafc;
+  background: transparent;
 }
 
 .shellCollapsed {
