@@ -94,9 +94,10 @@ export function HeroSection() {
           {/* Right column: hero illustration using SwipeLayout */}
           <Stack
             justify="center"
-            style={{ alignItems: "center" }}
+            className={styles.demoRightColumn}
           >
             <div
+              className={styles.demoCardContainer}
               style={{
                 width: "100%",
                 maxWidth: 520,

@@ -6,11 +6,25 @@
   padding-top: 25px;
 }
 
+.demoRightColumn {
+  align-items: center;
+}
+
 @media (max-width: 480px) {
   .heroTitle {
     padding-top: 0;
     font-size: 40px !important;
     line-height: 50.4px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .demoRightColumn {
+    align-items: flex-end;
+  }
+
+  .demoCardContainer {
+    margin-left: auto;
   }
 }
 
