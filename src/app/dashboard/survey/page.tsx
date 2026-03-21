@@ -158,14 +158,19 @@ export default function SurveyPage() {
         ...jobPosition,
       };
       jobPositionWithId.equity = compensationPreferences.includes("Equity / stock options");
+      const u = user as TalentDetails;
       const nextTalent = {
-        ...(user as TalentDetails),
+        ...u,
         jobPosition: jobPositionWithId,
         availableFrom: availability || undefined,
         priorities: priorities.length ? priorities.slice(0, 3) : undefined,
         compensationPreferences: compensationPreferences.length
           ? compensationPreferences.slice(0, 3)
           : undefined,
+        swipeOnboarding: {
+          cvUploaded: u.swipeOnboarding?.cvUploaded ?? false,
+          surveyCompleted: true,
+        },
       } as TalentDetails;
       patchUser(nextTalent);
       window.localStorage.setItem(

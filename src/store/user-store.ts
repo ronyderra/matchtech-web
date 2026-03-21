@@ -40,6 +40,12 @@ function mergeUser(prev: AppUser, patch: Partial<AppUser>): AppUser {
         ...patchT.jobPosition,
       } as TalentDetails["jobPosition"];
     }
+    if (patchT.swipeOnboarding) {
+      nextT.swipeOnboarding = {
+        ...(prevT.swipeOnboarding ?? { cvUploaded: false, surveyCompleted: false }),
+        ...patchT.swipeOnboarding,
+      };
+    }
   } else {
     const prevC = prev as CompanyDetails;
     const patchC = patch as Partial<CompanyDetails>;

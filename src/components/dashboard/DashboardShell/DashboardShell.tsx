@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import styles from "./DashboardShell.module.css";
+import { readSwipeOnboardingFromStorage, notifySwipeOnboardingUpdated } from "@/lib/swipeOnboardingGate";
 import { useUserStore } from "@/store";
 import type { TalentDetails } from "@/types";
 
@@ -71,6 +72,9 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
   const setUser = useUserStore((s) => s.setUser);
 
   useEffect(() => {
+    let cancelled = false;
+    const session = { backfillDone: false };
+
     if (user.id) {
       const fallbackUser: TalentDetails = {
         id: user.id,
@@ -105,14 +109,51 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
     }
     void fetch("/api/profile", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : null))
-      .then((payload) => {
-        if (payload?.profile) {
-          setUser(payload.profile as TalentDetails);
+      .then(async (payload) => {
+        if (cancelled || !payload?.profile) return;
+        const profile = payload.profile as TalentDetails;
+        setUser(profile);
+
+        const ls = readSwipeOnboardingFromStorage();
+        const mongoCv = profile.swipeOnboarding?.cvUploaded === true;
+        const mongoSurvey = profile.swipeOnboarding?.surveyCompleted === true;
+        if (
+          !session.backfillDone &&
+          ls.cvUploaded &&
+          ls.surveyCompleted &&
+          (!mongoCv || !mongoSurvey)
+        ) {
+          session.backfillDone = true;
+          try {
+            const res = await fetch("/api/profile", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                swipeOnboarding: { cvUploaded: true, surveyCompleted: true },
+              }),
+            });
+            if (cancelled) return;
+            if (res.ok) {
+              const j = (await res.json()) as { profile?: TalentDetails };
+              if (j.profile) {
+                setUser(j.profile);
+                notifySwipeOnboardingUpdated();
+              }
+            } else {
+              session.backfillDone = false;
+            }
+          } catch {
+            session.backfillDone = false;
+          }
         }
       })
       .catch(() => {
         // fallback draft remains in store when API is unavailable
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [setUser, user.email, user.id, user.image, user.name]);
 
   return (

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useUserStore } from "@/store";
+import type { TalentDetails } from "@/types";
 
 export const SWIPE_ONBOARDING_UPDATED_EVENT = "matchtech:swipe-onboarding-updated";
 
@@ -23,10 +25,11 @@ export function notifySwipeOnboardingUpdated() {
 }
 
 export function useSwipeOnboardingGate() {
-  const [state, setState] = useState(readSwipeOnboardingFromStorage);
+  const talent = useUserStore((s) => (s.user?.type === "talent" ? (s.user as TalentDetails) : null));
+  const [, bump] = useState(0);
 
   useEffect(() => {
-    const sync = () => setState(readSwipeOnboardingFromStorage());
+    const sync = () => bump((n) => n + 1);
     sync();
     window.addEventListener(SWIPE_ONBOARDING_UPDATED_EVENT, sync);
     window.addEventListener("focus", sync);
@@ -40,10 +43,16 @@ export function useSwipeOnboardingGate() {
     };
   }, []);
 
-  const canSwipe = state.cvUploaded && state.surveyCompleted;
+  const fromStorage = readSwipeOnboardingFromStorage();
+  const fromProfile = talent?.swipeOnboarding;
+
+  const cvUploaded = fromProfile?.cvUploaded === true || fromStorage.cvUploaded;
+  const surveyCompleted = fromProfile?.surveyCompleted === true || fromStorage.surveyCompleted;
+  const canSwipe = cvUploaded && surveyCompleted;
+
   return {
-    cvUploaded: state.cvUploaded,
-    surveyCompleted: state.surveyCompleted,
+    cvUploaded,
+    surveyCompleted,
     canSwipe,
     needsOnboarding: !canSwipe,
   };

@@ -142,8 +142,9 @@ export default function UploadCvPage() {
   }, [cvProcessing]);
 
   async function markComplete() {
+    const t = user as TalentDetails;
     const nextTalent = {
-      ...(user as TalentDetails),
+      ...t,
       type: "talent",
       firstName: firstName.trim(),
       lastName: lastName.trim(),
@@ -183,6 +184,10 @@ export default function UploadCvPage() {
                 yearsInCompany: exp.yearsInCompany,
               }))
           : undefined,
+      swipeOnboarding: {
+        cvUploaded: true,
+        surveyCompleted: t.swipeOnboarding?.surveyCompleted ?? false,
+      },
     } as TalentDetails;
 
     patchUser(nextTalent);

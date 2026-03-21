@@ -82,6 +82,10 @@ function createInitialTalentProfile(id: ObjectId, seed: LinkedInProfileSeed): Ta
       employmentType: "any",
       workPreference: "any",
     },
+    swipeOnboarding: {
+      cvUploaded: false,
+      surveyCompleted: false,
+    },
   };
 }
 
@@ -92,6 +96,14 @@ export function mergeTalentProfile(existing: TalentDetails, patch: Partial<Talen
   }
   if (patch.jobPosition) {
     next.jobPosition = { ...existing.jobPosition, ...patch.jobPosition };
+  }
+  if (patch.swipeOnboarding !== undefined) {
+    const e = existing.swipeOnboarding ?? { cvUploaded: false, surveyCompleted: false };
+    const p = patch.swipeOnboarding;
+    next.swipeOnboarding = {
+      cvUploaded: typeof p.cvUploaded === "boolean" ? p.cvUploaded : e.cvUploaded,
+      surveyCompleted: typeof p.surveyCompleted === "boolean" ? p.surveyCompleted : e.surveyCompleted,
+    };
   }
   if (patch.skills !== undefined) next.skills = patch.skills;
   if (patch.languages !== undefined) next.languages = patch.languages;
@@ -243,6 +255,15 @@ export function normalizeTalentPatch(input: unknown): Partial<TalentDetails> {
         yearsInCompany: typeof exp.yearsInCompany === "number" ? exp.yearsInCompany : undefined,
       }))
       .filter((exp) => exp.companyName || exp.jobTitle);
+  }
+  if (raw.swipeOnboarding && typeof raw.swipeOnboarding === "object") {
+    const o = raw.swipeOnboarding as Record<string, unknown>;
+    const part: { cvUploaded?: boolean; surveyCompleted?: boolean } = {};
+    if (typeof o.cvUploaded === "boolean") part.cvUploaded = o.cvUploaded;
+    if (typeof o.surveyCompleted === "boolean") part.surveyCompleted = o.surveyCompleted;
+    if (Object.keys(part).length > 0) {
+      patch.swipeOnboarding = part as NonNullable<TalentDetails["swipeOnboarding"]>;
+    }
   }
   return patch;
 }

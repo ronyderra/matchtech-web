@@ -151,6 +151,12 @@ export interface TalentDetails {
   // Past jobs
   experiences?: Experience[]
 
+  /** Swipe deck mandatories (CV + survey); persisted in Mongo on `users.profile`. */
+  swipeOnboarding?: {
+    cvUploaded: boolean
+    surveyCompleted: boolean
+  }
+
   // Meta
   isVerified?: boolean
   tags?: string[]
