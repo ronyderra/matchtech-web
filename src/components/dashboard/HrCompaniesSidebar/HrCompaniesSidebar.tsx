@@ -8,7 +8,7 @@ import { HR_PARTNER_IMAGE_EXT } from "@/lib/hrPartnerImage";
 import styles from "./HrCompaniesSidebar.module.css";
 
 export function HrCompaniesSidebar() {
-  const partners = useMemo(() => getHrPartnersCatalog().slice(0, 4), []);
+  const partners = useMemo(() => getHrPartnersCatalog().slice(0, 3), []);
 
   return (
     <aside className={styles.root} aria-label="HR and headhunter companies">
