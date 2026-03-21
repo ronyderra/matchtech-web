@@ -70,7 +70,6 @@ export function CompanySwipeDeck() {
               alt={`${card.companyName} logo`}
               className={styles.logo}
             />
-            <h2 className={styles.companyName}>{card.companyName}</h2>
           </div>
 
           <p className={styles.about}>{card.about}</p>
