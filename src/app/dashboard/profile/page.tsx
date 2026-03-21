@@ -1,104 +1,606 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/auth";
+"use client";
 
-function Field({ label, value }: { label: string; value: string }) {
-  return (
-    <div style={{ border: "1px solid var(--color-border)", borderRadius: 10, padding: "10px 12px" }}>
-      <p style={{ margin: 0, fontSize: 12, color: "var(--color-text-muted)" }}>{label}</p>
-      <p style={{ margin: "4px 0 0", fontSize: 15, color: "var(--color-text-primary)", wordBreak: "break-word" }}>
-        {value}
-      </p>
-    </div>
-  );
-}
+import { useEffect, useState } from "react";
+import {
+  Button,
+  Divider,
+  FormField,
+  FormRow,
+  FormSection,
+  Input,
+  MultiSelectChips,
+  MultiSelectDropdown,
+  Select,
+  TagInput,
+  TextArea,
+  Toast,
+} from "@/components/ui";
+import { useUserStore } from "@/store";
+import type {
+  CompensationPreference,
+  EmploymentType,
+  PriorityPreference,
+  Seniority,
+  TalentDetails,
+  WorkPreference,
+} from "@/types";
+import { COUNTRIES, DEPARTMENTS } from "@/constants/options";
+import { buildTalentDbUpsertPayload, PENDING_PROFILE_UPSERT_KEY } from "@/lib/profilePayload";
 
-export default async function ProfilePage() {
-  const session = await getServerSession(authOptions);
-  const user = session?.user;
-  const userId = (user as { id?: string } | undefined)?.id ?? "Not available";
+type ExperienceDraft = {
+  companyName: string;
+  industry: string;
+  yearsInCompany: string;
+  roleInCompany: string;
+};
+
+const SENIORITY_OPTIONS: { value: Seniority; label: string }[] = [
+  { value: "any", label: "Any" },
+  { value: "student", label: "Student position" },
+  { value: "junior", label: "Junior" },
+  { value: "mid", label: "Mid-level" },
+  { value: "senior", label: "Senior" },
+  { value: "lead", label: "Lead" },
+  { value: "principal", label: "Principal" },
+];
+
+const EMPLOYMENT_TYPE_OPTIONS: { value: EmploymentType; label: string }[] = [
+  { value: "any", label: "Any" },
+  { value: "student", label: "Student" },
+  { value: "full-time", label: "Full-time" },
+  { value: "part-time", label: "Part-time" },
+  { value: "contract", label: "Contract" },
+  { value: "freelance", label: "Freelance" },
+];
+
+const WORK_PREFERENCE_OPTIONS: { value: WorkPreference; label: string }[] = [
+  { value: "any", label: "Any" },
+  { value: "remote", label: "Remote" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "onsite", label: "On-site" },
+];
+
+const CURRENCIES = [
+  { value: "ILS", label: "₪ ILS" },
+  { value: "USD", label: "$ USD" },
+  { value: "EUR", label: "€ EUR" },
+  { value: "GBP", label: "£ GBP" },
+];
+
+const AVAILABILITY_OPTIONS = [
+  { value: "", label: "Select" },
+  { value: "Immediately", label: "Immediately" },
+  { value: "In 2 weeks", label: "In 2 weeks" },
+  { value: "In 1 month", label: "In 1 month" },
+  { value: "In 3 months", label: "In 3 months" },
+  { value: "Not sure yet", label: "Not sure yet" },
+] as const;
+
+const PRIORITY_OPTIONS = [
+  { value: "High salary", label: "High salary" },
+  { value: "Remote work", label: "Remote work" },
+  { value: "Flexible hours", label: "Flexible hours" },
+  { value: "Work-life balance", label: "Work-life balance" },
+  { value: "Fast growth", label: "Fast growth" },
+  { value: "Learning & mentorship", label: "Learning & mentorship" },
+  { value: "Stability", label: "Stability" },
+  { value: "Great team / culture", label: "Great team / culture" },
+  { value: "Interesting product", label: "Interesting product" },
+  { value: "Strong tech stack", label: "Strong tech stack" },
+  { value: "Impact / ownership", label: "Impact / ownership" },
+  { value: "Equity upside", label: "Equity upside" },
+] satisfies { value: string; label: string }[];
+
+const COMPENSATION_PREFERENCES = [
+  "Performance bonus",
+  "Revenue share / commission",
+  "Equity / stock options",
+  "Signing bonus",
+  "Profit sharing",
+  "Retention bonus",
+  "Tips / variable earnings",
+  "Overtime pay",
+  "Benefits (health, pension, etc.)",
+  "Flexible compensation (choose your mix)",
+  "Not important",
+] as const;
+
+const COMPENSATION_PREFERENCE_OPTIONS = COMPENSATION_PREFERENCES.map((v) => ({
+  value: v,
+  label: v,
+}));
+
+export default function ProfilePage() {
+  const user = useUserStore((s) => s.user);
+  const patchUser = useUserStore((s) => s.patchUser);
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [addressCity, setAddressCity] = useState("");
+  const [addressCountry, setAddressCountry] = useState("");
+  const [bio, setBio] = useState("");
+  const [skillsProfile, setSkillsProfile] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [githubUrl, setGithubUrl] = useState("");
+  const [resumeUrl, setResumeUrl] = useState("");
+  const [availability, setAvailability] = useState("");
+  const [departments, setDepartments] = useState<string[]>([]);
+  const [seniority, setSeniority] = useState<Seniority>("any");
+  const [employmentType, setEmploymentType] = useState<EmploymentType>("any");
+  const [workPreference, setWorkPreference] = useState<WorkPreference>("any");
+  const [preferredCountry, setPreferredCountry] = useState("");
+  const [preferredCity, setPreferredCity] = useState("");
+  const [salaryMin, setSalaryMin] = useState<string>("");
+  const [currency, setCurrency] = useState("");
+  const [priorities, setPriorities] = useState<PriorityPreference[]>([]);
+  const [compensationPreferences, setCompensationPreferences] = useState<CompensationPreference[]>([]);
+  const [experienceDrafts, setExperienceDrafts] = useState<ExperienceDraft[]>([
+    { companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" },
+  ]);
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastTitle, setToastTitle] = useState("");
+  const [toastDescription, setToastDescription] = useState("");
+
+  useEffect(() => {
+    if (!user || user.type !== "talent") return;
+    const t = user as TalentDetails;
+    setFirstName(t.firstName ?? "");
+    setLastName(t.lastName ?? "");
+    setEmail(t.email ?? "");
+    setPhoneNumber(t.phoneNumber ?? "");
+    setAddressCity(t.address?.city ?? "");
+    setAddressCountry(t.address?.country ?? "");
+    setBio(t.bio ?? "");
+    setSkillsProfile(t.skills ?? []);
+    setLanguages(t.languages ?? []);
+    setLinkedinUrl(t.linkedinUrl ?? "");
+    setPortfolioUrl(t.portfolioUrl ?? "");
+    setGithubUrl(t.githubUrl ?? "");
+    setResumeUrl(t.resumeUrl ?? "");
+    setAvailability(t.availableFrom ?? "");
+    setDepartments(t.jobPosition.departments ?? []);
+    setSeniority(t.jobPosition.seniority ?? "any");
+    setEmploymentType(t.jobPosition.employmentType ?? "any");
+    setWorkPreference(t.jobPosition.workPreference ?? "any");
+    setPreferredCountry(t.jobPosition.country ?? "");
+    setPreferredCity(t.jobPosition.city ?? "");
+    setSalaryMin(t.jobPosition.salaryMin !== undefined ? String(t.jobPosition.salaryMin) : "");
+    setCurrency(t.jobPosition.currency ?? "");
+    setPriorities((t.priorities ?? []) as PriorityPreference[]);
+    setCompensationPreferences((t.compensationPreferences ?? []) as CompensationPreference[]);
+    if (t.experiences && t.experiences.length > 0) {
+      setExperienceDrafts(
+        t.experiences.map((e) => ({
+          companyName: e.companyName ?? "",
+          industry: e.industry ?? "",
+          yearsInCompany: e.yearsInCompany !== undefined ? String(e.yearsInCompany) : "",
+          roleInCompany: e.jobTitle ?? "",
+        }))
+      );
+    }
+  }, [user]);
+
+  function saveProfile() {
+    if (!user || user.type !== "talent") return;
+    const nextTalent = {
+      ...(user as TalentDetails),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      fullName: `${firstName} ${lastName}`.trim(),
+      email: email.trim(),
+      phoneNumber: phoneNumber.trim(),
+      bio: bio.trim(),
+      skills: skillsProfile,
+      languages: languages.length ? languages : undefined,
+      linkedinUrl: linkedinUrl.trim() || undefined,
+      portfolioUrl: portfolioUrl.trim() || undefined,
+      githubUrl: githubUrl.trim() || undefined,
+      resumeUrl: resumeUrl.trim() || undefined,
+      address:
+        addressCity.trim() || addressCountry
+          ? { city: addressCity.trim() || undefined, country: addressCountry || undefined }
+          : undefined,
+      experiences:
+        experienceDrafts.length
+          ? experienceDrafts
+              .map((exp) => ({
+                companyName: exp.companyName.trim(),
+                jobTitle: exp.roleInCompany.trim(),
+                industry: exp.industry.trim() || undefined,
+                yearsInCompany: exp.yearsInCompany ? Number(exp.yearsInCompany) : undefined,
+              }))
+              .filter((exp) => exp.companyName || exp.jobTitle)
+              .map((exp) => ({
+                id:
+                  typeof crypto !== "undefined" && "randomUUID" in crypto
+                    ? crypto.randomUUID()
+                    : String(Date.now()),
+                companyName: exp.companyName,
+                jobTitle: exp.jobTitle,
+                industry: exp.industry,
+                employmentType: user.jobPosition.employmentType,
+                yearsInCompany: exp.yearsInCompany,
+              }))
+          : undefined,
+      availableFrom: availability || undefined,
+      priorities: priorities.length ? priorities.slice(0, 3) : undefined,
+      compensationPreferences: compensationPreferences.length
+        ? compensationPreferences.slice(0, 3)
+        : undefined,
+      jobPosition: {
+        ...user.jobPosition,
+        departments: departments.slice(0, 4),
+        seniority,
+        employmentType,
+        workPreference,
+        country: preferredCountry || undefined,
+        city: preferredCity.trim() || undefined,
+        salaryMin: salaryMin.trim() === "" ? undefined : Number(salaryMin),
+        currency: currency || undefined,
+        equity: compensationPreferences.includes("Equity / stock options"),
+      },
+    } as TalentDetails;
+
+    patchUser(nextTalent);
+    window.localStorage.setItem(
+      PENDING_PROFILE_UPSERT_KEY,
+      JSON.stringify(buildTalentDbUpsertPayload(nextTalent))
+    );
+    setToastTitle("Profile saved");
+    setToastDescription("Your information was saved and queued for DB upsert.");
+    setToastOpen(true);
+    window.setTimeout(() => setToastOpen(false), 2800);
+  }
 
   return (
     <main style={{ maxWidth: 980, margin: "0 auto" }}>
-      <header
-        style={{
-          marginBottom: 24,
-          padding: "20px 24px",
-          borderRadius: 16,
-          border: "1px solid var(--color-border)",
-          background: "linear-gradient(135deg, #f8fbff 0%, #f2f7ff 100%)",
-        }}
-      >
-        <p style={{ margin: 0, fontSize: 13, color: "var(--color-text-muted)" }}>Profile page</p>
-        <h1 style={{ margin: "6px 0 8px", fontSize: 34, lineHeight: "40px" }}>Your profile</h1>
-        <p style={{ margin: 0, color: "var(--color-text-secondary)" }}>
-          All account details currently available from LinkedIn/Auth.js.
-        </p>
-      </header>
+      <Toast open={toastOpen} status="success" title={toastTitle} description={toastDescription} />
+      <FormSection title="Personal information">
+        <FormRow>
+          <FormField id="first-name" label="First name" required>
+            {(field) => <Input {...field} value={firstName} onChange={(e) => setFirstName(e.target.value)} />}
+          </FormField>
+          <FormField id="last-name" label="Last name" required>
+            {(field) => <Input {...field} value={lastName} onChange={(e) => setLastName(e.target.value)} />}
+          </FormField>
+        </FormRow>
+        <FormRow>
+          <FormField id="email" label="Email" required>
+            {(field) => <Input {...field} type="email" value={email} onChange={(e) => setEmail(e.target.value)} />}
+          </FormField>
+          <FormField id="phone" label="Phone number" required>
+            {(field) => <Input {...field} type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />}
+          </FormField>
+        </FormRow>
+        <FormRow>
+          <FormField id="address-country" label="Address country" required>
+            {(field) => (
+              <Select {...field} value={addressCountry} onChange={(e) => setAddressCountry(e.target.value)}>
+                <option value="" disabled>Select country</option>
+                {COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </Select>
+            )}
+          </FormField>
+          <FormField id="address-city" label="Address city" required>
+            {(field) => <Input {...field} value={addressCity} onChange={(e) => setAddressCity(e.target.value)} />}
+          </FormField>
+        </FormRow>
+        <FormField id="bio" label="Bio" required>
+          {(field) => <TextArea {...field} rows={4} value={bio} onChange={(e) => setBio(e.target.value)} />}
+        </FormField>
+      </FormSection>
 
-      <section
-        style={{
-          padding: "20px 24px",
-          borderRadius: 16,
-          border: "1px solid var(--color-border)",
-          background: "var(--color-surface)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 18 }}>
-          {user?.image ? (
-            <img
-              src={user.image}
-              alt={user.name ? `${user.name} profile` : "Profile image"}
-              width={72}
-              height={72}
-              style={{
-                borderRadius: "999px",
-                objectFit: "cover",
-                border: "1px solid var(--color-border)",
-              }}
-            />
-          ) : (
-            <div
-              aria-hidden="true"
-              style={{
-                width: 72,
-                height: 72,
-                borderRadius: "999px",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: 700,
-                fontSize: 28,
-                background: "#f8fbff",
-                border: "1px solid var(--color-border)",
-                color: "var(--color-text-secondary)",
-              }}
+      <Divider />
+
+      <FormSection>
+        <FormSection title="What are you looking for?">
+          <FormRow columns={1}>
+            <FormField id="departments" label="Departments (pick up to 4)" required>
+              {() => (
+                <MultiSelectDropdown
+                  value={departments}
+                  options={DEPARTMENTS.map((d) => ({ value: d, label: d }))}
+                  placeholder="Select up to 4"
+                  maxSelected={4}
+                  onChange={(next) => setDepartments(next.slice(0, 4))}
+                />
+              )}
+            </FormField>
+          </FormRow>
+          <FormRow>
+            <FormField id="seniority" label="Seniority" required>
+              {(field) => (
+                <Select {...field} value={seniority} onChange={(e) => setSeniority(e.target.value as Seniority)}>
+                  {SENIORITY_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </FormField>
+            <FormField id="employment-type" label="Employment type" required>
+              {(field) => (
+                <Select
+                  {...field}
+                  value={employmentType}
+                  onChange={(e) => setEmploymentType(e.target.value as EmploymentType)}
+                >
+                  {EMPLOYMENT_TYPE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </FormField>
+          </FormRow>
+          <FormRow>
+            <FormField id="availability" label="Availability (when can you start?)">
+              {(field) => (
+                <Select {...field} value={availability} onChange={(e) => setAvailability(e.target.value)}>
+                  {AVAILABILITY_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </FormField>
+            <FormField id="work-preference" label="Work preference" required>
+              {(field) => (
+                <Select
+                  {...field}
+                  value={workPreference}
+                  onChange={(e) => setWorkPreference(e.target.value as WorkPreference)}
+                >
+                  {WORK_PREFERENCE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </FormField>
+          </FormRow>
+          <FormRow>
+            <FormField id="preferred-country" label="Country" required>
+              {(field) => (
+                <Select {...field} value={preferredCountry} onChange={(e) => setPreferredCountry(e.target.value)}>
+                  <option value="" disabled>
+                    Select country
+                  </option>
+                  {COUNTRIES.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </FormField>
+            <FormField id="preferred-city" label="Preferred city (optional)">
+              {(field) => (
+                <Input {...field} value={preferredCity} onChange={(e) => setPreferredCity(e.target.value)} />
+              )}
+            </FormField>
+          </FormRow>
+          <FormRow>
+            <FormField id="salary-min" label="Salary min" required>
+              {(field) => (
+                <Input
+                  {...field}
+                  type="number"
+                  min={0}
+                  value={salaryMin}
+                  onChange={(e) => setSalaryMin(e.target.value)}
+                />
+              )}
+            </FormField>
+            <FormField id="currency" label="Currency" required>
+              {(field) => (
+                <Select {...field} value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  {CURRENCIES.map((c) => (
+                    <option key={c.value} value={c.value}>
+                      {c.label}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </FormField>
+          </FormRow>
+          <div style={{ marginTop: 14 }}>
+            <FormField
+              id="compensation-preferences"
+              label={
+                <span style={{ color: "var(--color-text-primary)" }}>
+                  Which additional compensation matters to you? (pick up to 3)
+                </span>
+              }
             >
-              {(user?.name || user?.email || "U").charAt(0).toUpperCase()}
-            </div>
-          )}
-          <div>
-            <h2 style={{ margin: 0, fontSize: 24 }}>{user?.name || "LinkedIn user"}</h2>
-            <p style={{ margin: "4px 0 0", color: "var(--color-text-secondary)" }}>
-              {user?.email || "No email provided"}
-            </p>
+              {() => (
+                <MultiSelectChips
+                  value={compensationPreferences}
+                  options={COMPENSATION_PREFERENCE_OPTIONS}
+                  maxSelected={3}
+                  onChange={(next) => {
+                    const trimmed = next.slice(0, 3);
+                    setCompensationPreferences(
+                      (trimmed.includes("Not important") ? ["Not important"] : trimmed) as CompensationPreference[]
+                    );
+                  }}
+                />
+              )}
+            </FormField>
           </div>
-        </div>
+          <div style={{ marginTop: 14 }}>
+            <FormField
+              id="priorities"
+              label={
+                <span style={{ color: "var(--color-text-primary)" }}>
+                  What matters most to you? (pick up to 3)
+                </span>
+              }
+            >
+              {() => (
+                <MultiSelectChips
+                  value={priorities}
+                  options={PRIORITY_OPTIONS}
+                  maxSelected={3}
+                  onChange={(next) => setPriorities(next.slice(0, 3) as PriorityPreference[])}
+                />
+              )}
+            </FormField>
+          </div>
+        </FormSection>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: 10,
-          }}
+        <Divider />
+
+        <h3 style={{ margin: "20px 0 8px", fontSize: 20, lineHeight: "28px" }}>Skills</h3>
+
+        <FormField id="skills" label="Skills" required>
+          {() => <TagInput tags={skillsProfile} onChange={setSkillsProfile} placeholder="Type a skill and press Enter" maxTags={50} />}
+        </FormField>
+        <FormField id="languages" label="Languages (optional)">
+          {() => (
+            <MultiSelectDropdown
+              value={languages}
+              options={[
+                { value: "English", label: "English" },
+                { value: "Hebrew", label: "Hebrew" },
+                { value: "Spanish", label: "Spanish" },
+                { value: "French", label: "French" },
+                { value: "German", label: "German" },
+                { value: "Russian", label: "Russian" },
+                { value: "Arabic", label: "Arabic" },
+              ]}
+              placeholder="Select languages"
+              maxSelected={5}
+              onChange={setLanguages}
+            />
+          )}
+        </FormField>
+        <FormRow>
+          <FormField id="linkedin" label="LinkedIn URL (optional)">
+            {(field) => <Input {...field} type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} />}
+          </FormField>
+          <FormField id="portfolio" label="Portfolio URL (optional)">
+            {(field) => <Input {...field} type="url" value={portfolioUrl} onChange={(e) => setPortfolioUrl(e.target.value)} />}
+          </FormField>
+        </FormRow>
+        <FormRow>
+          <FormField id="github" label="GitHub URL (optional)">
+            {(field) => <Input {...field} type="url" value={githubUrl} onChange={(e) => setGithubUrl(e.target.value)} />}
+          </FormField>
+          <FormField id="resume" label="Resume URL (optional)">
+            {(field) => <Input {...field} type="url" value={resumeUrl} onChange={(e) => setResumeUrl(e.target.value)} />}
+          </FormField>
+        </FormRow>
+      </FormSection>
+
+      <Divider />
+
+      <FormSection title="Experience">
+        {experienceDrafts.map((exp, index) => (
+          <div key={index} style={{ marginBottom: 16 }}>
+            <FormRow>
+              <FormField id={`exp-company-${index}`} label="Company name">
+                {(field) => (
+                  <Input
+                    {...field}
+                    value={exp.companyName}
+                    onChange={(e) =>
+                      setExperienceDrafts((prev) =>
+                        prev.map((p, i) => (i === index ? { ...p, companyName: e.target.value } : p))
+                      )
+                    }
+                  />
+                )}
+              </FormField>
+              <FormField id={`exp-industry-${index}`} label="Industry">
+                {(field) => (
+                  <Input
+                    {...field}
+                    value={exp.industry}
+                    onChange={(e) =>
+                      setExperienceDrafts((prev) =>
+                        prev.map((p, i) => (i === index ? { ...p, industry: e.target.value } : p))
+                      )
+                    }
+                  />
+                )}
+              </FormField>
+            </FormRow>
+            <FormRow>
+              <FormField id={`exp-years-${index}`} label="Years in company">
+                {(field) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    min={0}
+                    value={exp.yearsInCompany}
+                    onChange={(e) =>
+                      setExperienceDrafts((prev) =>
+                        prev.map((p, i) => (i === index ? { ...p, yearsInCompany: e.target.value } : p))
+                      )
+                    }
+                  />
+                )}
+              </FormField>
+              <FormField id={`exp-role-${index}`} label="Role in company">
+                {(field) => (
+                  <Input
+                    {...field}
+                    value={exp.roleInCompany}
+                    onChange={(e) =>
+                      setExperienceDrafts((prev) =>
+                        prev.map((p, i) => (i === index ? { ...p, roleInCompany: e.target.value } : p))
+                      )
+                    }
+                  />
+                )}
+              </FormField>
+            </FormRow>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() =>
+            setExperienceDrafts((prev) => [
+              ...prev,
+              { companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" },
+            ])
+          }
         >
-          <Field label="User ID" value={userId} />
-          <Field label="Name" value={user?.name || "Not available"} />
-          <Field label="Email" value={user?.email || "Not available"} />
-          <Field label="Image URL" value={user?.image || "Not available"} />
-          <Field label="Session expires" value={session?.expires || "Not available"} />
-          <Field label="Auth provider" value="LinkedIn (OAuth / OIDC)" />
+          + Add experience
+        </Button>
+
+        <div style={{ marginTop: 16 }}>
+          <Button
+            type="button"
+            onClick={saveProfile}
+            disabled={
+              !firstName.trim() ||
+              !lastName.trim() ||
+              !email.trim() ||
+              !phoneNumber.trim() ||
+              !addressCountry ||
+              !addressCity.trim() ||
+              !bio.trim() ||
+              skillsProfile.length === 0
+            }
+          >
+            Save / Submit
+          </Button>
         </div>
-      </section>
+      </FormSection>
     </main>
   );
 }
