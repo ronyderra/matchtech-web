@@ -287,3 +287,36 @@ export async function updateTalentProfileByUserId(
   );
   return nextProfile;
 }
+
+/** Summary row for admin user listing (no full profile payload). */
+export type UserListRow = {
+  id: string;
+  authEmail: string;
+  profileEmail: string;
+  fullName: string;
+  provider: string;
+  providerAccountId: string;
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt: string | null;
+  cvUploaded: boolean;
+  surveyCompleted: boolean;
+};
+
+export async function listAllUsersForTable(): Promise<UserListRow[]> {
+  const collection = await getUsersCollection();
+  const docs = await collection.find({}).sort({ createdAt: -1 }).toArray();
+  return docs.map((doc) => ({
+    id: doc._id.toHexString(),
+    authEmail: doc.auth.email ?? "",
+    profileEmail: doc.profile.email ?? "",
+    fullName: doc.profile.fullName ?? "",
+    provider: doc.auth.provider,
+    providerAccountId: doc.auth.providerAccountId,
+    createdAt: doc.createdAt.toISOString(),
+    updatedAt: doc.updatedAt.toISOString(),
+    lastLoginAt: doc.lastLoginAt?.toISOString() ?? null,
+    cvUploaded: doc.profile.swipeOnboarding?.cvUploaded === true,
+    surveyCompleted: doc.profile.swipeOnboarding?.surveyCompleted === true,
+  }));
+}
