@@ -1,5 +1,6 @@
 import { Header } from "@/components/homepage/Header/Header";
 import { Footer } from "@/components/homepage/Footer/Footer";
+import { PartnerInquiryForm } from "@/components/partner/PartnerInquiryForm";
 import { Container, Section, Stack, Heading, Text } from "@/components/ui";
 import { MatchTechStructuredData } from "@/components/seo/MatchTechStructuredData";
 import { createPageMetadata } from "@/lib/seo/metadata";
@@ -25,8 +26,8 @@ export default function PartnerWithUsPage() {
         description={PARTNER_DESCRIPTION}
       />
       <Header />
-      <main style={{ paddingTop: 120 }}>
-        <Section style={{ paddingTop: 64, paddingBottom: 64 }}>
+      <main style={{ paddingTop: 72 }}>
+        <Section style={{ paddingTop: 16, paddingBottom: 64 }}>
           <Container>
             <div
               style={{
@@ -81,6 +82,10 @@ export default function PartnerWithUsPage() {
                     relevant). If it’s a technical partnership, share any APIs or integration needs so
                     we can prepare the right team.
                   </Text>
+                  <Text as="p" style={{ color: "var(--color-text-secondary)" }}>
+                    Or submit the form below — we’ll route it to the partnerships team.
+                  </Text>
+                  <PartnerInquiryForm />
                 </Stack>
               </div>
             </div>
