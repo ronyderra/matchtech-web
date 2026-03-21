@@ -14,6 +14,22 @@ type CompanySwipeDeckProps = {
   variant?: "default" | "threeColumn";
 };
 
+function RequirementWeightDots({ weight }: { weight: 1 | 2 | 3 | 4 | 5 }) {
+  return (
+    <span className={styles.reqWeightDots} aria-label={`Weight ${weight} out of 5`}>
+      {Array.from({ length: 5 }, (_, i) => (
+        <span
+          key={i}
+          className={i < weight ? styles.reqDotOn : styles.reqDotOff}
+          aria-hidden
+        >
+          {i < weight ? "●" : "○"}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps) {
   const [index, setIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<SwipeDirection>(null);
@@ -72,24 +88,15 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
 
   function renderCard(card: (typeof COMPANY_SWIPE_CARDS)[number]) {
     const pd = card.positionDetail;
-    const industry =
-      card.facts.find((f) => f.label === "Industry")?.value ?? card.facts[0]?.value;
-
-    const quickFacts = [
-      { label: "Seniority", value: pd.seniority },
-      { label: "Employment", value: pd.employmentType },
-      {
-        label: "Team",
-        value: pd.teamSize ?? "—",
-      },
-    ];
 
     return (
       <>
-        {/* Match homepage SwipeCardDemo: gradient banner + centered logo + comp pill */}
-        <div className={styles.cardTop}>
+        {/* 1) Header — gradient + meta + comp + logo (unchanged look) */}
+        <header className={styles.swipeCardHeader} aria-label="Role summary">
           <div className={[styles.banner, styles.bannerUnified].join(" ")}>
-            <span className={styles.bannerType}>Open role</span>
+            <span className={styles.bannerType} title={card.roleMeta}>
+              {card.roleMeta}
+            </span>
             <span className={styles.bannerHighlight}>{card.compensation}</span>
             <div className={styles.bannerAvatar}>
               <img
@@ -99,77 +106,88 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
               />
             </div>
           </div>
-        </div>
+        </header>
 
-        <div className={styles.cardMain}>
-          <div className={styles.metaRowTop}>
-            <span className={styles.typePill}>Company</span>
-            <span className={styles.scorePill}>
-              {pd.postedAgo ? (
-                <>
-                  <strong>{pd.postedAgo}</strong>
-                </>
-              ) : (
-                <>
-                  <strong>Open</strong> listing
-                </>
-              )}
-            </span>
-          </div>
-
-          <p className={styles.sectionLabel}>About the company</p>
-          <p className={styles.companyHeadline}>{card.companyTagline}</p>
-          <p className={styles.companyIndustry}>{industry}</p>
-          <div className={styles.companyProse}>
-            <p className={styles.companyAbout}>{card.about}</p>
-            <p className={styles.companyAbout}>{card.companyMore}</p>
-          </div>
-
-          <div className={styles.factsGrid}>
-            {card.facts.map((fact) => (
-              <div key={fact.label} className={styles.factItem}>
-                <span className={styles.factLabel}>{fact.label}</span>
-                <span className={styles.factValue}>{fact.value}</span>
+        {/* 2–4) About grid (5 boxes) · Requirements grid (6 boxes) · Footer — spaced stack */}
+        <div className={styles.swipeCardContent}>
+          <section className={styles.swipeCardAbout} aria-labelledby="swipe-about-heading">
+            <div className={styles.swipePanel}>
+              <h2 id="swipe-about-heading" className={styles.swipePanelHead}>
+                About the position
+              </h2>
+              <div className={styles.swipePanelBody}>
+                <div className={styles.aboutGridFive}>
+                  <div className={styles.aboutGridFiveTitle}>
+                    <h3 className={styles.aboutRoleTitle}>{card.roleTitle}</h3>
+                  </div>
+                  <div className={styles.aboutGridFiveCell}>
+                    <span className={styles.aboutGridFiveLabel}>Team / domain</span>
+                    <span className={styles.aboutGridFiveValue}>{pd.teamDomain}</span>
+                  </div>
+                  <div className={styles.aboutGridFiveCell}>
+                    <span className={styles.aboutGridFiveLabel}>Location / type</span>
+                    <span className={styles.aboutGridFiveValue}>{pd.locationType}</span>
+                  </div>
+                  <div className={styles.aboutGridFiveCell}>
+                    <span className={styles.aboutGridFiveLabel}>Compensation</span>
+                    <span className={styles.aboutGridFiveValue}>{card.compensation}</span>
+                  </div>
+                  <div className={styles.aboutGridFiveCell}>
+                    <span className={styles.aboutGridFiveLabel}>Seniority</span>
+                    <span className={styles.aboutGridFiveValue}>{pd.seniority}</span>
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
+            </div>
+          </section>
 
-          <p className={styles.sectionLabel}>Role we&apos;re hiring for</p>
-          <h3 className={styles.cardTitle}>{card.roleTitle}</h3>
-          <p className={styles.cardSubtitle}>{card.roleMeta}</p>
-          <p className={styles.cardBody}>{pd.summary}</p>
+          <section className={styles.swipeCardRequirements} aria-labelledby="swipe-reqs-heading">
+            <div className={styles.swipePanel}>
+              <h2 id="swipe-reqs-heading" className={styles.swipePanelHead}>
+                Requirements
+              </h2>
+              <ul className={styles.requirementsGridSix} role="list">
+                {Array.from({ length: 6 }, (_, slotIndex) => {
+                  const row = pd.requirementMatrix[slotIndex] ?? null;
+                  if (!row) {
+                    return (
+                      <li
+                        key={`req-slot-${slotIndex}`}
+                        className={styles.requirementGridCellEmpty}
+                        aria-hidden
+                      />
+                    );
+                  }
+                  const isRequired = row.required === "Yes";
+                  return (
+                    <li
+                      key={`${row.category}-${slotIndex}-${row.requirement.slice(0, 20)}`}
+                      className={styles.requirementGridCell}
+                    >
+                      <span className={styles.requirementCategory}>{row.category}</span>
+                      <p className={styles.requirementTitle}>{row.requirement}</p>
+                      <p className={styles.requirementLevel}>{row.level}</p>
+                      <div className={styles.requirementRowFoot}>
+                        <span className={isRequired ? styles.reqTagMust : styles.reqTagPref}>
+                          {isRequired ? "Required" : "Preferred"}
+                        </span>
+                        <div className={styles.requirementWeightWrap}>
+                          <span className={styles.requirementWeightCaption}>Weight</span>
+                          <RequirementWeightDots weight={row.weight} />
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </section>
 
-          <div className={styles.factsGrid}>
-            {quickFacts.map((f) => (
-              <div key={f.label} className={styles.factItem}>
-                <span className={styles.factLabel}>{f.label}</span>
-                <span className={styles.factValue}>{f.value}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className={styles.divider} />
-
-          <div className={styles.skillsRow}>
-            {card.tags.map((tag) => (
-              <span key={tag} className={styles.skillTag}>
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <ul className={styles.detailsList}>
-            {card.highlights.slice(0, 3).map((item) => (
-              <li key={item} className={styles.detailsItem}>
-                <span className={styles.bulletDot} aria-hidden="true" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-
-          <p className={styles.cardHint}>
-            Tap <strong>Info</strong> for the full brief, team, and recruiting partners.
-          </p>
+          <footer className={styles.swipeCardFooter}>
+            <p className={styles.swipeCardFooterText}>
+              <strong>Info</strong> — company, full role brief, culture, benefits, and recruiting partners.
+            </p>
+          </footer>
         </div>
       </>
     );

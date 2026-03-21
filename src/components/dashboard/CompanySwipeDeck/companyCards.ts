@@ -1,7 +1,34 @@
+/** Requirements grid on swipe card (Category / Requirement / Level / Required / Weight) */
+export type RequirementCategory =
+  | "Experience"
+  | "Skills"
+  | "Domain"
+  | "Soft"
+  | "Tools"
+  | "Education";
+
+export type RequirementMatrixRow = {
+  category: RequirementCategory;
+  requirement: string;
+  level: string;
+  required: "Yes" | "Nice-to-have";
+  weight: 1 | 2 | 3 | 4 | 5;
+};
+
 /** Rich position copy shown in the info sheet (80% screen panel). */
 export type PositionDetail = {
   /** Short hook under the title */
   summary: string;
+  /** Swipe card only: one punchy line on what makes this role interesting (full story in Info) */
+  positionTeaser: string;
+  /** Swipe card: product/org area (Search, AI, Payments, …) */
+  teamDomain: string;
+  /** Swipe card: hybrid / remote / onsite + city */
+  locationType: string;
+  /** Swipe card: what they own / build (core impact) */
+  coreImpact: string;
+  /** Swipe card: structured requirement rows for scoring */
+  requirementMatrix: RequirementMatrixRow[];
   /** What the team does and why this role exists */
   roleOverview: string;
   /** Day-to-day ownership */
@@ -78,6 +105,56 @@ export const COMPANY_SWIPE_CARDS: CompanySwipeCard[] = [
     positionDetail: {
       summary:
         "Own backend systems for Search & AI ranking and serving at global scale—with SLOs measured in milliseconds.",
+      positionTeaser:
+        "Global traffic, millisecond SLOs, and real ML in production—ownership that shows up in Search results.",
+      teamDomain: "Search & AI",
+      locationType: "Hybrid · Mountain View, CA (3 days on-site typical)",
+      coreImpact:
+        "Own ranking and serving systems at global scale: reliability, latency, and safe ML rollout paths in production.",
+      requirementMatrix: [
+        {
+          category: "Experience",
+          requirement: "Production distributed systems at large scale",
+          level: "8+ yrs · Senior (L5–L6)",
+          required: "Yes",
+          weight: 5,
+        },
+        {
+          category: "Skills",
+          requirement: "Go / C++ / Java — performance & profiling",
+          level: "Expert",
+          required: "Yes",
+          weight: 5,
+        },
+        {
+          category: "Domain",
+          requirement: "Search, retrieval, or ads-scale serving",
+          level: "Strong",
+          required: "Yes",
+          weight: 4,
+        },
+        {
+          category: "Soft",
+          requirement: "Partner with ML, product, and SRE on launches",
+          level: "Staff-level communication",
+          required: "Yes",
+          weight: 3,
+        },
+        {
+          category: "Tools",
+          requirement: "Observability, tracing, and SLO tooling in production",
+          level: "Strong",
+          required: "Yes",
+          weight: 4,
+        },
+        {
+          category: "Education",
+          requirement: "BS+ in CS, CE, or equivalent depth in systems",
+          level: "Typical for senior IC",
+          required: "Yes",
+          weight: 2,
+        },
+      ],
       roleOverview:
         "You’ll join a team that designs, builds, and operates high-throughput services behind query understanding and retrieval. Work spans design reviews, production launches, on-call rotation, and cross-functional alignment with ML, product, and infra. Expect deep ownership of reliability, latency, and cost at planetary scale.",
       responsibilities: [
@@ -145,6 +222,56 @@ export const COMPANY_SWIPE_CARDS: CompanySwipeCard[] = [
     positionDetail: {
       summary:
         "Build and harden Azure platform primitives that power tenant isolation, deployment, and safe rollouts for enterprise customers.",
+      positionTeaser:
+        "Control planes other Azure teams bet on—security, rollouts, and multi-tenant isolation at real scale.",
+      teamDomain: "Azure Core Platform",
+      locationType: "Hybrid · Greater Seattle",
+      coreImpact:
+        "Ship and operate platform APIs and control planes for multi-tenant isolation, safe deployments, and enterprise trust.",
+      requirementMatrix: [
+        {
+          category: "Experience",
+          requirement: "Backend / platform engineering in production cloud",
+          level: "6+ yrs · Senior IC",
+          required: "Yes",
+          weight: 5,
+        },
+        {
+          category: "Skills",
+          requirement: "Kubernetes, containers, CI/CD at scale",
+          level: "Strong",
+          required: "Yes",
+          weight: 5,
+        },
+        {
+          category: "Domain",
+          requirement: "Identity, networking, or security in cloud",
+          level: "Solid",
+          required: "Yes",
+          weight: 4,
+        },
+        {
+          category: "Soft",
+          requirement: "Threat models & cross-team incident response",
+          level: "Partner-facing",
+          required: "Yes",
+          weight: 3,
+        },
+        {
+          category: "Tools",
+          requirement: "IaC, GitOps, or ARM/Bicep for large-scale rollouts",
+          level: "Solid",
+          required: "Yes",
+          weight: 3,
+        },
+        {
+          category: "Education",
+          requirement: "BS+ in CS, CE, or equivalent platform engineering background",
+          level: "Typical for senior IC",
+          required: "Yes",
+          weight: 2,
+        },
+      ],
       roleOverview:
         "You’ll work on core platform services that other Azure teams depend on: APIs, control planes, and automation for provisioning and lifecycle. Emphasis on security, compliance, and operability—tight integration with Kubernetes, identity, and networking stacks.",
       responsibilities: [
@@ -211,6 +338,56 @@ export const COMPANY_SWIPE_CARDS: CompanySwipeCard[] = [
     positionDetail: {
       summary:
         "Bridge research and production: ship GPU-accelerated ML workflows, from kernels to platform APIs.",
+      positionTeaser:
+        "From CUDA-adjacent tuning to PyTorch in prod—tight loops with research, drivers, and silicon.",
+      teamDomain: "AI Platform & Accelerated ML",
+      locationType: "Hybrid · Santa Clara, CA",
+      coreImpact:
+        "Optimize and ship ML training/inference paths on GPUs—kernels, platform APIs, and benchmarks customers rely on.",
+      requirementMatrix: [
+        {
+          category: "Experience",
+          requirement: "ML or systems engineering in production",
+          level: "5+ yrs · Senior",
+          required: "Yes",
+          weight: 5,
+        },
+        {
+          category: "Skills",
+          requirement: "Python, PyTorch or TensorFlow, performance profiling",
+          level: "Strong",
+          required: "Yes",
+          weight: 5,
+        },
+        {
+          category: "Domain",
+          requirement: "CUDA / GPU programming exposure",
+          level: "Preferred",
+          required: "Nice-to-have",
+          weight: 2,
+        },
+        {
+          category: "Soft",
+          requirement: "Translate research ↔ product tradeoffs clearly",
+          level: "Clear written + verbal",
+          required: "Yes",
+          weight: 4,
+        },
+        {
+          category: "Tools",
+          requirement: "CI/CD, containers, and experiment tracking for ML pipelines",
+          level: "Working knowledge",
+          required: "Yes",
+          weight: 3,
+        },
+        {
+          category: "Education",
+          requirement: "MS in CS/ML/EE or equivalent depth in ML systems",
+          level: "Typical for senior",
+          required: "Nice-to-have",
+          weight: 2,
+        },
+      ],
       roleOverview:
         "You’ll improve end-to-end ML performance on NVIDIA stacks—training, inference, and tooling. Work includes profiling, kernel-aware optimizations, integration with PyTorch/CUDA stacks, and collaboration with research and driver teams to land features customers can rely on.",
       responsibilities: [
