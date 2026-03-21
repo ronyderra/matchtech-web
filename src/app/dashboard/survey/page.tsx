@@ -23,7 +23,11 @@ import type {
   TalentDetails,
   WorkPreference,
 } from "@/types";
-import { buildTalentDbUpsertPayload, PENDING_PROFILE_UPSERT_KEY } from "@/lib/profilePayload";
+import {
+  buildTalentDbUpsertPayload,
+  PENDING_PROFILE_UPSERT_KEY,
+  syncTalentProfileToApi,
+} from "@/lib/profilePayload";
 
 const IS_DEV = process.env.NODE_ENV === "development";
 
@@ -127,6 +131,7 @@ export default function SurveyPage() {
   useEffect(() => {
     if (!user || user.type !== "talent") return;
     const t = user as TalentDetails;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setJobPosition({
       industry: t.jobPosition.industry ?? "",
       departments: t.jobPosition.departments ?? [],
@@ -145,7 +150,7 @@ export default function SurveyPage() {
     setCompensationPreferences((t.compensationPreferences ?? []) as CompensationPreference[]);
   }, [user]);
 
-  function markComplete() {
+  async function markComplete() {
     if (user?.type === "talent") {
       const jobPositionWithId: JobPosition = {
         id: user.jobPosition.id,
@@ -166,6 +171,17 @@ export default function SurveyPage() {
         PENDING_PROFILE_UPSERT_KEY,
         JSON.stringify(buildTalentDbUpsertPayload(nextTalent))
       );
+      try {
+        const synced = await syncTalentProfileToApi(nextTalent);
+        patchUser(synced);
+        window.localStorage.setItem(
+          PENDING_PROFILE_UPSERT_KEY,
+          JSON.stringify(buildTalentDbUpsertPayload(synced))
+        );
+      } catch {
+        window.alert("Could not save survey data to database. Please try again.");
+        return;
+      }
     }
     window.localStorage.setItem("onboarding.surveyCompleted", "true");
     router.push("/dashboard/swipe");

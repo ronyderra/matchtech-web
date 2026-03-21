@@ -15,6 +15,8 @@ frontend:
         - '[ -n "$LINKEDIN_CLIENT_SECRET" ] && echo "LINKEDIN_CLIENT_SECRET=$LINKEDIN_CLIENT_SECRET" >> .env.production'
         - '[ -n "$OPENAI_API_KEY" ] && echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> .env.production'
         - '[ -n "$OPENAI_MODEL" ] && echo "OPENAI_MODEL=$OPENAI_MODEL" >> .env.production'
+        - '[ -n "$MONGO_URI" ] && echo "MONGO_URI=$MONGO_URI" >> .env.production'
+        - '[ -n "$MONGO_DB_NAME" ] && echo "MONGO_DB_NAME=$MONGO_DB_NAME" >> .env.production'
         - 'env | grep "^NEXT_PUBLIC_" >> .env.production || true'
         - npm run build
   artifacts:

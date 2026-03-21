@@ -25,7 +25,11 @@ import type {
   WorkPreference,
 } from "@/types";
 import { COUNTRIES, DEPARTMENTS } from "@/constants/options";
-import { buildTalentDbUpsertPayload, PENDING_PROFILE_UPSERT_KEY } from "@/lib/profilePayload";
+import {
+  buildTalentDbUpsertPayload,
+  PENDING_PROFILE_UPSERT_KEY,
+  syncTalentProfileToApi,
+} from "@/lib/profilePayload";
 
 type ExperienceDraft = {
   companyName: string;
@@ -148,6 +152,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!user || user.type !== "talent") return;
     const t = user as TalentDetails;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFirstName(t.firstName ?? "");
     setLastName(t.lastName ?? "");
     setEmail(t.email ?? "");
@@ -184,7 +189,7 @@ export default function ProfilePage() {
     }
   }, [user]);
 
-  function saveProfile() {
+  async function saveProfile() {
     if (!user || user.type !== "talent") return;
     const nextTalent = {
       ...(user as TalentDetails),
@@ -250,6 +255,20 @@ export default function ProfilePage() {
       PENDING_PROFILE_UPSERT_KEY,
       JSON.stringify(buildTalentDbUpsertPayload(nextTalent))
     );
+    try {
+      const synced = await syncTalentProfileToApi(nextTalent);
+      patchUser(synced);
+      window.localStorage.setItem(
+        PENDING_PROFILE_UPSERT_KEY,
+        JSON.stringify(buildTalentDbUpsertPayload(synced))
+      );
+    } catch (err) {
+      setToastTitle("Save failed");
+      setToastDescription(err instanceof Error ? err.message : "Could not save profile to database.");
+      setToastOpen(true);
+      window.setTimeout(() => setToastOpen(false), 3000);
+      return;
+    }
     setToastTitle("Profile saved");
     setToastDescription("Your information was saved and queued for DB upsert.");
     setToastOpen(true);

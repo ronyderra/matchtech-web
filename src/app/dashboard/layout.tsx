@@ -13,6 +13,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   }
 
   const user = {
+    id: (session?.user as { id?: string } | undefined)?.id,
     name: session?.user?.name ?? "Local Test User",
     email: session?.user?.email ?? "local@test.matchtec.co",
     image: session?.user?.image ?? null,

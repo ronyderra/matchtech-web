@@ -63,3 +63,19 @@ export function buildTalentDbUpsertPayload(user: TalentDetails): TalentDbUpsertP
     },
   };
 }
+
+export async function syncTalentProfileToApi(profile: TalentDetails): Promise<TalentDetails> {
+  const res = await fetch("/api/profile", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(profile),
+  });
+  if (!res.ok) {
+    throw new Error(`Profile sync failed with status ${res.status}`);
+  }
+  const json = (await res.json()) as { profile?: TalentDetails };
+  if (!json.profile) {
+    throw new Error("Profile sync failed: missing profile response");
+  }
+  return json.profile;
+}

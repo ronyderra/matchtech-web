@@ -1,14 +1,17 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import styles from "./DashboardShell.module.css";
+import { useUserStore } from "@/store";
+import type { TalentDetails } from "@/types";
 
 type DashboardShellProps = {
   children: ReactNode;
   user: {
+    id?: string;
     name: string;
     email: string;
     image: string | null;
@@ -65,6 +68,52 @@ function NavIcon({ name }: { name: IconName }) {
 export function DashboardShell({ children, user }: DashboardShellProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const setUser = useUserStore((s) => s.setUser);
+
+  useEffect(() => {
+    if (user.id) {
+      const fallbackUser: TalentDetails = {
+        id: user.id,
+        type: "talent",
+        firstName: user.name?.split(" ")[0] ?? "",
+        lastName: user.name?.split(" ").slice(1).join(" ") ?? "",
+        fullName: user.name ?? "",
+        avatarUrl: user.image ?? "",
+        imageUrl: user.image ?? "",
+        backgroundColor: "",
+        role: "",
+        yearsOfExperience: 0,
+        employmentPreference: "any",
+        workPreference: "any",
+        bio: "",
+        skills: [],
+        email: user.email ?? "",
+        phoneNumber: "",
+        availableForWork: true,
+        jobPosition: {
+          id:
+            typeof crypto !== "undefined" && "randomUUID" in crypto
+              ? crypto.randomUUID()
+              : String(Date.now()),
+          industry: "",
+          seniority: "any",
+          employmentType: "any",
+          workPreference: "any",
+        },
+      };
+      setUser(fallbackUser);
+    }
+    void fetch("/api/profile", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (payload?.profile) {
+          setUser(payload.profile as TalentDetails);
+        }
+      })
+      .catch(() => {
+        // fallback draft remains in store when API is unavailable
+      });
+  }, [setUser, user.email, user.id, user.image, user.name]);
 
   return (
     <div className={`${styles.shell} ${isCollapsed ? styles.shellCollapsed : ""}`}>

@@ -25,7 +25,11 @@ import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
 import { useUserStore } from "@/store";
 import type { TalentDetails } from "@/types";
 import { COUNTRIES } from "@/constants/options";
-import { buildTalentDbUpsertPayload, PENDING_PROFILE_UPSERT_KEY } from "@/lib/profilePayload";
+import {
+  buildTalentDbUpsertPayload,
+  PENDING_PROFILE_UPSERT_KEY,
+  syncTalentProfileToApi,
+} from "@/lib/profilePayload";
 
 export default function UploadCvPage() {
   const router = useRouter();
@@ -136,7 +140,7 @@ export default function UploadCvPage() {
     return () => window.clearInterval(id);
   }, [cvProcessing]);
 
-  function markComplete() {
+  async function markComplete() {
     const nextTalent = {
       ...(user as TalentDetails),
       type: "talent",
@@ -185,6 +189,18 @@ export default function UploadCvPage() {
       PENDING_PROFILE_UPSERT_KEY,
       JSON.stringify(buildTalentDbUpsertPayload(nextTalent))
     );
+    try {
+      const synced = await syncTalentProfileToApi(nextTalent);
+      patchUser(synced);
+      window.localStorage.setItem(
+        PENDING_PROFILE_UPSERT_KEY,
+        JSON.stringify(buildTalentDbUpsertPayload(synced))
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Could not save profile to database.";
+      showToast("error", "Save failed", message);
+      return;
+    }
     window.localStorage.setItem("onboarding.cvUploaded", "true");
     router.push("/dashboard/swipe");
   }
@@ -242,18 +258,39 @@ export default function UploadCvPage() {
                     }
 
                     try {
-                      const responseJson = JSON.parse(result.text) as any;
+                      const responseJson: unknown = JSON.parse(result.text);
                       const parsed =
                         responseJson && typeof responseJson === "object" && "firstName" in responseJson
                           ? responseJson
                           : (() => {
-                              const maybeOutputText =
-                                typeof responseJson?.output_text === "string"
-                                  ? responseJson.output_text
-                                  : responseJson?.output?.[0]?.content?.find?.(
-                                      (c: any) =>
-                                        c?.type === "output_text" && typeof c?.text === "string"
-                                    )?.text;
+                              const responseObj =
+                                responseJson && typeof responseJson === "object"
+                                  ? (responseJson as Record<string, unknown>)
+                                  : {};
+                              const outputTextDirect = responseObj.output_text;
+                              let maybeOutputText: string | undefined;
+                              if (typeof outputTextDirect === "string") {
+                                maybeOutputText = outputTextDirect;
+                              } else {
+                                const output = responseObj.output;
+                                if (Array.isArray(output) && output[0] && typeof output[0] === "object") {
+                                  const firstOutput = output[0] as Record<string, unknown>;
+                                  const content = firstOutput.content;
+                                  if (Array.isArray(content)) {
+                                    const outputTextItem = content.find(
+                                      (c) =>
+                                        !!c &&
+                                        typeof c === "object" &&
+                                        (c as Record<string, unknown>).type === "output_text" &&
+                                        typeof (c as Record<string, unknown>).text === "string"
+                                    ) as Record<string, unknown> | undefined;
+                                    maybeOutputText =
+                                      outputTextItem && typeof outputTextItem.text === "string"
+                                        ? outputTextItem.text
+                                        : undefined;
+                                  }
+                                }
+                              }
                               return JSON.parse(String(maybeOutputText ?? "{}"));
                             })();
 
@@ -292,15 +329,18 @@ export default function UploadCvPage() {
 
                         if (Array.isArray(parsed?.experience)) {
                           const drafts = parsed.experience
-                            .map((e: any) => ({
-                              companyName: e?.companyName ? String(e.companyName) : "",
-                              industry: e?.industry ? String(e.industry) : "",
+                            .map((entry: unknown) => {
+                              const e = entry && typeof entry === "object" ? (entry as Record<string, unknown>) : {};
+                              return {
+                                companyName: e.companyName ? String(e.companyName) : "",
+                                industry: e.industry ? String(e.industry) : "",
                               yearsInCompany:
-                                typeof e?.years === "number" && Number.isFinite(e.years)
+                                typeof e.years === "number" && Number.isFinite(e.years)
                                   ? String(e.years)
                                   : "",
-                              roleInCompany: e?.role ? String(e.role) : "",
-                            }))
+                                roleInCompany: e.role ? String(e.role) : "",
+                              };
+                            })
                             .filter(
                               (e: ExperienceDraft) =>
                                 e.companyName || e.industry || e.yearsInCompany || e.roleInCompany
