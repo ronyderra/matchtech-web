@@ -23,6 +23,7 @@ import type {
   TalentDetails,
   WorkPreference,
 } from "@/types";
+import { notifySwipeOnboardingUpdated } from "@/lib/swipeOnboardingGate";
 import {
   buildTalentDbUpsertPayload,
   PENDING_PROFILE_UPSERT_KEY,
@@ -184,6 +185,7 @@ export default function SurveyPage() {
       }
     }
     window.localStorage.setItem("onboarding.surveyCompleted", "true");
+    notifySwipeOnboardingUpdated();
     router.push("/dashboard/swipe");
   }
 

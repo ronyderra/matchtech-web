@@ -1,3 +1,13 @@
+/* Onboarding: only centered gate — no filters / deck / HR column */
+.gateOnly {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 /* Full-width swipe browse: proportional columns, minimal gutters */
 .grid {
   display: grid;

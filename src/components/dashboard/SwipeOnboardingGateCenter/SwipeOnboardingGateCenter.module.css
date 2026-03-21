@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* Fill viewport under dashboard chrome so the card sits visually centered */
+  min-height: max(min(72vh, 680px), calc(100vh - 200px));
+  padding: 40px 20px 48px;
+  box-sizing: border-box;
+}
+
+.panel {
+  width: 100%;
+  max-width: 440px;
+  margin: 0;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
+}
+
+.intro {
+  text-align: center;
+}
+
+.actionsCenter {
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .root {
+    min-height: min(65vh, 560px);
+    padding: 28px 16px 40px;
+  }
+}

@@ -25,6 +25,7 @@ import { extractTextFromPdf, PdfRejectError } from "@/lib/extract-pdf-text";
 import { useUserStore } from "@/store";
 import type { TalentDetails } from "@/types";
 import { COUNTRIES } from "@/constants/options";
+import { notifySwipeOnboardingUpdated } from "@/lib/swipeOnboardingGate";
 import {
   buildTalentDbUpsertPayload,
   PENDING_PROFILE_UPSERT_KEY,
@@ -202,6 +203,7 @@ export default function UploadCvPage() {
       return;
     }
     window.localStorage.setItem("onboarding.cvUploaded", "true");
+    notifySwipeOnboardingUpdated();
     router.push("/dashboard/swipe");
   }
 

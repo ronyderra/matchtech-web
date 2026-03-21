@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { COMPANY_SWIPE_CARDS } from "./companyCards";
 import styles from "./CompanySwipeDeck.module.css";
 
@@ -34,22 +33,11 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
   const [index, setIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<SwipeDirection>(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
-  const [stepStatus, setStepStatus] = useState({
-    cvUploaded: false,
-    surveyCompleted: false,
-  });
 
   const currentIndex = index % COMPANY_SWIPE_CARDS.length;
   const nextIndex = (currentIndex + 1) % COMPANY_SWIPE_CARDS.length;
   const current = COMPANY_SWIPE_CARDS[currentIndex];
   const next = COMPANY_SWIPE_CARDS[nextIndex];
-  const canSwipe = stepStatus.cvUploaded && stepStatus.surveyCompleted;
-
-  useEffect(() => {
-    const cvUploaded = window.localStorage.getItem("onboarding.cvUploaded") === "true";
-    const surveyCompleted = window.localStorage.getItem("onboarding.surveyCompleted") === "true";
-    setStepStatus({ cvUploaded, surveyCompleted });
-  }, []);
 
   useEffect(() => {
     if (!swipeDirection) return;
@@ -71,7 +59,7 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
   }, [isInfoOpen]);
 
   function onAction(action: Action) {
-    if (swipeDirection || !canSwipe) return;
+    if (swipeDirection) return;
 
     if (action === "pass") {
       setSwipeDirection("left");
@@ -197,40 +185,6 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
     <div
       className={[styles.root, variant === "threeColumn" ? styles.rootThreeColumn : ""].filter(Boolean).join(" ")}
     >
-      {!canSwipe ? (
-        <section className={styles.gatePanel} aria-label="Swipe prerequisites">
-          <p className={styles.gateEyebrow}>Before you can swipe</p>
-          <h3 className={styles.gateTitle}>Complete 2 quick steps</h3>
-          <p className={styles.gateText}>
-            To unlock company swiping, upload your CV and answer a short survey first.
-          </p>
-
-          <div className={styles.gateChecklist}>
-            <div className={styles.gateRow}>
-              <span className={styles.gateRowLabel}>1) Upload a CV</span>
-              <span className={`${styles.gateStatus} ${stepStatus.cvUploaded ? styles.completed : styles.pending}`}>
-                {stepStatus.cvUploaded ? "Completed" : "Pending"}
-              </span>
-            </div>
-            <div className={styles.gateRow}>
-              <span className={styles.gateRowLabel}>2) Answer a simple survey</span>
-              <span className={`${styles.gateStatus} ${stepStatus.surveyCompleted ? styles.completed : styles.pending}`}>
-                {stepStatus.surveyCompleted ? "Completed" : "Pending"}
-              </span>
-            </div>
-          </div>
-
-          <div className={styles.gateActions}>
-            <Link href="/dashboard/upload-cv" className={styles.gateButton}>
-              Upload CV
-            </Link>
-            <Link href="/dashboard/survey" className={styles.gateButtonSecondary}>
-              Take survey
-            </Link>
-          </div>
-        </section>
-      ) : null}
-
       <div className={styles.deck}>
         <article className={`${styles.card} ${styles.backCard}`} aria-hidden="true">
           {renderCard(next)}
@@ -252,7 +206,7 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
         <div className={styles.actions}>
           <button
             type="button"
-            disabled={!!swipeDirection || !canSwipe}
+            disabled={!!swipeDirection}
             className={`${styles.actionBtn} ${styles.pass}`}
             onClick={() => onAction("pass")}
             aria-label="Pass"
@@ -262,7 +216,7 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
           </button>
           <button
             type="button"
-            disabled={!!swipeDirection || !canSwipe}
+            disabled={!!swipeDirection}
             className={`${styles.actionBtn} ${styles.info}`}
             onClick={() => onAction("info")}
             aria-label="Info"
@@ -272,7 +226,7 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
           </button>
           <button
             type="button"
-            disabled={!!swipeDirection || !canSwipe}
+            disabled={!!swipeDirection}
             className={`${styles.actionBtn} ${styles.match}`}
             onClick={() => onAction("match")}
             aria-label="Match"
@@ -281,9 +235,6 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
             <span aria-hidden="true">✓</span>
           </button>
         </div>
-        {!canSwipe ? (
-          <p className={styles.lockHint}>Complete onboarding steps to unlock swiping.</p>
-        ) : null}
       </div>
 
       {isInfoOpen ? (
