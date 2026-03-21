@@ -30,7 +30,7 @@
   min-width: 28px;
   height: 28px;
   padding: 0 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-button);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   cursor: pointer;
@@ -67,7 +67,7 @@
 }
 
 .sidebarItem {
-  border-radius: 8px;
+  border-radius: var(--radius-button);
   padding: 8px 10px;
   font-size: var(--font-size-body-sm);
   cursor: pointer;
@@ -115,7 +115,7 @@
   align-items: center;
   gap: 2px;
   padding: 4px 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-button);
   border: none;
   background: transparent;
   font-size: 11px;

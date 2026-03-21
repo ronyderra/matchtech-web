@@ -93,7 +93,7 @@
 .stepDot {
   flex: 1;
   height: 4px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   background: rgba(148, 163, 184, 0.25);
 }
 

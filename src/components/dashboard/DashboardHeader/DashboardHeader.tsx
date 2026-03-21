@@ -47,7 +47,7 @@ export function DashboardHeader() {
           style={{
             height: 36,
             padding: "0 14px",
-            borderRadius: 10,
+            borderRadius: 3,
             border: "1px solid var(--color-border)",
             background: "var(--color-surface)",
             color: "var(--color-text-primary)",

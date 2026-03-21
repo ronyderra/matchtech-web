@@ -4,7 +4,7 @@ export default function MatchedCompaniesPage() {
       <section
         style={{
           padding: "20px 24px",
-          borderRadius: 16,
+          borderRadius: 4,
           border: "1px solid var(--color-border)",
           background: "var(--color-surface)",
         }}

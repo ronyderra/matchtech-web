@@ -1,0 +1,132 @@
+.root {
+  position: sticky;
+  top: var(--swipe-side-panels-sticky-top, 8px);
+  align-self: stretch;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+}
+
+/* Desktop: fill the grid row (grid sets min-height + 1fr row) — almost full viewport height */
+@media (min-width: 901px) {
+  .root {
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+  }
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.hint {
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.tableWrap {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  overflow: auto;
+  background: rgba(248, 250, 252, 0.6);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table thead {
+  background: linear-gradient(180deg, #f1f5f9 0%, #e8eef5 100%);
+}
+
+.table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.labelCell {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  width: 42%;
+  min-width: 0;
+}
+
+.control {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.applyBtn {
+  flex: 1;
+  min-width: 120px;
+  height: 38px;
+  border: none;
+  border-radius: var(--radius-button);
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.resetBtn {
+  height: 38px;
+  padding: 0 14px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .root {
+    position: static;
+    height: auto;
+    max-height: none;
+    margin-bottom: 20px;
+  }
+}

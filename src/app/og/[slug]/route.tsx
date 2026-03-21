@@ -42,7 +42,7 @@ function SwipeMock({
         width: 360,
         height: 220,
         display: "flex",
-        borderRadius: 28,
+        borderRadius: 4,
         transform: `rotate(${rotate}deg)`,
         background: `linear-gradient(135deg, ${tones.a} 0%, rgba(0,0,0,0) 80%), radial-gradient(circle at 20% 0%, ${tones.b} 0%, rgba(0,0,0,0) 55%)`,
         border: "1px solid rgba(255,255,255,0.18)",
@@ -72,7 +72,7 @@ function SwipeMock({
           style={{
             width: 64,
             height: 64,
-            borderRadius: 18,
+            borderRadius: 4,
             background: "rgba(255,255,255,0.10)",
             border: "1px solid rgba(255,255,255,0.20)",
           }}
@@ -82,7 +82,7 @@ function SwipeMock({
             marginTop: 18,
             width: 240,
             height: 16,
-            borderRadius: 10,
+            borderRadius: 3,
             background: "rgba(255,255,255,0.14)",
           }}
         />
@@ -91,7 +91,7 @@ function SwipeMock({
             marginTop: 10,
             width: 290,
             height: 14,
-            borderRadius: 10,
+            borderRadius: 3,
             background: tones.c,
           }}
         />
@@ -101,7 +101,7 @@ function SwipeMock({
           style={{
             flex: 1,
             height: 34,
-            borderRadius: 14,
+            borderRadius: 4,
             background: "rgba(255,255,255,0.08)",
             border: "1px solid rgba(255,255,255,0.18)",
           }}
@@ -110,7 +110,7 @@ function SwipeMock({
           style={{
             flex: 0.7,
             height: 34,
-            borderRadius: 14,
+            borderRadius: 4,
             background: "rgba(255,255,255,0.08)",
             border: "1px solid rgba(255,255,255,0.18)",
           }}
@@ -170,7 +170,7 @@ export async function GET(
             style={{
               width: 56,
               height: 56,
-              borderRadius: 18,
+              borderRadius: 4,
               background: "rgba(255,255,255,0.12)",
               border: "1px solid rgba(255,255,255,0.22)",
               display: "flex",
@@ -258,7 +258,7 @@ export async function GET(
             style={{
               height: 42,
               padding: "0 16px",
-              borderRadius: 999,
+              borderRadius: 3,
               background: "rgba(255,255,255,0.12)",
               border: "1px solid rgba(255,255,255,0.20)",
               display: "flex",
@@ -270,7 +270,7 @@ export async function GET(
               style={{
                 width: 22,
                 height: 22,
-                borderRadius: 7,
+                borderRadius: 3,
                 background: "rgba(255,255,255,0.18)",
               }}
             />

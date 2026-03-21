@@ -63,7 +63,7 @@
 .swipeButton {
   min-width: 48px;
   height: 40px;
-  border-radius: 999px;
+  border-radius: var(--radius-button);
   border: none;
   cursor: pointer;
   display: flex;
@@ -104,7 +104,7 @@
 
 .badge {
   padding: 2px 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   background-color: rgba(10, 102, 194, 0.06);
   color: var(--color-primary);
   font-size: 11px;

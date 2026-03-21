@@ -3,6 +3,13 @@
   padding-bottom: 120px;
 }
 
+.rootThreeColumn {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .deck {
   position: relative;
 }
@@ -47,7 +54,7 @@
   justify-content: space-between;
   gap: 10px;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-card);
   background: var(--color-surface);
   padding: 8px 10px;
 }
@@ -57,7 +64,7 @@
 }
 
 .gateStatus {
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   padding: 3px 10px;
   font-size: 11px;
   font-weight: 700;
@@ -111,7 +118,7 @@
   position: static;
   margin-top: 14px;
   padding: 8px;
-  border-radius: 16px;
+  border-radius: var(--radius-card);
   background: rgba(248, 250, 252, 0.9);
   backdrop-filter: blur(6px);
   border: 1px solid rgba(148, 163, 184, 0.28);
@@ -216,7 +223,7 @@
 .companyPill {
   display: inline-block;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   border: 1px solid rgba(255, 255, 255, 0.35);
   font-size: 11px;
   letter-spacing: 0.08em;
@@ -244,7 +251,25 @@
     padding-bottom: 24px;
   }
 
+  /* 3-column swipe page: fill center grid cell (same vertical extent as Filters + HR) */
+  .rootThreeColumn {
+    width: 100%;
+    max-width: none;
+    min-height: 0;
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+  }
+
   .deck {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+  }
+
+  .frontCard {
     flex: 1;
     min-height: 0;
   }
@@ -257,6 +282,19 @@
     z-index: 50;
     margin-top: 0;
     width: min(620px, calc(100vw - var(--sidebar-width, 260px) - 60px));
+  }
+
+  /* Deck in 3-column layout: pin actions to the center column, not the full viewport */
+  .rootThreeColumn .actionsDock {
+    position: sticky;
+    bottom: 8px;
+    left: auto;
+    right: auto;
+    transform: none;
+    width: 100%;
+    max-width: none;
+    margin-top: auto;
+    z-index: 40;
   }
 }
 
@@ -298,7 +336,7 @@
 
 .factItem {
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-card);
   padding: 8px;
 }
 
@@ -333,7 +371,7 @@
 
 .tag {
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   background: rgba(148, 163, 184, 0.16);
   font-size: 12px;
 }
@@ -365,7 +403,7 @@
 
 .extraItem {
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-card);
   padding: 8px;
   background: rgba(248, 250, 252, 0.7);
 }
@@ -461,7 +499,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  border-radius: var(--radius-card, 18px);
+  border-radius: var(--radius-card);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   padding: 16px 18px calc(20px + env(safe-area-inset-bottom, 0px));
@@ -553,7 +591,7 @@
 .sheetColHr {
   min-width: 0;
   padding: 14px;
-  border-radius: 14px;
+  border-radius: var(--radius-card);
   border: 1px solid var(--color-border);
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.98) 0%, rgba(241, 245, 249, 0.5) 100%);
 }
@@ -589,7 +627,7 @@
   flex-direction: column;
   gap: 2px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-card);
   border: 1px solid rgba(148, 163, 184, 0.35);
   background: var(--color-surface);
 }
@@ -634,7 +672,7 @@
 .sheetLogo {
   width: 52px;
   height: 52px;
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   border: 1px solid var(--color-border);
   object-fit: contain;
   background: #fff;
@@ -651,7 +689,7 @@
   font-size: 11px;
   font-weight: 600;
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   background: rgba(10, 102, 194, 0.1);
   color: var(--color-primary);
   border: 1px solid rgba(10, 102, 194, 0.2);
@@ -679,7 +717,7 @@
 .sheetClose {
   width: 32px;
   height: 32px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text-primary);
@@ -742,7 +780,7 @@
 
 .sheetFactItem {
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-card);
   padding: 8px;
 }
 
@@ -768,7 +806,7 @@
 
 .sheetTag {
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   background: rgba(148, 163, 184, 0.16);
   font-size: 12px;
 }

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate:hr-partner-images": "node scripts/generate-hr-partner-placeholders.mjs"
   },
   "dependencies": {
     "franc": "^6.2.0",

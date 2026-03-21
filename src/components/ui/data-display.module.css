@@ -162,7 +162,7 @@
 .progressTrack {
   width: 100%;
   height: 6px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   background: rgba(148, 163, 184, 0.22);
   overflow: hidden;
 }

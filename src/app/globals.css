@@ -28,11 +28,11 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Radii */
-  --radius-card: 16px;
-  --radius-button: 8px;
-  --radius-input: 6px;
-  --radius-chip: 20px;
+  /* Radii — sharp, minimal curve (serious / professional) */
+  --radius-card: 4px;
+  --radius-button: 3px;
+  --radius-input: 2px;
+  --radius-chip: 4px;
 
   /* Layout widths & paddings */
   --layout-max-width: 1100px;
@@ -40,6 +40,34 @@
   --layout-swipe-max-width-max: 480px;
   --layout-padding-mobile: 16px;
   --layout-padding-desktop: 24px;
+
+  /* Dashboard shell `.main` vertical padding (see DashboardShell.module.css) */
+  --dashboard-main-padding-top: 28px;
+  --dashboard-main-padding-bottom: 96px;
+  /* Swipe route `<main>` top padding (see dashboard/swipe/page.module.css) */
+  --swipe-page-main-padding-top: 8px;
+  /* Sticky Filters / HR: inset from sticky top + gap above bottom of usable area */
+  --swipe-side-panels-sticky-top: 8px;
+  /* Tight gap under the three columns (inside the grid box) */
+  --swipe-browse-grid-padding-bottom: 4px;
+  /*
+   * Swipe grid height: reserve less bottom space than full dashboard padding so columns sit lower
+   * (dashboard `.main` still has 96px padding for nav — grid can extend into that zone visually).
+   */
+  --swipe-browse-grid-bottom-reserve: 52px;
+  --swipe-browse-grid-height: calc(
+    100vh
+    - var(--dashboard-main-padding-top, 28px)
+    - var(--swipe-browse-grid-bottom-reserve, 52px)
+    - var(--swipe-page-main-padding-top, 8px)
+  );
+}
+
+@media (max-width: 900px) {
+  :root {
+    --dashboard-main-padding-top: 16px;
+    --dashboard-main-padding-bottom: 88px;
+  }
 }
 
 *,

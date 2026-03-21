@@ -9,7 +9,12 @@ type Action = "pass" | "info" | "match";
 type SwipeDirection = "left" | "right" | null;
 const SWIPE_ANIMATION_MS = 340;
 
-export function CompanySwipeDeck() {
+type CompanySwipeDeckProps = {
+  /** When set, deck sits in the center column with side panels; action bar follows the column. */
+  variant?: "default" | "threeColumn";
+};
+
+export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps) {
   const [index, setIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<SwipeDirection>(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
@@ -136,7 +141,9 @@ export function CompanySwipeDeck() {
   }
 
   return (
-    <div className={styles.root}>
+    <div
+      className={[styles.root, variant === "threeColumn" ? styles.rootThreeColumn : ""].filter(Boolean).join(" ")}
+    >
       {!canSwipe ? (
         <section className={styles.gatePanel} aria-label="Swipe prerequisites">
           <p className={styles.gateEyebrow}>Before you can swipe</p>

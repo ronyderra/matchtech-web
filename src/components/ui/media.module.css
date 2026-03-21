@@ -61,7 +61,7 @@
   left: 8px;
   bottom: 8px;
   padding: 4px 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-chip);
   background: rgba(15, 23, 42, 0.75);
   color: #ffffff;
   font-size: var(--font-size-caption);
@@ -80,7 +80,7 @@
 .fileIcon {
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: var(--radius-card);
   background: rgba(148, 163, 184, 0.18);
   display: flex;
   align-items: center;

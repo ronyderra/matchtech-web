@@ -26,6 +26,8 @@ export type HrPartnerCompany = {
   name: string;
   tagline?: string;
   region?: string;
+  /** Optional hero image for HR sidebar cards (local public path or absolute URL) */
+  imageUrl?: string;
 };
 
 export type CompanySwipeCard = {

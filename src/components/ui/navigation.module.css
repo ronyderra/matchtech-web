@@ -53,7 +53,7 @@
 .dropdownItem {
   width: 100%;
   padding: 8px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-button);
   border: none;
   background: transparent;
   text-align: left;

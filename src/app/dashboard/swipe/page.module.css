@@ -1,0 +1,18 @@
+/* Use full width of dashboard main (counteract .main horizontal padding) */
+.main {
+  width: calc(100% + 48px);
+  max-width: none;
+  margin-left: -24px;
+  margin-right: -24px;
+  padding: 8px 12px 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .main {
+    width: calc(100% + 28px);
+    margin-left: -14px;
+    margin-right: -14px;
+    padding: 8px 10px 0;
+  }
+}

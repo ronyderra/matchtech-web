@@ -573,7 +573,7 @@ export default function EmployerRegisterPage() {
                             style={{
                               width: 40,
                               height: 40,
-                              borderRadius: 12,
+                              borderRadius: 4,
                               ...gradientStyle(theme),
                               border:
                                 backgroundTheme === theme
@@ -617,7 +617,7 @@ export default function EmployerRegisterPage() {
                         style={{
                           width: "100%",
                           aspectRatio: "420 / 200",
-                          borderRadius: 16,
+                          borderRadius: 4,
                           ...gradientStyle(backgroundTheme),
                           position: "relative",
                           overflow: "visible",
@@ -728,7 +728,7 @@ export default function EmployerRegisterPage() {
                             border: "1px solid var(--color-border)",
                             background: "var(--color-surface)",
                             color: "var(--color-text-secondary)",
-                            borderRadius: 999,
+                            borderRadius: 3,
                             padding: "6px 10px",
                             fontSize: 12,
                             cursor: "pointer",
@@ -762,7 +762,7 @@ export default function EmployerRegisterPage() {
                             border: "1px solid var(--color-border)",
                             background: "var(--color-surface)",
                             color: "var(--color-text-secondary)",
-                            borderRadius: 999,
+                            borderRadius: 3,
                             padding: "6px 10px",
                             fontSize: 12,
                             cursor: "pointer",

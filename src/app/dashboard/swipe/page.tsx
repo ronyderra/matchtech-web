@@ -1,11 +1,10 @@
-import { CompanySwipeDeck } from "@/components/dashboard/CompanySwipeDeck/CompanySwipeDeck";
+import { SwipeBrowseLayout } from "@/components/dashboard/SwipeBrowseLayout/SwipeBrowseLayout";
+import styles from "./page.module.css";
 
 export default function SwipePage() {
   return (
-    <main style={{ maxWidth: 980, margin: "0 auto" }}>
-      <section style={{ display: "flex", justifyContent: "center" }}>
-        <CompanySwipeDeck />
-      </section>
+    <main className={styles.main}>
+      <SwipeBrowseLayout />
     </main>
   );
 }

@@ -34,7 +34,7 @@ export default function ContactPage() {
                 margin: "0 auto",
                 background: "var(--color-surface)",
                 border: "1px solid var(--color-border)",
-                borderRadius: 16,
+                borderRadius: 4,
                 overflow: "hidden",
                 boxShadow: "0 12px 30px rgba(15, 23, 42, 0.06)",
               }}
