@@ -37,7 +37,12 @@ export type CompanySwipeCard = {
   roleTitle: string;
   roleMeta: string;
   compensation: string;
+  /** Short company positioning (shown next to logo — no company name on the swipe card) */
+  companyTagline: string;
+  /** First paragraph about what the company does */
   about: string;
+  /** Extra company context (mission, scale, culture) — second paragraph on the card */
+  companyMore: string;
   tags: string[];
   facts: { label: string; value: string }[];
   highlights: string[];
@@ -54,8 +59,11 @@ export const COMPANY_SWIPE_CARDS: CompanySwipeCard[] = [
     roleTitle: "Senior Software Engineer",
     roleMeta: "Search & AI · Mountain View · Hybrid",
     compensation: "$220k-$320k · Equity",
+    companyTagline: "Global consumer & enterprise tech — Search, YouTube, Android, Cloud, and AI research.",
     about:
-      "Google builds products used by billions across Search, YouTube, Android, Cloud, and AI research.",
+      "Alphabet’s Google builds products used by billions worldwide, from core Search to generative AI and Android.",
+    companyMore:
+      "Public company with a mission to organize the world’s information; teams span ads, cloud, hardware, and deep research partnerships with academia and industry.",
     tags: ["Distributed systems", "Go", "C++", "Large scale"],
     facts: [
       { label: "Industry", value: "Internet & AI" },
@@ -118,8 +126,11 @@ export const COMPANY_SWIPE_CARDS: CompanySwipeCard[] = [
     roleTitle: "Cloud Platform Engineer",
     roleMeta: "Azure · Seattle · Hybrid",
     compensation: "$190k-$280k · RSU",
+    companyTagline: "Enterprise software, Azure cloud, and developer tools for organizations worldwide.",
     about:
-      "Microsoft powers enterprise software, cloud infrastructure, and developer tools across the globe.",
+      "Microsoft powers productivity, security, and infrastructure for businesses and governments across every major region.",
+    companyMore:
+      "Engineering-led culture with strong hybrid work; Azure, Microsoft 365, Windows, and gaming teams ship at massive scale with customer trust as a north star.",
     tags: ["Azure", ".NET", "Kubernetes", "Cloud security"],
     facts: [
       { label: "Industry", value: "Cloud & Enterprise" },
@@ -181,8 +192,11 @@ export const COMPANY_SWIPE_CARDS: CompanySwipeCard[] = [
     roleTitle: "Machine Learning Engineer",
     roleMeta: "AI Platform · Santa Clara · Hybrid",
     compensation: "$230k-$340k · Equity",
+    companyTagline: "Accelerated computing — GPUs, AI platforms, and data center systems at global scale.",
     about:
-      "NVIDIA advances accelerated computing and AI infrastructure across GPUs, software platforms, and data center systems.",
+      "NVIDIA leads in AI infrastructure, gaming, and professional visualization, from silicon to full-stack software.",
+    companyMore:
+      "Founded on GPU innovation; teams collaborate across hardware, CUDA, research, and Omniverse with a fast-paced, invention-driven culture.",
     tags: ["Python", "CUDA", "PyTorch", "Model optimization"],
     facts: [
       { label: "Industry", value: "Semiconductors & AI" },

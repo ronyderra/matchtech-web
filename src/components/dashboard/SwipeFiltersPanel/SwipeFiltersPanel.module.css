@@ -45,6 +45,7 @@
 
 .table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -76,19 +77,48 @@
 .labelCell {
   font-weight: 600;
   color: var(--color-text-primary);
-  width: 42%;
+  width: 40%;
   min-width: 0;
+  vertical-align: middle;
+}
+
+.table td:nth-child(2) {
+  width: 60%;
+  min-width: 0;
+  vertical-align: middle;
 }
 
 .control {
+  box-sizing: border-box;
+  display: block;
   width: 100%;
-  min-height: 36px;
-  padding: 6px 10px;
+  height: 40px;
+  margin: 0;
+  padding: 0 12px;
   border-radius: var(--radius-button);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   font: inherit;
   font-size: 13px;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+/* Native selects differ in height/padding — match inputs */
+select.control {
+  appearance: none;
+  cursor: pointer;
+  background-color: var(--color-surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M3 4.5L6 7.5L9 4.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 12px;
+  padding-right: 36px;
+}
+
+input.control::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
 }
 
 .actions {
@@ -101,7 +131,7 @@
 .applyBtn {
   flex: 1;
   min-width: 120px;
-  height: 38px;
+  height: 40px;
   border: none;
   border-radius: var(--radius-button);
   background: var(--color-primary);
@@ -112,7 +142,7 @@
 }
 
 .resetBtn {
-  height: 38px;
+  height: 40px;
   padding: 0 14px;
   border-radius: var(--radius-button);
   border: 1px solid var(--color-border);

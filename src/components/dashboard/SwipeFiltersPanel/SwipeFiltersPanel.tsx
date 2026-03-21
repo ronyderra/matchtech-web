@@ -32,30 +32,21 @@ const DEPARTMENT = [
   "Other",
 ];
 const YEARS_EXP = ["Any", "0–2 years", "3–5 years", "6–10 years", "10+ years"];
-const COMPANY_STAGE = ["Any", "Seed / early", "Series A–B", "Series C+", "Public / mature"];
-const EQUITY = ["Any", "Equity offered", "Salary only", "Either"];
-const VISA = ["Any", "Sponsorship available", "No sponsorship needed", "Unsure"];
 const POSTED_WITHIN = ["Any", "Last 24 hours", "Last 7 days", "Last 30 days", "Last 90 days"];
-const TRAVEL = ["Any", "No travel", "Occasional (<25%)", "Frequent (>25%)"];
 
+/** Exactly 11 filter rows (see table body below). */
 export function SwipeFiltersPanel() {
   const [seniority, setSeniority] = useState("Any");
+  const [department, setDepartment] = useState("Any");
+  const [industry, setIndustry] = useState("Any");
   const [employment, setEmployment] = useState("Any");
   const [workModel, setWorkModel] = useState("Any");
+  const [yearsExp, setYearsExp] = useState("Any");
   const [minSalary, setMinSalary] = useState("");
   const [maxSalary, setMaxSalary] = useState("");
   const [location, setLocation] = useState("");
   const [companySize, setCompanySize] = useState("Any");
-  const [keyword, setKeyword] = useState("");
-  const [industry, setIndustry] = useState("Any");
-  const [department, setDepartment] = useState("Any");
-  const [yearsExp, setYearsExp] = useState("Any");
-  const [companyStage, setCompanyStage] = useState("Any");
-  const [equity, setEquity] = useState("Any");
-  const [visa, setVisa] = useState("Any");
   const [postedWithin, setPostedWithin] = useState("Any");
-  const [travel, setTravel] = useState("Any");
-  const [excludeKeywords, setExcludeKeywords] = useState("");
 
   return (
     <aside className={styles.root} aria-label="Job filters">
@@ -157,23 +148,6 @@ export function SwipeFiltersPanel() {
               </td>
             </tr>
             <tr>
-              <td className={styles.labelCell}>Travel</td>
-              <td>
-                <select
-                  className={styles.control}
-                  value={travel}
-                  onChange={(e) => setTravel(e.target.value)}
-                  aria-label="Expected travel"
-                >
-                  {TRAVEL.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </td>
-            </tr>
-            <tr>
               <td className={styles.labelCell}>Years experience</td>
               <td>
                 <select
@@ -221,23 +195,6 @@ export function SwipeFiltersPanel() {
               </td>
             </tr>
             <tr>
-              <td className={styles.labelCell}>Compensation</td>
-              <td>
-                <select
-                  className={styles.control}
-                  value={equity}
-                  onChange={(e) => setEquity(e.target.value)}
-                  aria-label="Salary and equity preference"
-                >
-                  {EQUITY.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </td>
-            </tr>
-            <tr>
               <td className={styles.labelCell}>Location</td>
               <td>
                 <input
@@ -268,40 +225,6 @@ export function SwipeFiltersPanel() {
               </td>
             </tr>
             <tr>
-              <td className={styles.labelCell}>Company stage</td>
-              <td>
-                <select
-                  className={styles.control}
-                  value={companyStage}
-                  onChange={(e) => setCompanyStage(e.target.value)}
-                  aria-label="Company funding stage"
-                >
-                  {COMPANY_STAGE.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td className={styles.labelCell}>Visa sponsorship</td>
-              <td>
-                <select
-                  className={styles.control}
-                  value={visa}
-                  onChange={(e) => setVisa(e.target.value)}
-                  aria-label="Visa sponsorship"
-                >
-                  {VISA.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </td>
-            </tr>
-            <tr>
               <td className={styles.labelCell}>Posted within</td>
               <td>
                 <select
@@ -318,32 +241,6 @@ export function SwipeFiltersPanel() {
                 </select>
               </td>
             </tr>
-            <tr>
-              <td className={styles.labelCell}>Keywords</td>
-              <td>
-                <input
-                  className={styles.control}
-                  type="search"
-                  placeholder="Skills, stack, domain…"
-                  value={keyword}
-                  onChange={(e) => setKeyword(e.target.value)}
-                  aria-label="Keywords"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td className={styles.labelCell}>Exclude keywords</td>
-              <td>
-                <input
-                  className={styles.control}
-                  type="search"
-                  placeholder="e.g. legacy, on-call heavy"
-                  value={excludeKeywords}
-                  onChange={(e) => setExcludeKeywords(e.target.value)}
-                  aria-label="Exclude keywords"
-                />
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -357,22 +254,16 @@ export function SwipeFiltersPanel() {
           className={styles.resetBtn}
           onClick={() => {
             setSeniority("Any");
+            setDepartment("Any");
+            setIndustry("Any");
             setEmployment("Any");
             setWorkModel("Any");
+            setYearsExp("Any");
             setMinSalary("");
             setMaxSalary("");
             setLocation("");
             setCompanySize("Any");
-            setKeyword("");
-            setIndustry("Any");
-            setDepartment("Any");
-            setYearsExp("Any");
-            setCompanyStage("Any");
-            setEquity("Any");
-            setVisa("Any");
             setPostedWithin("Any");
-            setTravel("Any");
-            setExcludeKeywords("");
           }}
         >
           Reset

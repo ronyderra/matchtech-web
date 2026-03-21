@@ -71,25 +71,61 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
   }
 
   function renderCard(card: (typeof COMPANY_SWIPE_CARDS)[number]) {
+    const pd = card.positionDetail;
+    const industry =
+      card.facts.find((f) => f.label === "Industry")?.value ?? card.facts[0]?.value;
+
+    const quickFacts = [
+      { label: "Seniority", value: pd.seniority },
+      { label: "Employment", value: pd.employmentType },
+      {
+        label: "Team",
+        value: pd.teamSize ?? "—",
+      },
+    ];
+
     return (
       <>
-        <div className={styles.banner}>
-          <span className={styles.companyPill}>Company</span>
-          <p className={styles.compensation}>{card.compensation}</p>
+        {/* Match homepage SwipeCardDemo: gradient banner + centered logo + comp pill */}
+        <div className={styles.cardTop}>
+          <div className={[styles.banner, styles.bannerUnified].join(" ")}>
+            <span className={styles.bannerType}>Open role</span>
+            <span className={styles.bannerHighlight}>{card.compensation}</span>
+            <div className={styles.bannerAvatar}>
+              <img
+                src={card.logoUrl}
+                alt="Company logo"
+                className={styles.bannerAvatarImgContain}
+              />
+            </div>
+          </div>
         </div>
 
-        <div className={styles.body}>
-          <div className={styles.logoRow}>
-            <img
-              src={card.logoUrl}
-              alt={`${card.companyName} logo`}
-              className={styles.logo}
-            />
+        <div className={styles.cardMain}>
+          <div className={styles.metaRowTop}>
+            <span className={styles.typePill}>Company</span>
+            <span className={styles.scorePill}>
+              {pd.postedAgo ? (
+                <>
+                  <strong>{pd.postedAgo}</strong>
+                </>
+              ) : (
+                <>
+                  <strong>Open</strong> listing
+                </>
+              )}
+            </span>
           </div>
 
-          <p className={styles.about}>{card.about}</p>
+          <p className={styles.sectionLabel}>About the company</p>
+          <p className={styles.companyHeadline}>{card.companyTagline}</p>
+          <p className={styles.companyIndustry}>{industry}</p>
+          <div className={styles.companyProse}>
+            <p className={styles.companyAbout}>{card.about}</p>
+            <p className={styles.companyAbout}>{card.companyMore}</p>
+          </div>
 
-          <div className={styles.facts}>
+          <div className={styles.factsGrid}>
             {card.facts.map((fact) => (
               <div key={fact.label} className={styles.factItem}>
                 <span className={styles.factLabel}>{fact.label}</span>
@@ -98,43 +134,42 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
             ))}
           </div>
 
-          <h3 className={styles.roleTitle}>{card.roleTitle}</h3>
-          <p className={styles.roleMeta}>{card.roleMeta}</p>
+          <p className={styles.sectionLabel}>Role we&apos;re hiring for</p>
+          <h3 className={styles.cardTitle}>{card.roleTitle}</h3>
+          <p className={styles.cardSubtitle}>{card.roleMeta}</p>
+          <p className={styles.cardBody}>{pd.summary}</p>
 
-          <div className={styles.tags}>
-            {card.tags.map((tag) => (
-              <span key={tag} className={styles.tag}>{tag}</span>
+          <div className={styles.factsGrid}>
+            {quickFacts.map((f) => (
+              <div key={f.label} className={styles.factItem}>
+                <span className={styles.factLabel}>{f.label}</span>
+                <span className={styles.factValue}>{f.value}</span>
+              </div>
             ))}
           </div>
 
-          <ul className={styles.highlights}>
-            {card.highlights.map((item) => (
-              <li key={item}>{item}</li>
+          <div className={styles.divider} />
+
+          <div className={styles.skillsRow}>
+            {card.tags.map((tag) => (
+              <span key={tag} className={styles.skillTag}>
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <ul className={styles.detailsList}>
+            {card.highlights.slice(0, 3).map((item) => (
+              <li key={item} className={styles.detailsItem}>
+                <span className={styles.bulletDot} aria-hidden="true" />
+                <span>{item}</span>
+              </li>
             ))}
           </ul>
 
-          <section className={styles.desktopExtraInfo} aria-label="More company details">
-            <h4 className={styles.extraTitle}>Company details</h4>
-            <div className={styles.extraGrid}>
-              <div className={styles.extraItem}>
-                <span className={styles.extraLabel}>Compensation</span>
-                <span className={styles.extraValue}>{card.compensation}</span>
-              </div>
-              <div className={styles.extraItem}>
-                <span className={styles.extraLabel}>Role meta</span>
-                <span className={styles.extraValue}>{card.roleMeta}</span>
-              </div>
-              <div className={styles.extraItem}>
-                <span className={styles.extraLabel}>Profile ID</span>
-                <span className={styles.extraValue}>{card.id}</span>
-              </div>
-              <div className={styles.extraItem}>
-                <span className={styles.extraLabel}>Top skills</span>
-                <span className={styles.extraValue}>{card.tags.join(", ")}</span>
-              </div>
-            </div>
-          </section>
-
+          <p className={styles.cardHint}>
+            Tap <strong>Info</strong> for the full brief, team, and recruiting partners.
+          </p>
         </div>
       </>
     );
@@ -264,6 +299,7 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
                   <p className={styles.sheetEyebrow}>Company</p>
                   <h3 className={styles.sheetCompanyName}>{current.companyName}</h3>
                   <p className={styles.sheetCompanyAbout}>{current.about}</p>
+                  <p className={styles.sheetCompanyMore}>{current.companyMore}</p>
                 </div>
               </div>
               <div className={styles.sheetFacts}>
