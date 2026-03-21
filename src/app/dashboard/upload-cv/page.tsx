@@ -773,7 +773,7 @@ export default function UploadCvPage() {
                     type="button"
                     onClick={markComplete}
                     disabled={
-                      (cvEntryMode === "cv" ? !cvParsed || !agreedToCvExtraction : false) ||
+                      (cvEntryMode === "cv" ? !cvParsed : false) ||
                       !firstName.trim() ||
                       !lastName.trim() ||
                       !email.trim() ||
