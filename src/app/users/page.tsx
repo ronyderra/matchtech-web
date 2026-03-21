@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+/** Session + Mongo reads must not be statically cached */
+export const dynamic = "force-dynamic";
+
 function formatDt(iso: string | null) {
   if (!iso) return "—";
   try {
@@ -34,8 +37,8 @@ export default async function UsersAdminPage() {
       <main style={{ padding: "48px 24px", maxWidth: 560, margin: "0 auto" }}>
         <h1 style={{ fontSize: 22, marginBottom: 12 }}>Access denied</h1>
         <p style={{ color: "var(--color-text-secondary)", marginBottom: 20 }}>
-          You don’t have permission to view this page. In production, add your email to{" "}
-          <code style={{ fontSize: 13 }}>ADMIN_EMAILS</code> in the server environment (comma-separated).
+          You don’t have permission to view this page. If you use <code>ADMIN_EMAILS</code>, sign in with an
+          address on that list. For local dev, remove <code>ADMIN_EMAILS</code> or include your account email.
         </p>
         <Link href="/dashboard" style={{ color: "var(--color-primary)", fontWeight: 600 }}>
           Back to dashboard
