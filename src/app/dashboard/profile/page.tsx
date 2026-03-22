@@ -30,6 +30,7 @@ import {
   PENDING_PROFILE_UPSERT_KEY,
   syncTalentProfileToApi,
 } from "@/lib/profilePayload";
+import styles from "./profile.module.css";
 
 type ExperienceDraft = {
   companyName: string;
@@ -146,6 +147,7 @@ export default function ProfilePage() {
     { companyName: "", industry: "", yearsInCompany: "", roleInCompany: "" },
   ]);
   const [toastOpen, setToastOpen] = useState(false);
+  const [toastStatus, setToastStatus] = useState<"success" | "error">("success");
   const [toastTitle, setToastTitle] = useState("");
   const [toastDescription, setToastDescription] = useState("");
 
@@ -263,21 +265,48 @@ export default function ProfilePage() {
         JSON.stringify(buildTalentDbUpsertPayload(synced))
       );
     } catch (err) {
+      setToastStatus("error");
       setToastTitle("Save failed");
       setToastDescription(err instanceof Error ? err.message : "Could not save profile to database.");
       setToastOpen(true);
       window.setTimeout(() => setToastOpen(false), 3000);
       return;
     }
+    setToastStatus("success");
     setToastTitle("Profile saved");
     setToastDescription("Your information was saved and queued for DB upsert.");
     setToastOpen(true);
     window.setTimeout(() => setToastOpen(false), 2800);
   }
 
+  const displayName = `${firstName} ${lastName}`.trim() || "Your profile";
+  const photoInitial = (firstName || lastName || email || "?").charAt(0).toUpperCase();
+  const profilePhotoDisplay =
+    user?.type === "talent"
+      ? ((user as TalentDetails).imageUrl || (user as TalentDetails).avatarUrl || "").trim()
+      : "";
+
   return (
     <main style={{ maxWidth: 980, margin: "0 auto" }}>
-      <Toast open={toastOpen} status="success" title={toastTitle} description={toastDescription} />
+      <Toast open={toastOpen} status={toastStatus} title={toastTitle} description={toastDescription} />
+
+      <header className={styles.profileHeader}>
+        <div className={styles.avatarBlock}>
+          <div className={styles.avatarWrap} aria-hidden={!profilePhotoDisplay}>
+            {profilePhotoDisplay ? (
+              // eslint-disable-next-line @next/next/no-img-element -- profile URL from auth or stored account
+              <img src={profilePhotoDisplay} alt="" className={styles.avatarImage} />
+            ) : (
+              <div className={styles.avatarFallback}>{photoInitial}</div>
+            )}
+          </div>
+        </div>
+        <div className={styles.profileTitleBlock}>
+          <h1 className={styles.profileTitle}>{displayName}</h1>
+          <p className={styles.profileSubtitle}>Update your details below and save when you&apos;re done.</p>
+        </div>
+      </header>
+
       <FormSection title="Personal information">
         <FormRow>
           <FormField id="first-name" label="First name" required>

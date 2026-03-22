@@ -12,12 +12,8 @@ export function HrCompaniesSidebar() {
 
   return (
     <aside className={styles.root} aria-label="HR and headhunter companies">
-      <h2 className={styles.title}>HR &amp; headhunters</h2>
-      <p className={styles.hint}>
-        Top partner firms recruiting on MatchTech right now.
-      </p>
       <ul className={styles.list}>
-        {partners.map((p, idx) => (
+        {partners.map((p) => (
           <li key={p.name} className={styles.item}>
             <div className={styles.imageWrap}>
               <Image
@@ -28,23 +24,6 @@ export function HrCompaniesSidebar() {
                 sizes="(max-width: 900px) 100vw, 280px"
                 unoptimized={HR_PARTNER_IMAGE_EXT === "svg"}
               />
-            </div>
-
-            <div className={styles.headRow}>
-              <span className={styles.name}>{p.name}</span>
-              <span className={styles.badge}>Top {idx + 1}</span>
-            </div>
-
-            <p className={styles.tagline}>{p.tagline ?? "Cross-functional recruiting partner"}</p>
-
-            <div className={styles.meta}>
-              <span className={styles.metaLabel}>Coverage</span>
-              <span className={styles.metaValue}>{p.region ?? "Global"}</span>
-            </div>
-
-            <div className={styles.meta}>
-              <span className={styles.metaLabel}>Focus</span>
-              <span className={styles.metaValue}>{p.tagline ?? "Engineering & product hiring"}</span>
             </div>
 
             <Link

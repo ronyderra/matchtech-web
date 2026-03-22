@@ -24,7 +24,9 @@ export function SwipeBrowseLayout() {
       <div className={styles.center}>
         <CompanySwipeDeck variant="threeColumn" />
       </div>
-      <HrCompaniesSidebar />
+      <div className={styles.hrColumn}>
+        <HrCompaniesSidebar />
+      </div>
     </div>
   );
 }

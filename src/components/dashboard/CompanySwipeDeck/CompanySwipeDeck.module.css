@@ -196,6 +196,8 @@
 }
 
 .frontCard {
+  /* Swipe-out length; keep CompanySwipeDeck.tsx SWIPE_ANIMATION_MS in sync (~ms = seconds × 1000) */
+  --swipe-out-duration: 0.58s;
   position: relative;
   z-index: 2;
   min-height: 0;
@@ -205,11 +207,11 @@
 }
 
 .frontCard.swipeLeft {
-  animation: swipeLeftOut 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: swipeLeftOut var(--swipe-out-duration) cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .frontCard.swipeRight {
-  animation: swipeRightOut 0.34s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: swipeRightOut var(--swipe-out-duration) cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes swipeLeftOut {

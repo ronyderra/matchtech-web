@@ -66,10 +66,27 @@ function NavIcon({ name }: { name: IconName }) {
   );
 }
 
+const DESKTOP_SIDEBAR_MIN_WIDTH_PX = 901;
+
 export function DashboardShell({ children, user }: DashboardShellProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [sidebarHovered, setSidebarHovered] = useState(false);
+  const [isDesktopSidebar, setIsDesktopSidebar] = useState(false);
   const setUser = useUserStore((s) => s.setUser);
+  const storeUser = useUserStore((s) => s.user);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia(`(min-width: ${DESKTOP_SIDEBAR_MIN_WIDTH_PX}px)`);
+    const apply = () => setIsDesktopSidebar(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  /** Collapsed rail unless user pinned open or (desktop) sidebar is hovered */
+  const useNarrowSidebar = isCollapsed && !(isDesktopSidebar && sidebarHovered);
 
   useEffect(() => {
     let cancelled = false;
@@ -156,9 +173,19 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
     };
   }, [setUser, user.email, user.id, user.image, user.name]);
 
+  const talentFromStore = storeUser?.type === "talent" ? (storeUser as TalentDetails) : null;
+  const sidebarAvatarUrl =
+    (talentFromStore?.imageUrl || talentFromStore?.avatarUrl || "").trim() || user.image || "";
+  const sidebarName =
+    talentFromStore?.fullName?.trim() || user.name || user.email || "Account";
+
   return (
-    <div className={`${styles.shell} ${isCollapsed ? styles.shellCollapsed : ""}`}>
-      <aside className={`${styles.sidebar} ${isCollapsed ? styles.sidebarCollapsed : ""}`}>
+    <div className={styles.shell}>
+      <aside
+        className={`${styles.sidebar} ${useNarrowSidebar ? styles.sidebarCollapsed : ""}`}
+        onMouseEnter={() => setSidebarHovered(true)}
+        onMouseLeave={() => setSidebarHovered(false)}
+      >
         <div className={styles.sidebarTop}>
           <div className={styles.logoWrap}>
             <Link href="/" className={styles.logo} aria-label="Go to MatchTech home">
@@ -168,11 +195,12 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
         </div>
 
         <div className={styles.userRow}>
-          {user.image ? (
-            <img src={user.image} alt={`${user.name} profile`} className={styles.avatar} />
+          {sidebarAvatarUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element -- session URL or profile data URL
+            <img src={sidebarAvatarUrl} alt={`${sidebarName} profile`} className={styles.avatar} />
           ) : (
             <div className={styles.avatarFallback} aria-hidden="true">
-              {(user.name || user.email || "U").charAt(0).toUpperCase()}
+              {(sidebarName || user.email || "U").charAt(0).toUpperCase()}
             </div>
           )}
         </div>
@@ -189,7 +217,7 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
               className={`${styles.navLink} ${isActive ? styles.active : ""}`}
             >
               <NavIcon name={item.icon as IconName} />
-              {!isCollapsed ? <span className={styles.navText}>{item.label}</span> : null}
+              {!useNarrowSidebar ? <span className={styles.navText}>{item.label}</span> : null}
             </Link>
             );
           })}
@@ -199,11 +227,17 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
           <button
             type="button"
             className={styles.collapseBtn}
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            onClick={() => setIsCollapsed((v) => !v)}
+            aria-label={useNarrowSidebar ? "Expand sidebar" : "Collapse sidebar"}
+            title={useNarrowSidebar ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={() => {
+              setIsCollapsed((prev) => {
+                const nextCollapsed = !prev;
+                if (nextCollapsed) setSidebarHovered(false);
+                return nextCollapsed;
+              });
+            }}
           >
-            <span aria-hidden="true">{isCollapsed ? "»" : "«"}</span>
+            <span aria-hidden="true">{useNarrowSidebar ? "»" : "«"}</span>
           </button>
 
           <button
@@ -214,7 +248,7 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
             onClick={() => void signOut({ callbackUrl: "/" })}
           >
             <NavIcon name="logout" />
-            {!isCollapsed ? <span className={styles.navText}>Logout</span> : null}
+            {!useNarrowSidebar ? <span className={styles.navText}>Logout</span> : null}
           </button>
         </div>
       </aside>

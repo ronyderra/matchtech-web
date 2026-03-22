@@ -195,6 +195,12 @@ export function normalizeTalentPatch(input: unknown): Partial<TalentDetails> {
   if (raw.fullName !== undefined) patch.fullName = typeof raw.fullName === "string" ? raw.fullName.trim() : "";
   if (raw.email !== undefined) patch.email = typeof raw.email === "string" ? raw.email.trim() : "";
   if (raw.phoneNumber !== undefined) patch.phoneNumber = typeof raw.phoneNumber === "string" ? raw.phoneNumber.trim() : "";
+  if (raw.imageUrl !== undefined) {
+    patch.imageUrl = typeof raw.imageUrl === "string" ? raw.imageUrl.trim() : "";
+  }
+  if (raw.avatarUrl !== undefined) {
+    patch.avatarUrl = typeof raw.avatarUrl === "string" ? raw.avatarUrl.trim() : "";
+  }
   if (raw.bio !== undefined) patch.bio = typeof raw.bio === "string" ? raw.bio.trim() : "";
   if (raw.linkedinUrl !== undefined) patch.linkedinUrl = typeof raw.linkedinUrl === "string" ? raw.linkedinUrl.trim() : undefined;
   if (raw.portfolioUrl !== undefined) patch.portfolioUrl = typeof raw.portfolioUrl === "string" ? raw.portfolioUrl.trim() : undefined;

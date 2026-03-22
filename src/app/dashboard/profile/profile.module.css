@@ -1,0 +1,65 @@
+.profileHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.avatarBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.avatarWrap {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface-muted, rgba(148, 163, 184, 0.15));
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatarFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: linear-gradient(145deg, rgba(10, 102, 194, 0.12), rgba(2, 6, 23, 0.08));
+}
+
+.profileTitleBlock {
+  flex: 1;
+  min-width: 200px;
+}
+
+.profileTitle {
+  margin: 0 0 6px;
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.profileSubtitle {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}

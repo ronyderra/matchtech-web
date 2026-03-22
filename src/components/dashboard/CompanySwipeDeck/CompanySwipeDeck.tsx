@@ -7,7 +7,8 @@ import styles from "./CompanySwipeDeck.module.css";
 
 type Action = "pass" | "info" | "match";
 type SwipeDirection = "left" | "right" | null;
-const SWIPE_ANIMATION_MS = 340;
+/** Must match `.frontCard` `--swipe-out-duration` in CompanySwipeDeck.module.css */
+const SWIPE_ANIMATION_MS = 580;
 
 type CompanySwipeDeckProps = {
   /** When set, deck sits in the center column with side panels; action bar follows the column. */

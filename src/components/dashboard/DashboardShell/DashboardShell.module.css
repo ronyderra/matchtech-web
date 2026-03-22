@@ -1,31 +1,44 @@
 .shell {
-  --sidebar-width: 260px;
+  /* Narrow strip reserved for main content; sidebar can grow wider and overlays the page */
+  --sidebar-rail: 52px;
+  --sidebar-open: 176px;
+  /* Used by swipe / dashboard layouts — always the rail so the grid does not jump when sidebar expands */
+  --sidebar-width: var(--sidebar-rail);
   min-height: 100vh;
   display: block;
   background: transparent;
-}
-
-.shellCollapsed {
-  --sidebar-width: 84px;
 }
 
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 100;
   height: 100vh;
-  width: var(--sidebar-width);
-  padding: 20px 16px;
+  width: var(--sidebar-open);
+  padding: 16px 12px;
   border-right: 1px solid var(--color-border);
   background: var(--color-surface);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   overflow: hidden;
+  box-shadow: 6px 0 28px rgba(15, 23, 42, 0.1);
+}
+
+@media (min-width: 901px) {
+  .sidebar {
+    transition:
+      width 0.24s ease,
+      padding 0.24s ease,
+      box-shadow 0.24s ease;
+  }
 }
 
 .sidebarCollapsed {
-  padding: 20px 10px;
+  width: var(--sidebar-rail);
+  padding: 14px 6px;
+  box-shadow: none;
 }
 
 .sidebarTop {
@@ -36,14 +49,14 @@
 }
 
 .logoWrap {
-  padding: 2px 8px 12px;
+  padding: 2px 4px 8px;
 }
 
 .logo {
   text-decoration: none;
   font-weight: 600;
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 28px;
+  font-size: 22px;
   letter-spacing: -0.03em;
   color: var(--color-primary);
 }
@@ -67,7 +80,7 @@
   display: flex;
   gap: 0;
   align-items: center;
-  padding: 10px;
+  padding: 6px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
   background: #f8fbff;
@@ -75,15 +88,15 @@
 }
 
 .avatar {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   object-fit: cover;
 }
 
 .avatarFallback {
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
@@ -101,8 +114,8 @@
 
 .navLink {
   --icon-color: var(--color-text-primary);
-  min-height: 44px;
-  padding: 0 12px;
+  min-height: 40px;
+  padding: 0 10px;
   border-radius: var(--radius-button);
   text-decoration: none;
   color: var(--color-text-primary);
@@ -123,8 +136,8 @@
 }
 
 .logoutBtn {
-  height: 44px;
-  padding: 0 12px;
+  height: 40px;
+  padding: 0 10px;
   border-radius: var(--radius-button);
   border: 1px solid var(--color-border);
   background: #111111;
@@ -137,8 +150,14 @@
 }
 
 .main {
-  margin-left: var(--sidebar-width);
   padding: 28px 24px 96px;
+}
+
+@media (min-width: 901px) {
+  .main {
+    /* Fixed gutter: expanded sidebar draws over the page instead of pushing this */
+    margin-left: var(--sidebar-rail);
+  }
 }
 
 .icon {
@@ -149,7 +168,7 @@
 }
 
 .navText {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -201,6 +220,7 @@
 @media (max-width: 900px) {
   .shell {
     --sidebar-width: 0px;
+    --sidebar-rail: 0px;
     display: block;
   }
 
