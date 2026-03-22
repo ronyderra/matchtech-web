@@ -51,14 +51,13 @@
   /* Tight gap under the three columns (inside the grid box) */
   --swipe-browse-grid-padding-bottom: 4px;
   /*
-   * Swipe grid height: reserve less bottom space than full dashboard padding so columns sit lower
-   * (dashboard `.main` still has 96px padding for nav — grid can extend into that zone visually).
+   * Swipe grid height must fit inside dashboard `.main` (top + bottom padding) plus swipe page top
+   * padding — otherwise total layout height exceeds 100vh and the page scrolls.
    */
-  --swipe-browse-grid-bottom-reserve: 52px;
   --swipe-browse-grid-height: calc(
     100vh
     - var(--dashboard-main-padding-top, 28px)
-    - var(--swipe-browse-grid-bottom-reserve, 52px)
+    - var(--dashboard-main-padding-bottom, 96px)
     - var(--swipe-page-main-padding-top, 8px)
   );
 }

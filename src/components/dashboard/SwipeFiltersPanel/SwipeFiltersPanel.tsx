@@ -32,9 +32,8 @@ const DEPARTMENT = [
   "Other",
 ];
 const YEARS_EXP = ["Any", "0–2 years", "3–5 years", "6–10 years", "10+ years"];
-const POSTED_WITHIN = ["Any", "Last 24 hours", "Last 7 days", "Last 30 days", "Last 90 days"];
 
-/** Exactly 11 filter rows (see table body below). */
+/** Filter rows (see table body below). */
 export function SwipeFiltersPanel() {
   const [seniority, setSeniority] = useState("Any");
   const [department, setDepartment] = useState("Any");
@@ -46,13 +45,9 @@ export function SwipeFiltersPanel() {
   const [maxSalary, setMaxSalary] = useState("");
   const [location, setLocation] = useState("");
   const [companySize, setCompanySize] = useState("Any");
-  const [postedWithin, setPostedWithin] = useState("Any");
 
   return (
     <aside className={styles.root} aria-label="Job filters">
-      <h2 className={styles.title}>Filters</h2>
-      <p className={styles.hint}>Refine which roles appear in your deck. (Wiring to live search comes next.)</p>
-
       <div className={styles.tableWrap}>
         <table className={styles.table}>
           <thead>
@@ -224,23 +219,6 @@ export function SwipeFiltersPanel() {
                 </select>
               </td>
             </tr>
-            <tr>
-              <td className={styles.labelCell}>Posted within</td>
-              <td>
-                <select
-                  className={styles.control}
-                  value={postedWithin}
-                  onChange={(e) => setPostedWithin(e.target.value)}
-                  aria-label="Job posted within"
-                >
-                  {POSTED_WITHIN.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -263,7 +241,6 @@ export function SwipeFiltersPanel() {
             setMaxSalary("");
             setLocation("");
             setCompanySize("Any");
-            setPostedWithin("Any");
           }}
         >
           Reset

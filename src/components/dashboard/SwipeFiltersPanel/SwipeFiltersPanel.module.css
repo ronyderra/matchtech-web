@@ -1,45 +1,33 @@
 .root {
   position: sticky;
   top: var(--swipe-side-panels-sticky-top, 8px);
-  align-self: stretch;
-  overflow: hidden;
+  align-self: start;
+  overflow: visible;
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  gap: 0;
+  padding: 3px;
   border-radius: var(--radius-card);
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
 }
 
-/* Desktop: fill the grid row (grid sets min-height + 1fr row) — almost full viewport height */
+/* Natural height — no inner scroll; whole page scrolls if the column is tall */
 @media (min-width: 901px) {
   .root {
-    height: 100%;
-    min-height: 0;
+    height: auto;
     max-height: none;
+    width: 100%;
+    min-width: 0;
   }
 }
 
-.title {
-  margin: 0 0 6px;
-  font-size: 18px;
-  line-height: 1.2;
-}
-
-.hint {
-  margin: 0 0 14px;
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  line-height: 1.45;
-}
-
 .tableWrap {
-  flex: 1;
-  min-height: 0;
+  flex: 0 0 auto;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
-  overflow: auto;
+  overflow: visible;
   background: rgba(248, 250, 252, 0.6);
 }
 
