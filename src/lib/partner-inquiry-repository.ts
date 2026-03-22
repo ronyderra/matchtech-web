@@ -1,3 +1,7 @@
+/**
+ * Partner page (`/partner`) form → `POST /api/partner-inquiry` → MongoDB collection `partner_inquiries`.
+ * Indexes: `npm run db:partner-inquiries`
+ */
 import { ObjectId, type Collection } from "mongodb";
 import { getMongoDb } from "@/lib/mongodb";
 

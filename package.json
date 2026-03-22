@@ -9,6 +9,7 @@
     "lint": "eslint",
     "generate:hr-partner-images": "node scripts/generate-hr-partner-placeholders.mjs",
     "db:companies": "node scripts/mongo-create-companies.mjs",
+    "db:partner-inquiries": "node scripts/mongo-create-partner-inquiries.mjs",
     "db:companies:seed": "node --require ./scripts/load-env.cjs ./node_modules/tsx/dist/cli.mjs scripts/seed-companies-cli.ts",
     "db:companies:reset-seed": "node --require ./scripts/load-env.cjs ./node_modules/tsx/dist/cli.mjs scripts/reset-and-seed-companies.ts"
   },

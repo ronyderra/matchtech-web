@@ -56,3 +56,24 @@ npm run dev
    - `http://localhost:3000/api/auth/callback/linkedin`
 
 5. Open the homepage and click `Sign in with LinkedIn`.
+
+## MongoDB (partner form & data)
+
+The [Partner with us](/partner) page submits to **`POST /api/partner-inquiry`**. Submissions are stored in MongoDB:
+
+| Collection            | Purpose                                      |
+| --------------------- | -------------------------------------------- |
+| **`partner_inquiries`** | Name, email, organization, message, `createdAt` |
+
+Set in `.env` (required for the API route to persist data):
+
+- `MONGO_URI` — connection string
+- `MONGO_DB_NAME` — optional, defaults to `matchtech`
+
+Ensure indexes (optional; first insert also creates the collection):
+
+```bash
+npm run db:partner-inquiries
+```
+
+Company swipe data uses the **`companies`** collection — see `npm run db:companies`.
