@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { COMPANY_SWIPE_CARDS } from "./companyCards";
+import { COMPANY_SWIPE_CARDS, type CompanySwipeCard } from "./companyCards";
+import { flattenCompaniesToSwipeCards } from "@/lib/company-swipe-mongo";
 import styles from "./CompanySwipeDeck.module.css";
 
 type Action = "pass" | "info" | "match";
@@ -33,21 +34,43 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
   const [index, setIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<SwipeDirection>(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [cards, setCards] = useState<CompanySwipeCard[]>(COMPANY_SWIPE_CARDS);
 
-  const currentIndex = index % COMPANY_SWIPE_CARDS.length;
-  const nextIndex = (currentIndex + 1) % COMPANY_SWIPE_CARDS.length;
-  const current = COMPANY_SWIPE_CARDS[currentIndex];
-  const next = COMPANY_SWIPE_CARDS[nextIndex];
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/companies", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { companies?: unknown[] } | null) => {
+        if (cancelled || !data?.companies?.length) return;
+        const flat = flattenCompaniesToSwipeCards(
+          data.companies as Parameters<typeof flattenCompaniesToSwipeCards>[0]
+        );
+        if (flat.length > 0) setCards(flat);
+      })
+      .catch(() => {
+        /* keep static fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const len = Math.max(cards.length, 1);
+  const currentIndex = index % len;
+  const nextIndex = (currentIndex + 1) % len;
+  const current = cards[currentIndex] ?? COMPANY_SWIPE_CARDS[0];
+  const next = cards[nextIndex] ?? COMPANY_SWIPE_CARDS[0];
 
   useEffect(() => {
     if (!swipeDirection) return;
+    const deckLen = Math.max(cards.length, 1);
     const timer = setTimeout(() => {
-      setIndex((prev) => (prev + 1) % COMPANY_SWIPE_CARDS.length);
+      setIndex((prev) => (prev + 1) % deckLen);
       setSwipeDirection(null);
     }, SWIPE_ANIMATION_MS);
 
     return () => clearTimeout(timer);
-  }, [swipeDirection]);
+  }, [swipeDirection, cards.length]);
 
   useEffect(() => {
     if (!isInfoOpen) return;
@@ -74,7 +97,7 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
     setIsInfoOpen(true);
   }
 
-  function renderCard(card: (typeof COMPANY_SWIPE_CARDS)[number]) {
+  function renderCard(card: CompanySwipeCard) {
     const pd = card.positionDetail;
 
     return (
@@ -368,6 +391,16 @@ export function CompanySwipeDeck({ variant = "default" }: CompanySwipeDeckProps)
                 <ul className={styles.hrPartnerList}>
                   {current.partnerHrs.map((p) => (
                     <li key={p.name} className={styles.hrPartnerCard}>
+                      {p.imageUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- local public paths from DB
+                        <img
+                          src={p.imageUrl}
+                          alt=""
+                          className={styles.hrPartnerLogo}
+                          width={44}
+                          height={44}
+                        />
+                      ) : null}
                       <span className={styles.hrPartnerName}>{p.name}</span>
                       {p.tagline ? (
                         <span className={styles.hrPartnerTagline}>{p.tagline}</span>

@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate:hr-partner-images": "node scripts/generate-hr-partner-placeholders.mjs"
+    "generate:hr-partner-images": "node scripts/generate-hr-partner-placeholders.mjs",
+    "db:companies": "node scripts/mongo-create-companies.mjs",
+    "db:companies:seed": "node --require ./scripts/load-env.cjs ./node_modules/tsx/dist/cli.mjs scripts/seed-companies-cli.ts",
+    "db:companies:reset-seed": "node --require ./scripts/load-env.cjs ./node_modules/tsx/dist/cli.mjs scripts/reset-and-seed-companies.ts"
   },
   "dependencies": {
     "franc": "^6.2.0",
@@ -24,8 +27,10 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "dotenv": "^17.3.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }
