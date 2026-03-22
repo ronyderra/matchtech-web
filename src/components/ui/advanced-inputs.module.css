@@ -44,7 +44,32 @@
   width: 100%;
 }
 
-.tagField,
+.tagField {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: linear-gradient(180deg, rgba(250, 250, 249, 0.9) 0%, var(--color-surface) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: text;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.tagField:focus-within {
+  border-color: rgba(10, 102, 194, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 0 0 3px rgba(10, 102, 194, 0.12);
+  outline: none;
+}
+
 .multiField {
   width: 100%;
   min-height: 44px;
@@ -59,21 +84,84 @@
   cursor: text;
 }
 
+.tagPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 6px 6px 6px 12px;
+  border-radius: 999px;
+  background: rgba(10, 102, 194, 0.1);
+  border: 1px solid rgba(10, 102, 194, 0.2);
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.tagPillText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: min(220px, 100%);
+}
+
+.tagPillRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.72;
+  transition:
+    opacity 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.tagPillRemove:hover {
+  opacity: 1;
+  background: rgba(10, 102, 194, 0.16);
+}
+
+.tagPillRemove:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(10, 102, 194, 0.35);
+}
+
+.tagPillRemoveIcon {
+  display: block;
+}
+
 .tagInputInner {
   border: none;
   outline: none;
   flex: 1;
-  min-width: 80px;
-  font-size: var(--font-size-body-sm);
+  min-width: 140px;
+  min-height: 28px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: transparent;
 }
 
 .tagInputInner::placeholder {
   color: var(--color-text-muted);
+  font-weight: 400;
 }
 
-.tagChipRemove {
-  margin-left: 4px;
-  cursor: pointer;
+.tagHint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
 }
 
 .multiDropdown {

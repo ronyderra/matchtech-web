@@ -513,7 +513,15 @@ export default function ProfilePage() {
         <h3 style={{ margin: "20px 0 8px", fontSize: 20, lineHeight: "28px" }}>Skills</h3>
 
         <FormField id="skills" label="Skills" required>
-          {() => <TagInput tags={skillsProfile} onChange={setSkillsProfile} placeholder="Type a skill and press Enter" maxTags={50} />}
+          {() => (
+            <TagInput
+              tags={skillsProfile}
+              onChange={setSkillsProfile}
+              placeholder="e.g. TypeScript, Kubernetes, AWS…"
+              maxTags={50}
+              hint="Press Enter or comma to add · Backspace removes the last skill"
+            />
+          )}
         </FormField>
         <FormField id="languages" label="Languages (optional)">
           {() => (
